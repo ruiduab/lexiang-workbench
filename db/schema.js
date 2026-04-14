@@ -687,4 +687,21 @@ db.exec(`
   }
 }
 
+// ===== 团队动态：每个 AI agent / 同事的产出汇聚 =====
+db.exec(`
+  CREATE TABLE IF NOT EXISTS workbench_contributions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user TEXT NOT NULL,             -- 贡献者标识：白羽 / zhangsan / claude-bj 等
+    type TEXT NOT NULL,             -- 类型：feat / fix / docs / experiment / data / note
+    title TEXT NOT NULL,            -- 简短标题（必填）
+    content TEXT,                   -- 详细描述（markdown 友好）
+    links TEXT,                     -- JSON: [{"label":"PR","url":"..."},{"label":"文档","url":"..."}]
+    project TEXT,                   -- 关联项目：lexiang-workbench / leaibot / ...
+    source TEXT,                    -- 来源：claude-code / manual / api
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+  CREATE INDEX IF NOT EXISTS idx_contrib_created ON workbench_contributions(created_at DESC);
+  CREATE INDEX IF NOT EXISTS idx_contrib_user ON workbench_contributions(user);
+`);
+
 module.exports = db;

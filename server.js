@@ -16,7 +16,10 @@ registry.load();
 const app = express();
 const PORT = 3001;
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({
+  limit: '10mb',
+  verify: (req, res, buf) => { req.rawBody = buf; }  // GitHub webhook HMAC 校验需要原始 body
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
@@ -113,6 +116,8 @@ app.use('/api/log', require('./routes/log'));
 app.use('/api/stores', require('./routes/stores'));
 app.use('/api/leai', require('./routes/leai'));
 app.use('/api/lenovo', require('./routes/lenovo-proxy'));
+app.use('/api/webhook', require('./routes/webhook'));
+app.use('/api/workbench', require('./routes/workbench'));
 
 // SPA fallback
 app.get('/admin', (req, res) => {

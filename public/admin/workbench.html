@@ -648,6 +648,11 @@ const MENU_TREE = {
       'dashboard.geoConversion': { label: 'GEO 转化看板' }
     }
   },
+  team: {
+    icon: '<span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:linear-gradient(135deg,#10b981,#059669);border-radius:6px;color:#fff;font-size:13px;font-weight:700">👥</span>', label: '团队动态', children: {
+      'team.activity': { label: '协作动态' }
+    }
+  },
 };
 
 // ===== LOGIN =====
@@ -1817,8 +1822,152 @@ const PAGE_RENDERERS = {
   'settings.logs': () => `
     <div class="page-header"><div><div class="page-title">操作日志</div><div class="page-desc">前端日志与错误记录</div></div></div>
     <div id="fe-logs-area"><div style="text-align:center;padding:40px;color:var(--text-tertiary)">加载中...</div></div>
-  `
+  `,
+
+  'team.activity': () => {
+    setTimeout(loadTeamActivity, 50);
+    return `
+      <div class="page-header">
+        <div>
+          <div class="page-title">团队协作动态 <span style="font-size:11px;color:var(--text-tertiary);font-weight:normal">每个 Claude Code / 同事的产出实时汇聚</span></div>
+          <div class="page-desc">跨服务器、跨成员的 AI 工作记录，展示"多 Agent 协同"的 POC 效果</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select id="ta-filter-user" onchange="loadTeamActivity()" style="padding:6px 10px;border:1px solid var(--border-light);border-radius:6px;font-size:12px;background:#fff;cursor:pointer">
+            <option value="">全部成员</option>
+          </select>
+          <button class="btn btn-sm btn-secondary" onclick="loadTeamActivity()">🔄 刷新</button>
+          <button class="btn btn-sm btn-primary" onclick="showAddContribution()">+ 手动登记</button>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="ta-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
+        <div class="kpi-card"><div class="kpi-label">总贡献数</div><div class="kpi-value" style="font-size:24px" id="ta-total">-</div></div>
+        <div class="kpi-card"><div class="kpi-label">今日</div><div class="kpi-value" style="font-size:24px" id="ta-today">-</div></div>
+        <div class="kpi-card"><div class="kpi-label">本周</div><div class="kpi-value" style="font-size:24px" id="ta-week">-</div></div>
+        <div class="kpi-card"><div class="kpi-label">活跃成员</div><div class="kpi-value" style="font-size:24px" id="ta-users">-</div></div>
+      </div>
+
+      <div class="card">
+        <div id="ta-list" style="max-height:600px;overflow-y:auto">
+          <div style="text-align:center;padding:40px;color:var(--text-tertiary)">加载中...</div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding:12px 16px;background:#f5f5f7;border-radius:8px;font-size:12px;color:#666;line-height:1.7">
+        <b>💡 接入方法：</b>每个同事在自己的 Claude Code 里加一条规则，做完事就 curl 上报：<br>
+        <code style="display:block;background:#fff;padding:8px;border-radius:4px;margin-top:6px;font-family:monospace;white-space:pre-wrap;font-size:11px">curl -X POST https://leaibot.cn/api/workbench/contribution \\
+  -H 'Content-Type: application/json' \\
+  -d '{"user":"你的名字","type":"feat","title":"做了什么","content":"细节","project":"项目名","source":"claude-code"}'</code>
+      </div>
+    `;
+  }
 };
+
+// ===== 团队动态 =====
+const TYPE_BADGE = {
+  feat: { label: '✨ 新功能', bg: '#10b981' },
+  fix: { label: '🐛 修复', bg: '#ef4444' },
+  docs: { label: '📝 文档', bg: '#3b82f6' },
+  experiment: { label: '🧪 实验', bg: '#a855f7' },
+  data: { label: '📊 数据', bg: '#f59e0b' },
+  note: { label: '📌 笔记', bg: '#6b7280' }
+};
+
+function fmtRelTime(ts) {
+  const t = new Date(ts.replace(' ', 'T') + 'Z').getTime();
+  const diff = Date.now() - t;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return '刚刚';
+  if (m < 60) return m + ' 分钟前';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + ' 小时前';
+  const d = Math.floor(h / 24);
+  if (d < 30) return d + ' 天前';
+  return ts.slice(0, 10);
+}
+
+async function loadTeamActivity() {
+  try {
+    const userFilter = document.getElementById('ta-filter-user')?.value || '';
+    const [statsRes, listRes, contribRes] = await Promise.all([
+      fetch('/api/workbench/stats').then(r => r.json()),
+      fetch('/api/workbench/contributions?limit=100' + (userFilter ? '&user=' + encodeURIComponent(userFilter) : '')).then(r => r.json()),
+      fetch('/api/workbench/contributors').then(r => r.json())
+    ]);
+
+    if (statsRes.ok) {
+      document.getElementById('ta-total').textContent = statsRes.total;
+      document.getElementById('ta-today').textContent = statsRes.today;
+      document.getElementById('ta-week').textContent = statsRes.week;
+      document.getElementById('ta-users').textContent = contribRes.count || 0;
+    }
+
+    // 填充用户筛选下拉
+    const sel = document.getElementById('ta-filter-user');
+    if (sel && contribRes.ok) {
+      const cur = sel.value;
+      sel.innerHTML = '<option value="">全部成员</option>' +
+        contribRes.items.map(c => `<option value="${escapeHtml(c.user)}" ${cur === c.user ? 'selected' : ''}>${escapeHtml(c.user)} (${c.count})</option>`).join('');
+    }
+
+    const list = document.getElementById('ta-list');
+    if (!listRes.ok || !listRes.items.length) {
+      list.innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-tertiary)">还没有任何贡献记录<br><br>试试运行 <code>curl ...</code> 上报第一条</div>';
+      return;
+    }
+
+    list.innerHTML = listRes.items.map(item => {
+      const badge = TYPE_BADGE[item.type] || TYPE_BADGE.note;
+      const linksHtml = (item.links || []).map(l =>
+        `<a href="${escapeHtml(l.url)}" target="_blank" style="color:var(--primary);font-size:12px;margin-right:8px;text-decoration:none">🔗 ${escapeHtml(l.label || 'link')}</a>`
+      ).join('');
+      const projectTag = item.project ? `<span style="display:inline-block;padding:2px 8px;background:#eef;color:#36c;border-radius:10px;font-size:11px;margin-left:6px">${escapeHtml(item.project)}</span>` : '';
+      const sourceTag = item.source ? `<span style="font-size:11px;color:#999;margin-left:8px">via ${escapeHtml(item.source)}</span>` : '';
+      return `
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border-light);display:flex;gap:12px;">
+          <div style="flex-shrink:0;width:36px;height:36px;border-radius:50%;background:${badge.bg};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px">${escapeHtml(item.user.slice(0,2))}</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-weight:600;color:var(--text)">${escapeHtml(item.user)}</span>
+              <span style="display:inline-block;padding:1px 8px;background:${badge.bg};color:#fff;border-radius:10px;font-size:11px;font-weight:500">${badge.label}</span>
+              ${projectTag}
+              <span style="color:var(--text-tertiary);font-size:11px;margin-left:auto">${fmtRelTime(item.created_at)}${sourceTag}</span>
+            </div>
+            <div style="margin-top:6px;color:var(--text);font-weight:500">${escapeHtml(item.title)}</div>
+            ${item.content ? `<div style="margin-top:4px;color:var(--text2);font-size:12px;line-height:1.6;white-space:pre-wrap">${escapeHtml(item.content)}</div>` : ''}
+            ${linksHtml ? `<div style="margin-top:6px">${linksHtml}</div>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    console.error('loadTeamActivity failed:', e);
+    document.getElementById('ta-list').innerHTML = '<div style="text-align:center;padding:40px;color:var(--red)">加载失败：' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function showAddContribution() {
+  const user = prompt('你的名字 / 标识：', 'baiyu');
+  if (!user) return;
+  const title = prompt('标题（必填）：');
+  if (!title) return;
+  const content = prompt('详细描述（可选）：') || '';
+  const type = prompt('类型 (feat/fix/docs/experiment/data/note)：', 'note') || 'note';
+  fetch('/api/workbench/contribution', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user, title, content, type, source: 'manual' })
+  }).then(r => r.json()).then(r => {
+    if (r.ok) loadTeamActivity();
+    else alert('登记失败：' + (r.error || 'unknown'));
+  });
+}
 
 // ===== TAB SWITCH =====
 function switchTab(el, tabId) {
