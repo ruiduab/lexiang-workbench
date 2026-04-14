@@ -1,0 +1,31 @@
+node_modules/
+*.log
+*.db
+*.db-shm
+*.db-wal
+*.db.bak*
+.env
+.env.*
+*.hnsw
+*.hnsw.ids
+
+# Python
+__pycache__/
+*.pyc
+
+# 大型数据导出（不入库）
+scripts/*.csv
+scripts/*.json
+scripts/biz_content*.json
+scripts/knowledge_qa*.csv
+scripts/knowledge_qa*.json
+
+# 上传/导出目录
+uploads/
+public/uploads/
+public/exports/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store

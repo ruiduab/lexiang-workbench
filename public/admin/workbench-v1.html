@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>乐享运营工作台</title>
+<style>
+:root {
+  --primary: #3370ff;
+  --primary-light: rgba(51,112,255,0.08);
+  --primary-hover: #245bdb;
+  --red: #e2001a;
+  --red-light: rgba(226,0,26,0.08);
+  --green: #34c724;
+  --green-light: rgba(52,199,36,0.08);
+  --orange: #ff7d00;
+  --orange-light: rgba(255,125,0,0.08);
+  --purple: #722ed1;
+  --purple-light: rgba(114,46,209,0.08);
+  --bg: #f5f6f7;
+  --sidebar-bg: #fff;
+  --card-bg: #fff;
+  --border: #dee0e3;
+  --border-light: #e5e6eb;
+  --text: #1f2329;
+  --text-secondary: #646a73;
+  --text-tertiary: #8f959e;
+  --shadow: 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:-apple-system,'PingFang SC','Helvetica Neue','Microsoft YaHei',sans-serif; height:100vh; display:flex; overflow:hidden; font-size:14px; }
+
+/* ===== Login ===== */
+#login-screen { position:fixed; inset:0; z-index:9999; background:#fff; display:flex; align-items:center; justify-content:center; }
+.login-card { width:400px; padding:48px 40px; }
+.login-logo { display:flex; align-items:center; gap:10px; margin-bottom:40px; }
+.login-logo .icon { width:36px; height:36px; background:var(--red); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:16px; }
+.login-logo span { font-size:20px; font-weight:700; }
+.login-title { font-size:24px; font-weight:600; margin-bottom:8px; }
+.login-sub { color:var(--text-secondary); margin-bottom:32px; }
+.form-label { font-size:13px; color:var(--text-secondary); margin-bottom:6px; display:block; }
+.form-input { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:14px; outline:none; transition:border-color 0.2s; background:#fff; color:var(--text); }
+.form-input:focus { border-color:var(--primary); box-shadow:0 0 0 2px rgba(51,112,255,0.1); }
+.form-group { margin-bottom:20px; }
+.form-select { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:14px; outline:none; background:#fff; color:var(--text); cursor:pointer; }
+.form-select:focus { border-color:var(--primary); }
+.btn { padding:10px 20px; border-radius:var(--radius); font-size:14px; cursor:pointer; border:none; transition:all 0.15s; font-weight:500; display:inline-flex; align-items:center; gap:6px; }
+.btn-primary { background:var(--primary); color:#fff; }
+.btn-primary:hover { background:var(--primary-hover); }
+.btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+.btn-secondary { background:#fff; color:var(--text); border:1px solid var(--border); }
+.btn-secondary:hover { background:var(--bg); }
+.btn-danger { background:rgba(255,59,48,0.06); color:#ff3b30; border:1px solid rgba(255,59,48,0.15); }
+.btn-danger:hover { background:rgba(255,59,48,0.12); }
+.btn-success { background:var(--green); color:#fff; }
+.btn-success:hover { opacity:0.9; }
+.btn-sm { padding:6px 12px; font-size:12px; }
+.btn-block { width:100%; justify-content:center; }
+.login-btn { width:100%; padding:12px; font-size:15px; margin-top:8px; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width:240px; background:var(--sidebar-bg); border-right:1px solid var(--border-light);
+  display:flex; flex-direction:column; flex-shrink:0; z-index:10;
+}
+.sidebar-header {
+  padding:20px 16px 16px; display:flex; align-items:center; gap:10px;
+  border-bottom:1px solid var(--border-light);
+}
+.sidebar-header .logo-icon { width:32px; height:32px; background:var(--red); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:14px; flex-shrink:0; }
+.sidebar-header .logo-text { font-size:15px; font-weight:700; }
+.sidebar-header .logo-sub { font-size:11px; color:var(--text-tertiary); }
+
+.sidebar-nav { flex:1; padding:12px 8px; overflow-y:auto; }
+.nav-section { margin-bottom:16px; }
+.nav-section-title { padding:4px 12px 8px; font-size:11px; color:var(--text-tertiary); font-weight:500; text-transform:uppercase; letter-spacing:0.5px; }
+.nav-item {
+  display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:var(--radius);
+  cursor:pointer; font-size:13px; color:var(--text-secondary); transition:all 0.15s; margin-bottom:2px;
+}
+.nav-item:hover { background:var(--bg); color:var(--text); }
+.nav-item.active { background:var(--primary-light); color:var(--primary); font-weight:500; }
+.nav-item .ni { width:18px; text-align:center; font-size:15px; }
+.nav-badge { margin-left:auto; background:var(--red); color:#fff; font-size:10px; padding:1px 6px; border-radius:10px; font-weight:600; }
+
+.sidebar-footer { padding:12px 16px; border-top:1px solid var(--border-light); }
+.user-info { display:flex; align-items:center; gap:10px; padding:8px; border-radius:var(--radius); cursor:pointer; }
+.user-info:hover { background:var(--bg); }
+.user-avatar { width:32px; height:32px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; }
+.user-name { font-size:13px; font-weight:500; }
+.user-role { font-size:11px; color:var(--text-tertiary); }
+.bu-selector { margin-top:8px; }
+.bu-selector select { width:100%; padding:6px 8px; border:1px solid var(--border-light); border-radius:6px; font-size:12px; background:#fff; cursor:pointer; }
+
+/* ===== Main ===== */
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.topbar {
+  height:52px; background:#fff; border-bottom:1px solid var(--border-light);
+  display:flex; align-items:center; padding:0 24px; gap:16px; flex-shrink:0;
+}
+.topbar-tabs { display:flex; gap:4px; }
+.topbar-tab {
+  padding:8px 16px; border-radius:var(--radius); font-size:13px; cursor:pointer;
+  color:var(--text-secondary); transition:all 0.15s; font-weight:500;
+}
+.topbar-tab:hover { background:var(--bg); color:var(--text); }
+.topbar-tab.active { background:var(--primary-light); color:var(--primary); }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:12px; }
+.topbar-search {
+  padding:6px 12px 6px 32px; border:1px solid var(--border-light); border-radius:var(--radius);
+  font-size:13px; width:240px; outline:none; background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%238f959e' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") 10px center no-repeat;
+  transition:all 0.2s;
+}
+.topbar-search:focus { border-color:var(--primary); background-color:#fff; }
+.time-range { padding:6px 10px; border:1px solid var(--border-light); border-radius:6px; font-size:12px; background:#fff; cursor:pointer; }
+
+.page-content { flex:1; overflow-y:auto; padding:24px; }
+.page-content::-webkit-scrollbar { width:6px; }
+.page-content::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.1); border-radius:3px; }
+
+/* ===== Cards & Grid ===== */
+.page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.page-title { font-size:18px; font-weight:600; }
+.page-desc { font-size:13px; color:var(--text-secondary); margin-top:4px; }
+
+.kpi-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:24px; }
+.kpi-card {
+  background:var(--card-bg); border:1px solid var(--border-light); border-radius:var(--radius-lg);
+  padding:20px; position:relative; overflow:hidden; transition:box-shadow 0.2s;
+}
+.kpi-card:hover { box-shadow:var(--shadow-md); }
+.kpi-card .kpi-icon { position:absolute; top:16px; right:16px; width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.kpi-label { font-size:13px; color:var(--text-secondary); margin-bottom:8px; }
+.kpi-value { font-size:28px; font-weight:700; line-height:1.2; }
+.kpi-sub { font-size:12px; color:var(--text-tertiary); margin-top:6px; display:flex; align-items:center; gap:4px; }
+.kpi-sub .up { color:var(--green); }
+.kpi-sub .down { color:var(--red); }
+.kpi-target { font-size:11px; color:var(--text-tertiary); margin-top:4px; }
+.kpi-progress { height:4px; background:var(--bg); border-radius:2px; margin-top:8px; overflow:hidden; }
+.kpi-progress-bar { height:100%; border-radius:2px; transition:width 0.6s ease; }
+
+.card { background:var(--card-bg); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:20px; margin-bottom:20px; }
+.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.card-title { font-size:15px; font-weight:600; }
+.card-actions { display:flex; gap:8px; }
+
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
+
+/* ===== Table ===== */
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { text-align:left; padding:10px 12px; color:var(--text-tertiary); font-weight:500; border-bottom:1px solid var(--border-light); font-size:12px; }
+td { padding:10px 12px; border-bottom:1px solid var(--border-light); }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(51,112,255,0.02); }
+.badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:500; }
+.badge-green { background:var(--green-light); color:var(--green); }
+.badge-red { background:var(--red-light); color:var(--red); }
+.badge-orange { background:var(--orange-light); color:var(--orange); }
+.badge-blue { background:var(--primary-light); color:var(--primary); }
+.badge-purple { background:var(--purple-light); color:var(--purple); }
+
+/* ===== Charts (CSS-only bar charts) ===== */
+.bar-chart { display:flex; align-items:flex-end; gap:8px; height:180px; padding:20px 0 0; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; }
+.bar-col .bar-value { font-size:11px; font-weight:600; margin-bottom:4px; }
+.bar-col .bar-label { font-size:10px; color:var(--text-tertiary); white-space:nowrap; margin-top:4px; }
+.bar { width:70%; border-radius:4px 4px 0 0; transition:height 0.6s ease; }
+.bar-label { font-size:10px; color:var(--text-tertiary); white-space:nowrap; }
+.bar-value { font-size:11px; font-weight:600; }
+
+.donut-chart { width:120px; height:120px; border-radius:50%; position:relative; display:flex; align-items:center; justify-content:center; }
+.donut-center { position:absolute; width:70px; height:70px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-direction:column; }
+.donut-center .val { font-size:18px; font-weight:700; }
+.donut-center .lbl { font-size:10px; color:var(--text-tertiary); }
+
+.legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); }
+.legend-dot { width:8px; height:8px; border-radius:50%; }
+
+/* ===== Heatmap ===== */
+.heatmap { display:grid; grid-template-columns:auto repeat(12,1fr); gap:2px; font-size:10px; }
+.heatmap-label { color:var(--text-tertiary); display:flex; align-items:center; justify-content:flex-end; padding-right:6px; }
+.heatmap-cell { width:100%; aspect-ratio:1; border-radius:2px; }
+
+/* ===== AI Chat Panel ===== */
+.chat-container { display:flex; flex-direction:column; flex:1; min-height:0; }
+.chat-header { padding:16px 20px; border-bottom:1px solid var(--border-light); display:flex; align-items:center; gap:12px; background:#fff; }
+.chat-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#667eea,#764ba2); display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; }
+.chat-name { font-weight:600; }
+.chat-status { font-size:12px; color:var(--green); display:flex; align-items:center; gap:4px; }
+.chat-status::before { content:''; width:6px; height:6px; background:var(--green); border-radius:50%; }
+.chat-messages { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:16px; background:var(--bg); }
+.chat-msg { display:flex; gap:10px; max-width:80%; }
+.chat-msg.bot { align-self:flex-start; }
+.chat-msg.user { align-self:flex-end; flex-direction:row-reverse; }
+.chat-msg-avatar { width:32px; height:32px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; }
+.chat-msg.bot .chat-msg-avatar { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+.chat-msg.user .chat-msg-avatar { background:var(--primary); color:#fff; }
+.chat-bubble { padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.6; }
+.chat-msg.bot .chat-bubble { background:#fff; border:1px solid var(--border-light); border-top-left-radius:4px; }
+.chat-msg.user .chat-bubble { background:var(--primary); color:#fff; border-top-right-radius:4px; }
+.chat-time { font-size:10px; color:var(--text-tertiary); margin-top:4px; }
+.chat-input-area { padding:16px 20px; background:#fff; border-top:1px solid var(--border-light); display:flex; gap:10px; }
+.chat-input { flex:1; padding:10px 14px; border:1px solid var(--border-light); border-radius:var(--radius); font-size:14px; outline:none; resize:none; height:44px; font-family:inherit; }
+.chat-input:focus { border-color:var(--primary); }
+.chat-send { width:44px; height:44px; background:var(--primary); color:#fff; border:none; border-radius:var(--radius); cursor:pointer; font-size:16px; transition:background 0.15s; }
+.chat-send:hover { background:var(--primary-hover); }
+.quick-actions { padding:12px 20px; background:#fff; display:flex; gap:8px; flex-wrap:wrap; border-top:1px solid var(--border-light); }
+.quick-btn { padding:6px 12px; border:1px solid var(--border-light); border-radius:16px; font-size:12px; cursor:pointer; background:#fff; color:var(--text-secondary); transition:all 0.15s; }
+.quick-btn:hover { border-color:var(--primary); color:var(--primary); background:var(--primary-light); }
+
+/* ===== Tabs ===== */
+.tabs { display:flex; gap:4px; margin-bottom:20px; border-bottom:1px solid var(--border-light); }
+.tab { padding:10px 16px; font-size:13px; cursor:pointer; color:var(--text-secondary); border-bottom:2px solid transparent; transition:all 0.15s; font-weight:500; }
+.tab:hover { color:var(--text); }
+.tab.active { color:var(--primary); border-bottom-color:var(--primary); }
+
+/* ===== Task List ===== */
+.task-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border-light); }
+.task-item:last-child { border-bottom:none; }
+.task-priority { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.task-priority.high { background:var(--red); }
+.task-priority.medium { background:var(--orange); }
+.task-priority.low { background:var(--green); }
+.task-info { flex:1; }
+.task-title { font-size:13px; font-weight:500; }
+.task-meta { font-size:11px; color:var(--text-tertiary); margin-top:2px; }
+.task-status { font-size:12px; }
+
+/* ===== Upload Area ===== */
+.upload-zone { border:2px dashed var(--border); border-radius:var(--radius-lg); padding:40px; text-align:center; cursor:pointer; transition:all 0.2s; }
+.upload-zone:hover { border-color:var(--primary); background:var(--primary-light); }
+.upload-zone .icon { font-size:32px; margin-bottom:8px; }
+.upload-zone p { color:var(--text-secondary); font-size:13px; }
+.upload-zone .hint { font-size:12px; color:var(--text-tertiary); margin-top:4px; }
+
+/* ===== Page sections ===== */
+.section { display:none; }
+.section.active { display:flex; flex-direction:column; flex:1; min-height:0; }
+
+/* ===== GEO AI Dashboard ===== */
+.geo-scope-bar { display:flex; gap:0; border-bottom:1px solid var(--border-light); margin:-20px -20px 16px; padding:0 20px; }
+.geo-scope-tab { padding:12px 24px; font-size:13px; color:var(--text-secondary); cursor:pointer; border-bottom:2px solid transparent; font-weight:500; transition:all 0.15s; }
+.geo-scope-tab:hover { color:var(--text); }
+.geo-scope-tab.active { color:var(--primary); border-bottom-color:var(--primary); font-weight:600; }
+
+.geo-filter-row { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+.geo-filter-row .geo-label { font-size:12px; color:var(--text-tertiary); margin-right:2px; white-space:nowrap; }
+.geo-pill { padding:5px 14px; border-radius:16px; font-size:12px; cursor:pointer; border:1px solid var(--border); background:#fff; color:var(--text-secondary); transition:all 0.15s; user-select:none; }
+.geo-pill:hover { border-color:var(--primary); color:var(--primary); }
+.geo-pill.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+.geo-brand-pill { padding:5px 14px; border-radius:16px; font-size:12px; cursor:pointer; border:1px solid var(--border); background:#fff; color:var(--text-secondary); transition:all 0.15s; user-select:none; }
+.geo-brand-pill:hover { opacity:0.85; }
+.geo-brand-pill.selected { color:#fff; border-color:transparent; }
+.geo-brand-pill.gc0.selected { background:#3370ff; }
+.geo-brand-pill.gc1.selected { background:#e2001a; }
+.geo-brand-pill.gc2.selected { background:#ff7d00; }
+.geo-brand-pill.gc3.selected { background:#722ed1; }
+.geo-brand-pill.gc4.selected { background:#34c724; }
+.geo-filter-hint { font-size:11px; color:var(--text-tertiary); margin-left:4px; }
+
+.geo-summary-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.geo-sc { background:var(--card-bg); border-radius:var(--radius); padding:16px; border:1px solid var(--border-light); position:relative; overflow:hidden; }
+.geo-sc .gs-val { font-size:28px; font-weight:700; margin-bottom:2px; }
+.geo-sc .gs-label { font-size:12px; color:var(--text-tertiary); }
+.geo-sc .gs-trend { font-size:11px; margin-top:6px; display:flex; align-items:center; gap:3px; }
+.geo-sc.highlight { background:linear-gradient(135deg,#34c724,#20a516); color:#fff; border-color:transparent; }
+.geo-sc.highlight .gs-label { color:rgba(255,255,255,0.8); }
+
+.geo-main-layout { display:flex; gap:16px; flex:1; min-height:0; overflow:hidden; }
+.geo-left { flex:1; overflow-y:auto; padding-right:4px; }
+.geo-right { width:280px; flex-shrink:0; overflow-y:auto; padding-left:4px; }
+
+.geo-section { background:var(--card-bg); border-radius:var(--radius); padding:16px; border:1px solid var(--border-light); margin-bottom:16px; }
+.geo-section-title { font-size:13px; font-weight:600; display:flex; align-items:center; gap:6px; margin-bottom:12px; }
+.geo-section-title .gs-dot { width:3px; height:14px; background:var(--primary); border-radius:2px; }
+
+.geo-plat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+.geo-plat-card { border:1px solid var(--border-light); border-radius:var(--radius); padding:12px; text-align:center; }
+.geo-plat-card .gpc-name { font-size:13px; font-weight:600; margin-bottom:6px; }
+.geo-plat-card .gpc-bar { height:5px; background:var(--bg); border-radius:3px; overflow:hidden; margin-bottom:6px; }
+.geo-plat-card .gpc-bar-fill { height:100%; border-radius:3px; }
+.geo-plat-card .gpc-stats { display:flex; justify-content:space-between; font-size:11px; color:var(--text-tertiary); }
+.geo-plat-card .gpc-val { font-weight:600; color:var(--text); font-size:16px; }
+
+.geo-bar-group { margin-bottom:16px; }
+.geo-bar-group-label { font-size:12px; font-weight:500; margin-bottom:6px; }
+.geo-bar-row { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.geo-bar-row .gbr-label { width:50px; font-size:11px; color:var(--text-tertiary); text-align:right; flex-shrink:0; }
+.geo-bar-row .gbr-track { flex:1; height:20px; background:var(--bg); border-radius:4px; overflow:hidden; position:relative; }
+.geo-bar-row .gbr-fill { height:100%; border-radius:4px; display:flex; align-items:center; justify-content:flex-end; padding-right:6px; font-size:10px; color:#fff; font-weight:600; min-width:30px; }
+
+.geo-rp-section { margin-bottom:20px; }
+.geo-rp-title { font-size:13px; font-weight:600; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+.geo-rp-tabs { display:flex; gap:3px; }
+.geo-rp-tab { font-size:10px; font-weight:400; color:var(--text-tertiary); padding:3px 8px; border-radius:10px; cursor:pointer; }
+.geo-rp-tab.active { background:var(--primary); color:#fff; }
+
+.geo-src-item { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--border-light); font-size:12px; }
+.geo-src-item:last-child { border-bottom:none; }
+.geo-src-rank { width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; }
+.geo-src-rank.t1 { background:#fbbf24; color:#fff; }
+.geo-src-rank.t2 { background:#9ca3af; color:#fff; }
+.geo-src-rank.t3 { background:#b45309; color:#fff; }
+.geo-src-rank.tn { background:var(--bg); color:var(--text-tertiary); }
+.geo-src-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text); }
+.geo-src-count { font-weight:600; color:var(--primary); }
+
+.geo-new-item { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--border-light); font-size:12px; }
+.geo-new-item:last-child { border-bottom:none; }
+.geo-new-dot { width:5px; height:5px; background:var(--green); border-radius:50%; flex-shrink:0; }
+.geo-new-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.geo-new-time { font-size:10px; color:var(--text-tertiary); flex-shrink:0; }
+.geo-legend { display:flex; gap:12px; margin-top:8px; flex-wrap:wrap; }
+.geo-legend-item { font-size:11px; color:var(--text-secondary); display:flex; align-items:center; gap:4px; }
+.geo-legend-dot { width:8px; height:8px; border-radius:2px; }
+
+@media (max-width:1200px) { .geo-summary-cards { grid-template-columns:repeat(2,1fr); } .geo-main-layout { flex-direction:column; } .geo-right { width:100%; } }
+
+/* ===== Responsive ===== */
+@media (max-width:1200px) { .kpi-grid { grid-template-columns:repeat(2, 1fr); } .grid-2 { grid-template-columns:1fr; } }
+@media (max-width:768px) { .sidebar { display:none; } .kpi-grid { grid-template-columns:1fr; } }
+
+/* ===== Animation ===== */
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.fade-in { animation:fadeIn 0.3s ease; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.loading { animation:pulse 1.5s infinite; }
+
+/* ===== Modal ===== */
+.modal-mask { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; display:none; align-items:center; justify-content:center; }
+.modal-mask.show { display:flex; }
+.modal { background:#fff; border-radius:var(--radius-lg); width:560px; max-width:90vw; max-height:80vh; overflow:hidden; box-shadow:0 12px 40px rgba(0,0,0,0.15); }
+.modal-header { padding:20px 24px; border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center; }
+.modal-title { font-size:16px; font-weight:600; }
+.modal-close { width:28px; height:28px; border:none; background:none; cursor:pointer; font-size:18px; color:var(--text-tertiary); border-radius:6px; display:flex; align-items:center; justify-content:center; }
+.modal-close:hover { background:var(--bg); }
+.modal-body { padding:24px; overflow-y:auto; max-height:60vh; }
+.modal-footer { padding:16px 24px; border-top:1px solid var(--border-light); display:flex; justify-content:flex-end; gap:8px; }
+
+/* ===== Empty state ===== */
+.empty { text-align:center; padding:40px; color:var(--text-tertiary); }
+.empty .icon { font-size:40px; margin-bottom:12px; }
+.empty p { font-size:13px; }
+
+/* ===== Tooltip ===== */
+.tip { position:relative; cursor:help; }
+.tip::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#1f2329; color:#fff; padding:4px 8px; border-radius:4px; font-size:11px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+.tip:hover::after { opacity:1; }
+
+/* ===== Toggle ===== */
+.toggle { position:relative; width:36px; height:20px; cursor:pointer; display:inline-block; }
+.toggle input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-slider { position:absolute; inset:0; background:#dcdfe6; border-radius:10px; transition:0.2s; }
+.toggle input:checked + .toggle-slider { background:var(--primary); }
+.toggle-slider::before { content:''; position:absolute; height:14px; width:14px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.2s; }
+.toggle input:checked + .toggle-slider::before { transform:translateX(16px); }
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.1); border-radius:3px; }
+::-webkit-scrollbar-track { background:transparent; }
+
+/* ===== Number counter animation ===== */
+.counter { display:inline-block; }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">LX</div>
+      <span>乐享运营工作台</span>
+    </div>
+    <div class="login-title">欢迎回来</div>
+    <div class="login-sub">登录你的账号以继续</div>
+    <div class="form-group">
+      <label class="form-label">账号</label>
+      <input class="form-input" id="login-user" placeholder="请输入账号" value="admin">
+    </div>
+    <div class="form-group">
+      <label class="form-label">密码</label>
+      <input class="form-input" id="login-pass" type="password" placeholder="请输入密码" value="leai2026">
+    </div>
+    <div class="form-group">
+      <label class="form-label">角色</label>
+      <select class="form-select" id="login-role">
+        <option value="platform">平台管理员（全局视角）</option>
+        <option value="consumer">Consumer BU</option>
+        <option value="commercial">Commercial BU</option>
+        <option value="infrastructure">Infrastructure BU</option>
+        <option value="solutions">Solutions BU</option>
+      </select>
+    </div>
+    <button class="btn btn-primary login-btn" onclick="doLogin()">登 录</button>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app" style="display:none; width:100%; height:100%; display:none;">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">LX</div>
+      <div>
+        <div class="logo-text">乐享工作台</div>
+        <div class="logo-sub">Lenovo LeAI</div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">数据中心</div>
+        <div class="nav-item active" onclick="switchPage('dashboard')">
+          <span class="ni">📊</span>数据看板
+        </div>
+        <div class="nav-item" onclick="switchPage('geo')">
+          <span class="ni">🔍</span>GEO 看板
+        </div>
+        <div class="nav-item" onclick="switchPage('query')">
+          <span class="ni">💬</span>Query 分析
+        </div>
+        <div class="nav-item" onclick="switchPage('behavior')">
+          <span class="ni">👤</span>客户行为
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">运营中心</div>
+        <div class="nav-item" onclick="switchPage('tasks')">
+          <span class="ni">🎯</span>营销任务
+          <span class="nav-badge" id="task-badge">3</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('actions')">
+          <span class="ni">⚡</span>行动系统
+        </div>
+        <div class="nav-item" onclick="switchPage('knowledge')">
+          <span class="ni">📚</span>知识库管理
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">智能助手</div>
+        <div class="nav-item" onclick="switchPage('ai')">
+          <span class="ni">🤖</span>AI 运维
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-info" onclick="showUserMenu()">
+        <div class="user-avatar" id="user-avatar">A</div>
+        <div>
+          <div class="user-name" id="user-name-display">Admin</div>
+          <div class="user-role" id="user-role-display">平台管理员</div>
+        </div>
+      </div>
+      <div class="bu-selector" id="bu-selector" style="display:none;">
+        <select onchange="switchBU(this.value)" id="bu-select">
+          <option value="all">全部 BU</option>
+          <option value="consumer">Consumer</option>
+          <option value="commercial">Commercial</option>
+          <option value="infrastructure">Infrastructure</option>
+          <option value="solutions">Solutions</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-tabs">
+        <div class="topbar-tab active" onclick="switchPage('dashboard')">主工作台</div>
+        <div class="topbar-tab" onclick="switchPage('ai')" style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:11px;">✨</span> AI 运维
+        </div>
+      </div>
+      <div class="topbar-right">
+        <input class="topbar-search" placeholder="搜索指标、客户、任务..." id="global-search" onkeyup="handleSearch(event)">
+        <select class="time-range" id="time-range" onchange="refreshData()">
+          <option value="today">今日</option>
+          <option value="week" selected>本周</option>
+          <option value="month">本月</option>
+          <option value="quarter">本季度</option>
+        </select>
+        <button class="btn btn-sm btn-secondary" onclick="refreshData()">刷新</button>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: DASHBOARD ===== -->
+    <div class="section active" id="page-dashboard">
+      <div class="page-content">
+        <div class="page-header fade-in">
+          <div>
+            <div class="page-title">数据看板</div>
+            <div class="page-desc">乐享智能体核心运营指标 · <span id="data-time">2026-04-04 实时</span></div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-sm btn-secondary" onclick="exportData()">导出报表</button>
+            <button class="btn btn-sm btn-primary" onclick="switchPage('ai')">AI 问数</button>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid fade-in">
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background:var(--primary-light);color:var(--primary);">👥</div>
+            <div class="kpi-label">MAU</div>
+            <div class="kpi-value" id="kpi-mau">8,234,567</div>
+            <div class="kpi-sub"><span class="up">↑ 12.3%</span> 较上月</div>
+            <div class="kpi-target">FY26 目标: 910 万</div>
+            <div class="kpi-progress"><div class="kpi-progress-bar" style="width:90.5%;background:var(--primary);"></div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background:var(--green-light);color:var(--green);">📈</div>
+            <div class="kpi-label">WAU</div>
+            <div class="kpi-value" id="kpi-wau">2,891,234</div>
+            <div class="kpi-sub"><span class="up">↑ 8.7%</span> 较上周</div>
+            <div class="kpi-target">FY26 目标: 305 万</div>
+            <div class="kpi-progress"><div class="kpi-progress-bar" style="width:94.8%;background:var(--green);"></div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background:var(--orange-light);color:var(--orange);">💰</div>
+            <div class="kpi-label">GMV</div>
+            <div class="kpi-value" id="kpi-gmv">¥38.2 亿</div>
+            <div class="kpi-sub"><span class="up">↑ 15.6%</span> 较上月</div>
+            <div class="kpi-target">FY26 目标: 51.5 亿</div>
+            <div class="kpi-progress"><div class="kpi-progress-bar" style="width:74.2%;background:var(--orange);"></div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon" style="background:var(--purple-light);color:var(--purple);">🔑</div>
+            <div class="kpi-label">登录客户数</div>
+            <div class="kpi-value" id="kpi-login">5,412,890</div>
+            <div class="kpi-sub"><span class="up">↑ 6.2%</span> 较上月</div>
+            <div class="kpi-target">FY26 目标: 600 万</div>
+            <div class="kpi-progress"><div class="kpi-progress-bar" style="width:90.2%;background:var(--purple);"></div></div>
+          </div>
+        </div>
+
+        <!-- Second row KPIs -->
+        <div class="kpi-grid fade-in" style="grid-template-columns:repeat(5,1fr);">
+          <div class="kpi-card">
+            <div class="kpi-label">新增会员/日</div>
+            <div class="kpi-value" style="font-size:22px;">6,234</div>
+            <div class="kpi-sub"><span class="up">↑ 24.7%</span></div>
+            <div class="kpi-target">目标: >5000/日</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Query 总数</div>
+            <div class="kpi-value" style="font-size:22px;">1,234,567</div>
+            <div class="kpi-sub">本周累计</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">主动 Query 占比</div>
+            <div class="kpi-value" style="font-size:22px;">23.4%</div>
+            <div class="kpi-sub"><span class="up">↑ 3.2%</span></div>
+            <div class="kpi-target">目标: >20%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">平均会话次数</div>
+            <div class="kpi-value" style="font-size:22px;">4.8 次</div>
+            <div class="kpi-sub"><span class="up">↑ 0.3</span></div>
+            <div class="kpi-target">目标: >4 次</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">客户满意度</div>
+            <div class="kpi-value" style="font-size:22px;">4.7/5.0</div>
+            <div class="kpi-sub"><span class="up">↑ 0.1</span></div>
+            <div class="kpi-target">目标: 4.6</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid-2 fade-in">
+          <!-- Query Scene Distribution -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Query 场景分布</div>
+              <div class="card-actions">
+                <select class="time-range" style="font-size:11px;">
+                  <option>本周</option><option>本月</option>
+                </select>
+              </div>
+            </div>
+            <div class="bar-chart" id="scene-chart">
+              <div class="bar-col"><div class="bar-value">28%</div><div class="bar" style="height:84%;background:var(--primary);"></div><div class="bar-label">会员</div></div>
+              <div class="bar-col"><div class="bar-value">24%</div><div class="bar" style="height:72%;background:var(--green);"></div><div class="bar-label">电商</div></div>
+              <div class="bar-col"><div class="bar-value">18%</div><div class="bar" style="height:54%;background:var(--orange);"></div><div class="bar-label">服务</div></div>
+              <div class="bar-col"><div class="bar-value">14%</div><div class="bar" style="height:42%;background:var(--purple);"></div><div class="bar-label">门店</div></div>
+              <div class="bar-col"><div class="bar-value">10%</div><div class="bar" style="height:30%;background:var(--red);"></div><div class="bar-label">方案</div></div>
+              <div class="bar-col"><div class="bar-value">6%</div><div class="bar" style="height:18%;background:var(--text-tertiary);"></div><div class="bar-label">咨询</div></div>
+            </div>
+          </div>
+
+          <!-- Trend -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">MAU / WAU 趋势</div>
+            </div>
+            <div style="padding:20px 0;">
+              <svg viewBox="0 0 500 160" style="width:100%;">
+                <!-- Grid -->
+                <line x1="40" y1="10" x2="40" y2="140" stroke="#e5e6eb" stroke-width="0.5"/>
+                <line x1="40" y1="140" x2="490" y2="140" stroke="#e5e6eb" stroke-width="0.5"/>
+                <line x1="40" y1="107" x2="490" y2="107" stroke="#e5e6eb" stroke-width="0.5" stroke-dasharray="4"/>
+                <line x1="40" y1="75" x2="490" y2="75" stroke="#e5e6eb" stroke-width="0.5" stroke-dasharray="4"/>
+                <line x1="40" y1="42" x2="490" y2="42" stroke="#e5e6eb" stroke-width="0.5" stroke-dasharray="4"/>
+                <!-- Y labels -->
+                <text x="35" y="143" fill="#8f959e" font-size="9" text-anchor="end">0</text>
+                <text x="35" y="110" fill="#8f959e" font-size="9" text-anchor="end">300万</text>
+                <text x="35" y="78" fill="#8f959e" font-size="9" text-anchor="end">600万</text>
+                <text x="35" y="45" fill="#8f959e" font-size="9" text-anchor="end">900万</text>
+                <!-- MAU line -->
+                <polyline points="55,95 105,88 155,82 205,78 255,72 305,65 355,58 405,52 455,48" fill="none" stroke="#3370ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- WAU line -->
+                <polyline points="55,120 105,118 155,115 205,112 255,110 305,108 355,106 405,103 455,100" fill="none" stroke="#34c724" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- X labels -->
+                <text x="55" y="155" fill="#8f959e" font-size="8" text-anchor="middle">8月</text>
+                <text x="155" y="155" fill="#8f959e" font-size="8" text-anchor="middle">10月</text>
+                <text x="255" y="155" fill="#8f959e" font-size="8" text-anchor="middle">12月</text>
+                <text x="355" y="155" fill="#8f959e" font-size="8" text-anchor="middle">2月</text>
+                <text x="455" y="155" fill="#8f959e" font-size="8" text-anchor="middle">4月</text>
+                <!-- Dots -->
+                <circle cx="455" cy="48" r="3" fill="#3370ff"/>
+                <circle cx="455" cy="100" r="3" fill="#34c724"/>
+              </svg>
+              <div class="legend" style="justify-content:center;">
+                <div class="legend-item"><div class="legend-dot" style="background:#3370ff;"></div>MAU</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#34c724;"></div>WAU</div>
+                <div class="legend-item" style="border-left:1px solid var(--border);padding-left:12px;"><div class="legend-dot" style="background:var(--border);border:1px dashed var(--text-tertiary);"></div>目标线</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Items -->
+        <div class="card fade-in">
+          <div class="card-header">
+            <div class="card-title">业务决策看板</div>
+            <button class="btn btn-sm btn-primary" onclick="switchPage('actions')">查看全部行动项</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>指标</th>
+                <th>当前值</th>
+                <th>状态</th>
+                <th>业务动作</th>
+                <th>负责团队</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>高意向未转化客户</strong></td>
+                <td>12,345</td>
+                <td><span class="badge badge-red">需关注</span></td>
+                <td>主动跟进/发送 offer</td>
+                <td>销售团队</td>
+                <td><button class="btn btn-sm btn-primary" onclick="createTask('followup')">创建任务</button></td>
+              </tr>
+              <tr>
+                <td><strong>无答案 Query</strong></td>
+                <td>2,891</td>
+                <td><span class="badge badge-orange">待优化</span></td>
+                <td>补充知识库</td>
+                <td>产品团队</td>
+                <td><button class="btn btn-sm btn-primary" onclick="switchPage('knowledge')">去补充</button></td>
+              </tr>
+              <tr>
+                <td><strong>流失风险客户</strong></td>
+                <td>8,456</td>
+                <td><span class="badge badge-red">需关注</span></td>
+                <td>主动挽留/发送优惠</td>
+                <td>运营团队</td>
+                <td><button class="btn btn-sm btn-primary" onclick="createTask('retain')">创建任务</button></td>
+              </tr>
+              <tr>
+                <td><strong>负反馈内容</strong></td>
+                <td>156 条</td>
+                <td><span class="badge badge-orange">待优化</span></td>
+                <td>修正知识库/优化内容</td>
+                <td>内容团队</td>
+                <td><button class="btn btn-sm btn-secondary" onclick="showNegFeedback()">查看详情</button></td>
+              </tr>
+              <tr>
+                <td><strong>优惠券未使用客户</strong></td>
+                <td>45,678</td>
+                <td><span class="badge badge-blue">可营销</span></td>
+                <td>提醒使用/促进转化</td>
+                <td>营销团队</td>
+                <td><button class="btn btn-sm btn-primary" onclick="createTask('coupon')">创建任务</button></td>
+              </tr>
+              <tr>
+                <td><strong>服务不满意客户</strong></td>
+                <td>3,201</td>
+                <td><span class="badge badge-red">需关注</span></td>
+                <td>改进服务质量</td>
+                <td>服务团队</td>
+                <td><button class="btn btn-sm btn-secondary">查看详情</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Hot Lists -->
+        <div class="grid-3 fade-in">
+          <div class="card">
+            <div class="card-header"><div class="card-title">热门商品 TOP10</div></div>
+            <table>
+              <thead><tr><th>#</th><th>商品</th><th>咨询量</th></tr></thead>
+              <tbody id="hot-products">
+                <tr><td>1</td><td>ThinkPad X1 Carbon Gen12</td><td>12,456</td></tr>
+                <tr><td>2</td><td>Legion Pro 7i</td><td>10,234</td></tr>
+                <tr><td>3</td><td>Yoga Pro 9i</td><td>8,901</td></tr>
+                <tr><td>4</td><td>IdeaPad Slim 5</td><td>7,654</td></tr>
+                <tr><td>5</td><td>ThinkBook 16p</td><td>6,543</td></tr>
+                <tr><td>6</td><td>ThinkPad T16</td><td>5,432</td></tr>
+                <tr><td>7</td><td>小新 Air 15</td><td>4,321</td></tr>
+                <tr><td>8</td><td>拯救者 Y9000P</td><td>3,987</td></tr>
+                <tr><td>9</td><td>ThinkCentre M90a</td><td>3,456</td></tr>
+                <tr><td>10</td><td>Tab P12 Pro</td><td>2,890</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">热门 Query TOP10</div></div>
+            <table>
+              <thead><tr><th>#</th><th>Query</th><th>次数</th></tr></thead>
+              <tbody id="hot-queries">
+                <tr><td>1</td><td>笔记本推荐</td><td>8,912</td></tr>
+                <tr><td>2</td><td>以旧换新价格</td><td>7,654</td></tr>
+                <tr><td>3</td><td>保修期查询</td><td>6,543</td></tr>
+                <tr><td>4</td><td>学生优惠</td><td>5,432</td></tr>
+                <tr><td>5</td><td>ThinkPad 对比 Yoga</td><td>4,321</td></tr>
+                <tr><td>6</td><td>售后维修网点</td><td>3,890</td></tr>
+                <tr><td>7</td><td>企业批量采购</td><td>3,456</td></tr>
+                <tr><td>8</td><td>分期付款方案</td><td>2,987</td></tr>
+                <tr><td>9</td><td>配置推荐 办公用</td><td>2,654</td></tr>
+                <tr><td>10</td><td>发票问题</td><td>2,345</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">高价值客户 TOP10</div></div>
+            <table>
+              <thead><tr><th>#</th><th>客户</th><th>消费额</th></tr></thead>
+              <tbody id="vip-customers">
+                <tr><td>1</td><td>深圳 ****科技</td><td>¥286 万</td></tr>
+                <tr><td>2</td><td>上海 ****集团</td><td>¥245 万</td></tr>
+                <tr><td>3</td><td>北京 ****公司</td><td>¥198 万</td></tr>
+                <tr><td>4</td><td>广州 ****教育</td><td>¥167 万</td></tr>
+                <tr><td>5</td><td>杭州 ****网络</td><td>¥145 万</td></tr>
+                <tr><td>6</td><td>成都 ****医疗</td><td>¥134 万</td></tr>
+                <tr><td>7</td><td>武汉 ****银行</td><td>¥128 万</td></tr>
+                <tr><td>8</td><td>南京 ****制造</td><td>¥112 万</td></tr>
+                <tr><td>9</td><td>西安 ****研究院</td><td>¥98 万</td></tr>
+                <tr><td>10</td><td>天津 ****物流</td><td>¥87 万</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: GEO (AI搜索引擎优化) ===== -->
+    <div class="section" id="page-geo">
+      <div class="page-content">
+        <div class="page-header fade-in">
+          <div>
+            <div class="page-title">GEO 看板</div>
+            <div class="page-desc">AI 搜索引擎优化效果监控</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <select class="time-range" id="geo-period">
+              <option value="7d">近 7 天</option>
+              <option value="30d" selected>近 30 天</option>
+              <option value="quarter">本季度</option>
+            </select>
+            <button class="btn btn-sm btn-primary" onclick="geoLoadData()">查询</button>
+            <span style="font-size:11px;color:var(--text-tertiary);align-self:center" id="geo-status">示例数据</span>
+          </div>
+        </div>
+
+        <!-- Scope Tabs -->
+        <div class="geo-scope-bar fade-in">
+          <div class="geo-scope-tab active" data-scope="all" onclick="geoSetScope(this)">整体</div>
+          <div class="geo-scope-tab" data-scope="lexiang" onclick="geoSetScope(this)">联想乐享</div>
+          <div class="geo-scope-tab" data-scope="lenovo" onclick="geoSetScope(this)">联想官网</div>
+        </div>
+
+        <!-- AI Platform Filter -->
+        <div class="geo-filter-row fade-in">
+          <span class="geo-label">AI 平台</span>
+          <div class="geo-pill active" data-model="all" onclick="geoTogglePlatform(this)">全平台</div>
+          <div class="geo-pill" data-model="doubao" onclick="geoTogglePlatform(this)">豆包</div>
+          <div class="geo-pill" data-model="deepseek" onclick="geoTogglePlatform(this)">DeepSeek</div>
+          <div class="geo-pill" data-model="yuanbao" onclick="geoTogglePlatform(this)">元宝</div>
+          <div class="geo-pill" data-model="qwen" onclick="geoTogglePlatform(this)">千问</div>
+          <div class="geo-pill" data-model="kimi" onclick="geoTogglePlatform(this)">Kimi</div>
+          <div class="geo-pill" data-model="wenxin" onclick="geoTogglePlatform(this)">文心</div>
+          <div class="geo-pill" data-model="quark" onclick="geoTogglePlatform(this)">夸克</div>
+        </div>
+
+        <!-- Competitor Brands -->
+        <div class="geo-filter-row fade-in">
+          <span class="geo-label">竞品对比</span>
+          <div class="geo-brand-pill gc0 selected" data-brand="hp" onclick="geoToggleBrand(this)">惠普</div>
+          <div class="geo-brand-pill gc1 selected" data-brand="dell" onclick="geoToggleBrand(this)">戴尔</div>
+          <div class="geo-brand-pill gc2 selected" data-brand="huawei" onclick="geoToggleBrand(this)">华为</div>
+          <div class="geo-brand-pill gc3 selected" data-brand="apple" onclick="geoToggleBrand(this)">苹果</div>
+          <div class="geo-brand-pill gc4 selected" data-brand="asus" onclick="geoToggleBrand(this)">华硕</div>
+          <div class="geo-brand-pill" data-brand="xiaomi" onclick="geoToggleBrand(this)">小米</div>
+          <div class="geo-brand-pill" data-brand="acer" onclick="geoToggleBrand(this)">宏碁</div>
+          <div class="geo-brand-pill" data-brand="honor" onclick="geoToggleBrand(this)">荣耀</div>
+          <span class="geo-filter-hint">最多选5个</span>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="geo-summary-cards fade-in">
+          <div class="geo-sc highlight">
+            <div class="gs-val" id="gv-mention">48.9%</div>
+            <div class="gs-label">提及率</div>
+            <div class="gs-trend" style="color:rgba(255,255,255,0.9)">▲ 2.3% 较上周期</div>
+          </div>
+          <div class="geo-sc">
+            <div class="gs-val">0.7%</div>
+            <div class="gs-label">首位提及率</div>
+            <div class="gs-trend" style="color:#e2001a">▼ 0.1% 较上周期</div>
+          </div>
+          <div class="geo-sc">
+            <div class="gs-val" style="color:var(--green)">38.4%</div>
+            <div class="gs-label">正面情绪占比</div>
+            <div class="gs-trend" style="color:var(--green)">▲ 1.2% 较上周期</div>
+          </div>
+          <div class="geo-sc">
+            <div class="gs-val" style="color:var(--red)">0.5%</div>
+            <div class="gs-label">负面情绪占比</div>
+            <div class="gs-trend" style="color:var(--green)">▼ 0.2% 较上周期</div>
+          </div>
+        </div>
+
+        <!-- Main Layout: Left + Right -->
+        <div class="geo-main-layout">
+          <div class="geo-left">
+            <!-- 各AI平台信源分布 -->
+            <div class="geo-section">
+              <div class="geo-section-title"><span class="gs-dot"></span>各 AI 平台信源分布</div>
+              <div class="geo-plat-grid" id="geo-plat-dist"></div>
+            </div>
+
+            <!-- 品牌提及率分析 -->
+            <div class="geo-section">
+              <div class="geo-section-title"><span class="gs-dot"></span>品牌提及率分析</div>
+              <div id="geo-mention-chart"></div>
+              <div class="geo-legend" id="geo-mention-legend"></div>
+            </div>
+
+            <!-- 品牌推荐对比 -->
+            <div class="geo-section">
+              <div class="geo-section-title"><span class="gs-dot"></span>品牌推荐对比</div>
+              <div id="geo-recommend-chart"></div>
+            </div>
+
+            <!-- 内容生态效能 -->
+            <div class="geo-section">
+              <div class="geo-section-title"><span class="gs-dot"></span>内容生态效能</div>
+              <div class="geo-summary-cards" style="margin-bottom:0">
+                <div class="geo-sc" style="border:1px solid var(--border-light)">
+                  <div class="gs-val" style="font-size:22px;color:var(--primary)">79</div>
+                  <div class="gs-label">Wiki 引用次数</div>
+                </div>
+                <div class="geo-sc" style="border:1px solid var(--border-light)">
+                  <div class="gs-val" style="font-size:22px;color:var(--green)">45</div>
+                  <div class="gs-label">官网引用次数</div>
+                </div>
+                <div class="geo-sc" style="border:1px solid var(--border-light)">
+                  <div class="gs-val" style="font-size:22px;color:var(--purple)">22,579</div>
+                  <div class="gs-label">总信源数</div>
+                </div>
+                <div class="geo-sc" style="border:1px solid var(--border-light)">
+                  <div class="gs-val" style="font-size:22px;color:var(--orange)">24,483</div>
+                  <div class="gs-label">日活信源</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Panel -->
+          <div class="geo-right">
+            <!-- 信源排行榜 -->
+            <div class="geo-rp-section">
+              <div class="geo-rp-title">
+                信源排行榜
+                <div class="geo-rp-tabs">
+                  <div class="geo-rp-tab" data-range="1d" onclick="geoSetSourceRange(this)">近一天</div>
+                  <div class="geo-rp-tab" data-range="7d" onclick="geoSetSourceRange(this)">近一周</div>
+                  <div class="geo-rp-tab active" data-range="30d" onclick="geoSetSourceRange(this)">近一月</div>
+                </div>
+              </div>
+              <div id="geo-source-ranking"></div>
+            </div>
+
+            <!-- 新增信源 -->
+            <div class="geo-rp-section">
+              <div class="geo-rp-title">新增信源</div>
+              <div id="geo-new-sources"></div>
+            </div>
+
+            <!-- 品牌曝光对比(按平台) -->
+            <div class="geo-rp-section">
+              <div class="geo-rp-title">品牌曝光对比（按平台）</div>
+              <div id="geo-exposure"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== PAGE: QUERY ANALYSIS ===== -->
+    <div class="section" id="page-query">
+      <div class="page-content">
+        <div class="page-header fade-in">
+          <div>
+            <div class="page-title">Query 分析</div>
+            <div class="page-desc">智能体交互数据深度分析</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid fade-in" style="grid-template-columns:repeat(5,1fr);">
+          <div class="kpi-card">
+            <div class="kpi-label">Query 总数</div>
+            <div class="kpi-value" style="font-size:22px;">1,234,567</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">主动 Query</div>
+            <div class="kpi-value" style="font-size:22px;">289,012</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">主动占比</div>
+            <div class="kpi-value" style="font-size:22px;">23.4%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">无答案 Query</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--red);">2,891</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">推荐未采纳</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--orange);">15,678</div>
+          </div>
+        </div>
+
+        <div class="grid-2 fade-in">
+          <div class="card">
+            <div class="card-header"><div class="card-title">场景分布趋势</div></div>
+            <div class="bar-chart" style="height:140px;">
+              <div class="bar-col"><div class="bar-value">28%</div><div class="bar" style="height:84%;background:var(--primary);"></div><div class="bar-label">会员</div></div>
+              <div class="bar-col"><div class="bar-value">24%</div><div class="bar" style="height:72%;background:var(--green);"></div><div class="bar-label">电商</div></div>
+              <div class="bar-col"><div class="bar-value">18%</div><div class="bar" style="height:54%;background:var(--orange);"></div><div class="bar-label">服务</div></div>
+              <div class="bar-col"><div class="bar-value">14%</div><div class="bar" style="height:42%;background:var(--purple);"></div><div class="bar-label">门店</div></div>
+              <div class="bar-col"><div class="bar-value">10%</div><div class="bar" style="height:30%;background:var(--red);"></div><div class="bar-label">方案</div></div>
+              <div class="bar-col"><div class="bar-value">6%</div><div class="bar" style="height:18%;background:#8f959e;"></div><div class="bar-label">咨询</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">无答案 Query TOP10</div><button class="btn btn-sm btn-primary" onclick="switchPage('knowledge')">去补充知识</button></div>
+            <table>
+              <thead><tr><th>Query</th><th>频次</th><th>场景</th></tr></thead>
+              <tbody>
+                <tr><td>XX型号什么时候上市</td><td>342</td><td><span class="badge badge-blue">电商</span></td></tr>
+                <tr><td>二手回收价格表</td><td>289</td><td><span class="badge badge-green">服务</span></td></tr>
+                <tr><td>教育优惠叠加企业优惠</td><td>234</td><td><span class="badge badge-purple">方案</span></td></tr>
+                <tr><td>海外保修政策</td><td>198</td><td><span class="badge badge-green">服务</span></td></tr>
+                <tr><td>Linux 驱动支持</td><td>176</td><td><span class="badge badge-orange">咨询</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: BEHAVIOR ===== -->
+    <div class="section" id="page-behavior">
+      <div class="page-content">
+        <div class="page-header fade-in">
+          <div>
+            <div class="page-title">客户行为分析</div>
+            <div class="page-desc">客户转化、流失、营销、商机等 18 项行为指标</div>
+          </div>
+        </div>
+
+        <div class="tabs fade-in">
+          <div class="tab active" onclick="switchBehaviorTab('conversion')">转化漏斗</div>
+          <div class="tab" onclick="switchBehaviorTab('intent')">意向分析</div>
+          <div class="tab" onclick="switchBehaviorTab('churn')">流失预警</div>
+          <div class="tab" onclick="switchBehaviorTab('marketing')">营销效果</div>
+          <div class="tab" onclick="switchBehaviorTab('member')">会员分析</div>
+        </div>
+
+        <!-- Conversion -->
+        <div id="behavior-conversion" class="fade-in">
+          <div class="kpi-grid" style="grid-template-columns:repeat(6,1fr);">
+            <div class="kpi-card">
+              <div class="kpi-label">浏览商品客户</div>
+              <div class="kpi-value" style="font-size:20px;">456,789</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">收藏行为客户</div>
+              <div class="kpi-value" style="font-size:20px;">123,456</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">对比行为客户</div>
+              <div class="kpi-value" style="font-size:20px;">89,012</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">加购客户</div>
+              <div class="kpi-value" style="font-size:20px;">67,890</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">未支付客户</div>
+              <div class="kpi-value" style="font-size:20px;color:var(--orange);">23,456</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Query→转化客户</div>
+              <div class="kpi-value" style="font-size:20px;color:var(--green);">34,567</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">转化漏斗</div></div>
+            <div style="padding:20px;">
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <span style="width:120px;font-size:13px;text-align:right;">浏览</span>
+                  <div style="flex:1;height:36px;background:var(--primary);border-radius:4px;display:flex;align-items:center;padding:0 12px;color:#fff;font-size:13px;">456,789 (100%)</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <span style="width:120px;font-size:13px;text-align:right;">收藏/对比</span>
+                  <div style="width:46%;height:36px;background:rgba(51,112,255,0.7);border-radius:4px;display:flex;align-items:center;padding:0 12px;color:#fff;font-size:13px;">212,468 (46.5%)</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <span style="width:120px;font-size:13px;text-align:right;">加购</span>
+                  <div style="width:15%;height:36px;background:rgba(51,112,255,0.5);border-radius:4px;display:flex;align-items:center;padding:0 12px;color:#fff;font-size:13px;">67,890 (14.9%)</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <span style="width:120px;font-size:13px;text-align:right;">下单</span>
+                  <div style="width:10%;height:36px;background:rgba(51,112,255,0.3);border-radius:4px;display:flex;align-items:center;padding:0 12px;font-size:13px;">44,434 (9.7%)</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <span style="width:120px;font-size:13px;text-align:right;">支付</span>
+                  <div style="width:7.5%;height:36px;background:var(--green);border-radius:4px;display:flex;align-items:center;padding:0 12px;color:#fff;font-size:13px;">34,567 (7.6%)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">跨品类浏览客户</div></div>
+              <div style="font-size:28px;font-weight:700;margin-bottom:8px;">78,901</div>
+              <div style="font-size:13px;color:var(--text-secondary);">浏览 ≥2 个品类的客户，购买意向更广泛</div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">多次咨询客户</div></div>
+              <div style="font-size:28px;font-weight:700;margin-bottom:8px;">45,678</div>
+              <div style="font-size:13px;color:var(--text-secondary);">同一客户多次咨询，高意向客户</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Intent (hidden by default) -->
+        <div id="behavior-intent" style="display:none;" class="fade-in">
+          <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);">
+            <div class="kpi-card">
+              <div class="kpi-label">高意向未转化</div>
+              <div class="kpi-value" style="font-size:22px;color:var(--red);">12,345</div>
+              <div class="kpi-sub">多次咨询/加购但未下单</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">以旧换新咨询</div>
+              <div class="kpi-value" style="font-size:22px;">8,765</div>
+              <div class="kpi-sub">换机需求客户</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">企业采购咨询</div>
+              <div class="kpi-value" style="font-size:22px;">3,456</div>
+              <div class="kpi-sub">SMB 线索</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">推荐未采纳</div>
+              <div class="kpi-value" style="font-size:22px;color:var(--orange);">15,678</div>
+              <div class="kpi-sub">需优化推荐算法</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="behavior-churn" style="display:none;" class="fade-in">
+          <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="kpi-card">
+              <div class="kpi-label">咨询后离开客户</div>
+              <div class="kpi-value" style="font-size:22px;color:var(--orange);">34,567</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">流失风险客户</div>
+              <div class="kpi-value" style="font-size:22px;color:var(--red);">8,456</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">服务不满意客户</div>
+              <div class="kpi-value" style="font-size:22px;color:var(--red);">3,201</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">流失风险客户列表</div><button class="btn btn-sm btn-primary" onclick="createTask('retain')">批量发送挽留优惠</button></div>
+            <table>
+              <thead><tr><th>客户</th><th>最后活跃</th><th>历史消费</th><th>风险等级</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>用户 A***8</td><td>14 天前</td><td>¥12,890</td><td><span class="badge badge-red">高</span></td><td><button class="btn btn-sm btn-primary">发送优惠</button></td></tr>
+                <tr><td>用户 B***3</td><td>21 天前</td><td>¥8,456</td><td><span class="badge badge-red">高</span></td><td><button class="btn btn-sm btn-primary">发送优惠</button></td></tr>
+                <tr><td>用户 C***7</td><td>10 天前</td><td>¥5,678</td><td><span class="badge badge-orange">中</span></td><td><button class="btn btn-sm btn-primary">发送优惠</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="behavior-marketing" style="display:none;" class="fade-in">
+          <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="kpi-card">
+              <div class="kpi-label">优惠券使用客户</div>
+              <div class="kpi-value" style="font-size:22px;">56,789</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">优惠券领取未使用</div>
+              <div class="kpi-value" style="font-size:22px;color:var(--orange);">45,678</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">负反馈内容</div>
+              <div class="kpi-value" style="font-size:22px;color:var(--red);">156</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="behavior-member" style="display:none;" class="fade-in">
+          <div class="card">
+            <div class="card-header"><div class="card-title">会员等级分布</div></div>
+            <div class="bar-chart" style="height:140px;">
+              <div class="bar-col"><div class="bar-value">58%</div><div class="bar" style="height:87%;background:#8f959e;"></div><div class="bar-label">普通</div></div>
+              <div class="bar-col"><div class="bar-value">22%</div><div class="bar" style="height:66%;background:#c0c0c0;"></div><div class="bar-label">银卡</div></div>
+              <div class="bar-col"><div class="bar-value">14%</div><div class="bar" style="height:42%;background:#ffd700;"></div><div class="bar-label">金卡</div></div>
+              <div class="bar-col"><div class="bar-value">6%</div><div class="bar" style="height:18%;background:#b8860b;"></div><div class="bar-label">铂金</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: TASKS (营销任务) ===== -->
+    <div class="section" id="page-tasks">
+      <div class="page-content">
+        <div class="page-header fade-in">
+          <div>
+            <div class="page-title">营销任务</div>
+            <div class="page-desc">创建和管理营销运营任务</div>
+          </div>
+          <button class="btn btn-primary" onclick="showCreateTaskModal()">+ 创建任务</button>
+        </div>
+
+        <div class="tabs fade-in">
+          <div class="tab active" onclick="switchTaskTab('all')">全部 <span style="color:var(--text-tertiary);">(12)</span></div>
+          <div class="tab" onclick="switchTaskTab('running')">进行中 <span style="color:var(--text-tertiary);">(3)</span></div>
+          <div class="tab" onclick="switchTaskTab('pending')">待执行 <span style="color:var(--text-tertiary);">(4)</span></div>
+          <div class="tab" onclick="switchTaskTab('done')">已完成 <span style="color:var(--text-tertiary);">(5)</span></div>
+        </div>
+
+        <div class="card fade-in">
+          <table>
+            <thead>
+              <tr><th>任务名称</th><th>类型</th><th>目标客群</th><th>覆盖人数</th><th>转化率</th><th>状态</th><th>创建时间</th><th>操作</th></tr>
+            </thead>
+            <tbody id="task-list">
+              <tr>
+                <td><strong>高意向客户跟进</strong></td>
+                <td><span class="badge badge-blue">主动触达</span></td>
+                <td>高意向未转化</td>
+                <td>12,345</td>
+                <td>-</td>
+                <td><span class="badge badge-green">进行中</span></td>
+                <td>04-03 14:30</td>
+                <td><button class="btn btn-sm btn-secondary">详情</button></td>
+              </tr>
+              <tr>
+                <td><strong>流失客户挽留</strong></td>
+                <td><span class="badge badge-orange">优惠推送</span></td>
+                <td>流失风险客户</td>
+                <td>8,456</td>
+                <td>3.2%</td>
+                <td><span class="badge badge-green">进行中</span></td>
+                <td>04-02 10:00</td>
+                <td><button class="btn btn-sm btn-secondary">详情</button></td>
+              </tr>
+              <tr>
+                <td><strong>优惠券到期提醒</strong></td>
+                <td><span class="badge badge-purple">消息提醒</span></td>
+                <td>优惠券未使用</td>
+                <td>45,678</td>
+                <td>5.1%</td>
+                <td><span class="badge badge-green">进行中</span></td>
+                <td>04-01 09:00</td>
+                <td><button class="btn btn-sm btn-secondary">详情</button></td>
+              </tr>
+              <tr>
+                <td><strong>春季新品推广</strong></td>
+                <td><span class="badge badge-blue">主动触达</span></td>
+                <td>高价值客户</td>
+                <td>5,000</td>
+                <td>-</td>
+                <td><span class="badge badge-orange">待执行</span></td>
+                <td>04-04 08:00</td>
+                <td><button class="btn btn-sm btn-primary">立即执行</button></td>
+              </tr>
+              <tr>
+                <td><strong>以旧换新促销</strong></td>
+                <td><span class="badge badge-orange">优惠推送</span></td>
+                <td>以旧换新咨询</td>
+                <td>8,765</td>
+                <td>8.7%</td>
+                <td><span class="badge badge-blue">已完成</span></td>
+                <td>03-28 10:00</td>
+                <td><button class="btn btn-sm btn-secondary">查看报告</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: ACTIONS (行动系统) ===== -->
+    <div class="section" id="page-actions">
+      <div class="page-content">
+        <div class="page-header fade-in">
+          <div>
+            <div class="page-title">行动系统</div>
+            <div class="page-desc">基于数据洞察的自动化行动推荐 · AI 驱动</div>
+          </div>
+        </div>
+
+        <div class="card fade-in" style="background:linear-gradient(135deg, rgba(51,112,255,0.05), rgba(114,46,209,0.05)); border-color:rgba(51,112,255,0.15);">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <span style="font-size:20px;">🤖</span>
+            <div>
+              <div style="font-weight:600;">AI 行动建议</div>
+              <div style="font-size:12px;color:var(--text-secondary);">基于当前数据分析，以下行动预期 ROI 最高</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+            <div style="background:#fff;border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;cursor:pointer;" onclick="createTask('followup')">
+              <div style="font-weight:600;margin-bottom:4px;">跟进高意向客户</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">12,345 位多次咨询/加购但未下单</div>
+              <div style="font-size:12px;color:var(--green);">预期转化率: 8-12%</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;cursor:pointer;" onclick="createTask('coupon')">
+              <div style="font-weight:600;margin-bottom:4px;">优惠券到期提醒</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">45,678 位领券未使用</div>
+              <div style="font-size:12px;color:var(--green);">预期转化率: 5-8%</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;cursor:pointer;" onclick="createTask('retain')">
+              <div style="font-weight:600;margin-bottom:4px;">流失客户挽留</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">8,456 位有流失风险</div>
+              <div style="font-size:12px;color:var(--green);">预期挽回率: 15-20%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card fade-in">
+          <div class="card-header">
+            <div class="card-title">待处理行动项</div>
+            <div style="font-size:12px;color:var(--text-tertiary);">按优先级排序</div>
+          </div>
+          <div>
+            <div class="task-item">
+              <div class="task-priority high"></div>
+              <div class="task-info">
+                <div class="task-title">补充知识库 — 2,891 条无答案 Query</div>
+                <div class="task-meta">产品团队 · 更新于 2 小时前</div>
+              </div>
+              <span class="badge badge-red">紧急</span>
+              <button class="btn btn-sm btn-primary" onclick="switchPage('knowledge')">处理</button>
+            </div>
+            <div class="task-item">
+              <div class="task-priority high"></div>
+              <div class="task-info">
+                <div class="task-title">修正负反馈内容 — 156 条差评内容</div>
+                <div class="task-meta">内容团队 · 更新于 4 小时前</div>
+              </div>
+              <span class="badge badge-red">紧急</span>
+              <button class="btn btn-sm btn-secondary">查看</button>
+            </div>
+            <div class="task-item">
+              <div class="task-priority medium"></div>
+              <div class="task-info">
+                <div class="task-title">优化推荐算法 — 15,678 条推荐未采纳</div>
+                <div class="task-meta">技术团队 · 更新于 1 天前</div>
+              </div>
+              <span class="badge badge-orange">重要</span>
+              <button class="btn btn-sm btn-secondary">查看</button>
+            </div>
+            <div class="task-item">
+              <div class="task-priority low"></div>
+              <div class="task-info">
+                <div class="task-title">高价值客户专属服务方案</div>
+                <div class="task-meta">客服团队 · 更新于 2 天前</div>
+              </div>
+              <span class="badge badge-blue">待规划</span>
+              <button class="btn btn-sm btn-secondary">查看</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: KNOWLEDGE ===== -->
+    <div class="section" id="page-knowledge">
+      <div class="page-content">
+        <div class="page-header fade-in">
+          <div>
+            <div class="page-title">知识库管理</div>
+            <div class="page-desc">非系统集成的知识库上传与管理</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid fade-in" style="grid-template-columns:repeat(4,1fr);">
+          <div class="kpi-card">
+            <div class="kpi-label">知识条目总数</div>
+            <div class="kpi-value" style="font-size:22px;">19,376</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">QA 对总数</div>
+            <div class="kpi-value" style="font-size:22px;">8,234</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">无答案 Query</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--red);">2,891</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">负反馈内容</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--orange);">156</div>
+          </div>
+        </div>
+
+        <div class="tabs fade-in">
+          <div class="tab active" onclick="switchKnowledgeTab('upload')">上传知识</div>
+          <div class="tab" onclick="switchKnowledgeTab('gaps')">知识缺口</div>
+          <div class="tab" onclick="switchKnowledgeTab('feedback')">负反馈内容</div>
+          <div class="tab" onclick="switchKnowledgeTab('list')">知识列表</div>
+        </div>
+
+        <!-- Upload -->
+        <div id="knowledge-upload" class="fade-in">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">上传文档</div></div>
+              <div class="upload-zone" onclick="document.getElementById('kb-file-input').click();" ondragover="event.preventDefault();this.classList.add('drag');" ondragleave="this.classList.remove('drag');">
+                <div class="icon">📄</div>
+                <p>点击或拖拽文件到此处上传</p>
+                <div class="hint">支持 .md / .docx / .xlsx / .pdf / .txt，单文件最大 20MB</div>
+              </div>
+              <input type="file" id="kb-file-input" style="display:none;" multiple accept=".md,.docx,.xlsx,.pdf,.txt" onchange="handleKBUpload(this.files)">
+              <div style="margin-top:16px;">
+                <div class="form-group">
+                  <label class="form-label">分类</label>
+                  <select class="form-select">
+                    <option>产品知识</option>
+                    <option>售后服务</option>
+                    <option>营销活动</option>
+                    <option>企业采购</option>
+                    <option>以旧换新</option>
+                    <option>其他</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">适用 BU</label>
+                  <select class="form-select">
+                    <option value="all">全部 BU</option>
+                    <option value="consumer">Consumer</option>
+                    <option value="commercial">Commercial</option>
+                    <option value="infrastructure">Infrastructure</option>
+                    <option value="solutions">Solutions</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary btn-block">上传并处理</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">手动添加 QA 对</div></div>
+              <div class="form-group">
+                <label class="form-label">问题 (Q)</label>
+                <textarea class="form-input" placeholder="用户可能会怎么问？" style="min-height:60px;"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">答案 (A)</label>
+                <textarea class="form-input" placeholder="标准回答是什么？" style="min-height:100px;"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">关联场景</label>
+                <select class="form-select">
+                  <option>会员场景</option>
+                  <option>电商场景</option>
+                  <option>服务场景</option>
+                  <option>门店场景</option>
+                  <option>方案场景</option>
+                  <option>咨询场景</option>
+                </select>
+              </div>
+              <button class="btn btn-primary btn-block">保存 QA 对</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gaps -->
+        <div id="knowledge-gaps" style="display:none;" class="fade-in">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">无答案 Query — 需补充知识</div>
+              <button class="btn btn-sm btn-primary">批量生成 QA 对 (AI)</button>
+            </div>
+            <table>
+              <thead><tr><th>Query</th><th>频次</th><th>场景</th><th>首次出现</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>XX型号什么时候上市</td><td>342</td><td><span class="badge badge-blue">电商</span></td><td>03-28</td><td><button class="btn btn-sm btn-primary">补充答案</button></td></tr>
+                <tr><td>二手回收价格表</td><td>289</td><td><span class="badge badge-green">服务</span></td><td>03-25</td><td><button class="btn btn-sm btn-primary">补充答案</button></td></tr>
+                <tr><td>教育优惠叠加企业优惠</td><td>234</td><td><span class="badge badge-purple">方案</span></td><td>03-30</td><td><button class="btn btn-sm btn-primary">补充答案</button></td></tr>
+                <tr><td>海外保修政策</td><td>198</td><td><span class="badge badge-green">服务</span></td><td>04-01</td><td><button class="btn btn-sm btn-primary">补充答案</button></td></tr>
+                <tr><td>Linux 驱动支持</td><td>176</td><td><span class="badge badge-orange">咨询</span></td><td>03-22</td><td><button class="btn btn-sm btn-primary">补充答案</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Feedback -->
+        <div id="knowledge-feedback" style="display:none;" class="fade-in">
+          <div class="card">
+            <div class="card-header"><div class="card-title">负反馈内容 TOP10</div></div>
+            <table>
+              <thead><tr><th>内容摘要</th><th>负反馈次数</th><th>场景</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>保修期回答不准确</td><td>34</td><td><span class="badge badge-green">服务</span></td><td><button class="btn btn-sm btn-primary">修正</button></td></tr>
+                <tr><td>价格信息过期</td><td>28</td><td><span class="badge badge-blue">电商</span></td><td><button class="btn btn-sm btn-primary">修正</button></td></tr>
+                <tr><td>配置参数错误</td><td>22</td><td><span class="badge badge-blue">电商</span></td><td><button class="btn btn-sm btn-primary">修正</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- List -->
+        <div id="knowledge-list" style="display:none;" class="fade-in">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">知识条目列表</div>
+              <div style="display:flex;gap:8px;">
+                <input class="form-input" style="width:200px;padding:6px 10px;font-size:12px;" placeholder="搜索知识...">
+                <select class="form-select" style="width:120px;padding:6px 8px;font-size:12px;">
+                  <option>全部分类</option>
+                  <option>产品知识</option>
+                  <option>售后服务</option>
+                  <option>营销活动</option>
+                </select>
+              </div>
+            </div>
+            <table>
+              <thead><tr><th>标题</th><th>分类</th><th>来源</th><th>更新时间</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>ThinkPad X1 Carbon 产品规格</td><td><span class="badge badge-blue">产品知识</span></td><td>文档导入</td><td>04-03</td><td><button class="btn btn-sm btn-secondary">编辑</button></td></tr>
+                <tr><td>笔记本保修政策 2026</td><td><span class="badge badge-green">售后服务</span></td><td>手动录入</td><td>04-02</td><td><button class="btn btn-sm btn-secondary">编辑</button></td></tr>
+                <tr><td>以旧换新活动规则</td><td><span class="badge badge-orange">营销活动</span></td><td>飞书Wiki</td><td>04-01</td><td><button class="btn btn-sm btn-secondary">编辑</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: AI CHAT ===== -->
+    <div class="section" id="page-ai">
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="chat-avatar">🤖</div>
+          <div>
+            <div class="chat-name" id="chat-owner-name">AI 运维</div>
+            <div class="chat-status">在线</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <select class="time-range" style="font-size:11px;" id="ai-model">
+              <option>qwen3.5-plus</option>
+              <option>gpt-4o</option>
+              <option>claude-sonnet</option>
+            </select>
+          </div>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg bot">
+            <div class="chat-msg-avatar">🤖</div>
+            <div>
+              <div class="chat-bubble">你好！我是乐享 AI 运维助手。你可以问我任何关于运营数据的问题，也可以让我帮你配置营销任务、查询客户信息。<br><br>试试这些：<br>- "今天的 MAU 是多少？"<br>- "哪个区域 GMV 增长最快？"<br>- "给高意向未转化客户发优惠券"<br>- "补充知识库中缺失的 QA"</div>
+              <div class="chat-time">09:00</div>
+            </div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <div class="quick-btn" onclick="sendQuickMsg('今日核心指标汇总')">📊 今日核心指标</div>
+          <div class="quick-btn" onclick="sendQuickMsg('高意向未转化客户有多少？')">🎯 高意向客户</div>
+          <div class="quick-btn" onclick="sendQuickMsg('无答案Query有哪些？')">❓ 无答案Query</div>
+          <div class="quick-btn" onclick="sendQuickMsg('各AI平台品牌提及率排名')">🔍 GEO 分析</div>
+          <div class="quick-btn" onclick="sendQuickMsg('本周Query场景分布')">💬 场景分布</div>
+          <div class="quick-btn" onclick="sendQuickMsg('创建一个流失客户挽留任务')">⚡ 创建任务</div>
+        </div>
+        <div class="chat-input-area">
+          <textarea class="chat-input" id="chat-input" placeholder="输入你的问题，或使用上方快捷入口..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+          <button class="chat-send" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ===== CREATE TASK MODAL ===== -->
+<div class="modal-mask" id="modal-create-task">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">创建营销任务</div>
+      <button class="modal-close" onclick="closeModal('modal-create-task')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">任务名称</label>
+        <input class="form-input" id="task-name" placeholder="例：高意向客户跟进推送">
+      </div>
+      <div class="form-group">
+        <label class="form-label">任务类型</label>
+        <select class="form-select" id="task-type">
+          <option value="reach">主动触达</option>
+          <option value="coupon">优惠推送</option>
+          <option value="remind">消息提醒</option>
+          <option value="retain">客户挽留</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">目标客群</label>
+        <select class="form-select" id="task-target">
+          <option value="high_intent">高意向未转化客户 (12,345)</option>
+          <option value="churn_risk">流失风险客户 (8,456)</option>
+          <option value="coupon_unused">优惠券未使用客户 (45,678)</option>
+          <option value="trade_in">以旧换新咨询客户 (8,765)</option>
+          <option value="enterprise">企业采购咨询客户 (3,456)</option>
+          <option value="vip">高价值客户 TOP50</option>
+          <option value="unsatisfied">服务不满意客户 (3,201)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">推送内容</label>
+        <textarea class="form-input" id="task-content" placeholder="推送给客户的消息内容..." style="min-height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">执行时间</label>
+        <input class="form-input" type="datetime-local" id="task-time">
+      </div>
+      <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+        <label class="toggle"><input type="checkbox" id="task-ai-optimize"><span class="toggle-slider"></span></label>
+        <span style="font-size:13px;">AI 智能优化推送内容</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-create-task')">取消</button>
+      <button class="btn btn-primary" onclick="submitTask()">创建任务</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+const state = {
+  user: null,
+  role: 'platform',
+  bu: 'all',
+  currentPage: 'dashboard',
+  chatHistory: []
+};
+
+// ===== ACCOUNTS (账号 → 姓名映射) =====
+const accounts = {
+  admin:    { name: '超级管理员', pass: 'leai2026' },
+  lulin:    { name: '鲁林',      pass: 'leai2026' },
+  zhangsan: { name: '张三',      pass: 'leai2026' },
+  lisi:     { name: '李四',      pass: 'leai2026' },
+  wangwu:   { name: '王五',      pass: 'leai2026' }
+};
+
+// ===== ROLE CONFIG =====
+const roleConfig = {
+  platform: { name: '平台管理员', canSeeAllBU: true },
+  consumer: { name: 'Consumer BU', canSeeAllBU: false },
+  commercial: { name: 'Commercial BU', canSeeAllBU: false },
+  infrastructure: { name: 'Infrastructure BU', canSeeAllBU: false },
+  solutions: { name: 'Solutions BU', canSeeAllBU: false }
+};
+
+// ===== LOGIN =====
+function doLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const role = document.getElementById('login-role').value;
+
+  if (!user || !pass) return;
+
+  const account = accounts[user];
+  const displayName = account ? account.name : user;
+
+  state.user = user;
+  state.displayName = displayName;
+  state.role = role;
+  state.bu = role === 'platform' ? 'all' : role;
+
+  const rc = roleConfig[role];
+  document.getElementById('user-avatar').textContent = displayName[0];
+  document.getElementById('user-name-display').textContent = displayName;
+  document.getElementById('user-role-display').textContent = rc.name;
+  document.getElementById('chat-owner-name').textContent = displayName + ' 的工作台 · AI 运维';
+
+  if (rc.canSeeAllBU) {
+    document.getElementById('bu-selector').style.display = 'block';
+  } else {
+    document.getElementById('bu-selector').style.display = 'none';
+  }
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+
+  // Render bar charts after app is visible
+  requestAnimationFrame(initBarCharts);
+}
+
+// ===== NAVIGATION =====
+function switchPage(page) {
+  state.currentPage = page;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.onclick && n.onclick.toString().includes("'" + page + "'")) {
+      n.classList.add('active');
+    }
+  });
+
+  document.querySelectorAll('.topbar-tab').forEach(t => t.classList.remove('active'));
+  if (page === 'ai') {
+    document.querySelectorAll('.topbar-tab')[1].classList.add('active');
+  } else {
+    document.querySelectorAll('.topbar-tab')[0].classList.add('active');
+  }
+}
+
+function switchBU(bu) {
+  state.bu = bu;
+  refreshData();
+}
+
+// ===== BEHAVIOR TABS =====
+function switchBehaviorTab(tab) {
+  ['conversion','intent','churn','marketing','member'].forEach(t => {
+    const el = document.getElementById('behavior-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('#page-behavior .tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ===== KNOWLEDGE TABS =====
+function switchKnowledgeTab(tab) {
+  ['upload','gaps','feedback','list'].forEach(t => {
+    const el = document.getElementById('knowledge-' + t);
+    if (el) el.style.display = t === tab ? '' : 'none';
+  });
+  document.querySelectorAll('#page-knowledge .tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ===== TASK TABS =====
+function switchTaskTab(tab) {
+  document.querySelectorAll('#page-tasks .tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ===== CHAT =====
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addChatMsg('user', msg);
+  setTimeout(() => handleAIResponse(msg), 600);
+}
+
+function sendQuickMsg(msg) {
+  addChatMsg('user', msg);
+  setTimeout(() => handleAIResponse(msg), 600);
+}
+
+function addChatMsg(role, text) {
+  const container = document.getElementById('chat-messages');
+  const now = new Date();
+  const time = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.innerHTML = `
+    <div class="chat-msg-avatar">${role === 'bot' ? '🤖' : (state.displayName?.[0] || state.user?.[0]?.toUpperCase() || 'U')}</div>
+    <div>
+      <div class="chat-bubble">${text}</div>
+      <div class="chat-time">${time}</div>
+    </div>
+  `;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function handleAIResponse(query) {
+  const q = query.toLowerCase();
+  let response = '';
+
+  if (q.includes('mau') || q.includes('核心指标') || q.includes('汇总')) {
+    response = `<strong>📊 今日核心指标汇总</strong><br><br>
+    <table style="font-size:12px;width:100%;">
+    <tr><td>MAU</td><td style="font-weight:700;">8,234,567</td><td style="color:#34c724;">↑12.3%</td></tr>
+    <tr><td>WAU</td><td style="font-weight:700;">2,891,234</td><td style="color:#34c724;">↑8.7%</td></tr>
+    <tr><td>GMV</td><td style="font-weight:700;">¥38.2 亿</td><td style="color:#34c724;">↑15.6%</td></tr>
+    <tr><td>登录客户</td><td style="font-weight:700;">5,412,890</td><td style="color:#34c724;">↑6.2%</td></tr>
+    <tr><td>满意度</td><td style="font-weight:700;">4.7/5.0</td><td style="color:#34c724;">↑0.1</td></tr>
+    </table>
+    <br>所有核心指标均达到 FY26 进度预期。GMV 完成率 74.2%，按当前增速预计可达标。`;
+  } else if (q.includes('高意向') || q.includes('未转化')) {
+    response = `<strong>🎯 高意向未转化客户分析</strong><br><br>
+    当前高意向未转化客户: <strong>12,345</strong> 人<br><br>
+    这些客户的特征：<br>
+    - 多次咨询同一产品: 67%<br>
+    - 加购但未下单: 45%<br>
+    - 平均浏览时长 > 15 分钟<br><br>
+    <strong>建议操作：</strong>向这批客户推送限时优惠，预期转化率 8-12%。<br>
+    是否要我帮你创建跟进任务？`;
+  } else if (q.includes('无答案') || q.includes('query')) {
+    response = `<strong>❓ 无答案 Query 分析</strong><br><br>
+    本周无答案 Query 共 <strong>2,891</strong> 条<br><br>
+    TOP 5：<br>
+    1. "XX型号什么时候上市" (342次)<br>
+    2. "二手回收价格表" (289次)<br>
+    3. "教育优惠叠加企业优惠" (234次)<br>
+    4. "海外保修政策" (198次)<br>
+    5. "Linux 驱动支持" (176次)<br><br>
+    建议优先补充 TOP 5 的知识条目，覆盖 42.8% 的无答案查询。`;
+  } else if (q.includes('geo') || q.includes('区域') || q.includes('排名')) {
+    response = `<strong>🌍 各区域 GMV 排名</strong><br><br>
+    1. 华东区: ¥12.3 亿 (↑15%)<br>
+    2. 华北区: ¥9.8 亿 (↑12%)<br>
+    3. 华南区: ¥8.9 亿 (↑10%)<br>
+    4. 华中区: ¥4.5 亿 (↑8%)<br>
+    5. 西南区: ¥2.1 亿 (↑6%)<br>
+    6. 东北区: ¥1.3 亿 (↓2%) ⚠️<br>
+    7. 西北区: ¥0.8 亿 (↑3%)<br><br>
+    ⚠️ 东北区 GMV 下降，建议关注该区域运营策略。`;
+  } else if (q.includes('场景分布')) {
+    response = `<strong>💬 本周 Query 场景分布</strong><br><br>
+    会员场景: 28% (345,678 次)<br>
+    电商场景: 24% (296,296 次)<br>
+    服务场景: 18% (222,222 次)<br>
+    门店场景: 14% (172,840 次)<br>
+    方案场景: 10% (123,457 次)<br>
+    咨询场景: 6% (74,074 次)<br><br>
+    会员场景占比最高，建议持续优化会员权益相关知识库。`;
+  } else if (q.includes('创建') && q.includes('任务')) {
+    response = `好的！我已为你准备了一个流失客户挽留任务模板：<br><br>
+    <strong>任务名称：</strong>流失风险客户挽留<br>
+    <strong>目标客群：</strong>8,456 位流失风险客户<br>
+    <strong>推送内容：</strong>"您好，好久不见！我们为您准备了专属优惠，限时 7 天有效..."<br><br>
+    是否确认创建？或者你可以点击侧边栏"营销任务"手动调整参数。`;
+  } else {
+    response = `我理解了你的问题。让我查询一下相关数据...<br><br>
+    关于"${query}"，以下是相关信息：<br><br>
+    目前系统中包含 45 项核心指标、7 个 GEO 区域、6 个 Query 场景的数据。你可以通过左侧导航查看详细看板，或者直接告诉我你想了解的具体指标。<br><br>
+    你也可以试试：<br>
+    - 查询某个具体指标的数据<br>
+    - 创建营销任务<br>
+    - 查看知识库缺口<br>
+    - 对比不同 GEO 的表现`;
+  }
+
+  addChatMsg('bot', response);
+}
+
+// ===== TASKS =====
+function showCreateTaskModal() {
+  document.getElementById('modal-create-task').classList.add('show');
+}
+
+function createTask(type) {
+  const presets = {
+    followup: { name: '高意向客户跟进推送', type: 'reach', target: 'high_intent' },
+    retain: { name: '流失客户挽留', type: 'retain', target: 'churn_risk' },
+    coupon: { name: '优惠券到期提醒', type: 'remind', target: 'coupon_unused' }
+  };
+  const p = presets[type] || {};
+  document.getElementById('task-name').value = p.name || '';
+  if (p.type) document.getElementById('task-type').value = p.type;
+  if (p.target) document.getElementById('task-target').value = p.target;
+  showCreateTaskModal();
+}
+
+function submitTask() {
+  const name = document.getElementById('task-name').value;
+  if (!name) return alert('请输入任务名称');
+  closeModal('modal-create-task');
+  alert('任务"' + name + '"创建成功！');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+// ===== DATA =====
+function refreshData() {
+  document.getElementById('data-time').textContent = new Date().toLocaleString('zh-CN', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }) + ' 实时';
+}
+
+function exportData() {
+  alert('报表导出中，请稍候...');
+}
+
+function handleSearch(e) {
+  if (e.key === 'Enter') {
+    const q = document.getElementById('global-search').value;
+    if (q) {
+      switchPage('ai');
+      sendQuickMsg(q);
+      document.getElementById('global-search').value = '';
+    }
+  }
+}
+
+function handleKBUpload(files) {
+  if (files.length > 0) {
+    alert('已选择 ' + files.length + ' 个文件，点击"上传并处理"开始导入');
+  }
+}
+
+function showNegFeedback() {
+  switchPage('knowledge');
+  setTimeout(() => {
+    document.querySelectorAll('#page-knowledge .tab')[2].click();
+  }, 100);
+}
+
+function showUserMenu() {
+  if (confirm('确定要退出登录吗？')) {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+}
+
+// ===== GEO AI Dashboard =====
+const geoState = { scope:'all', platform:'all', selectedBrands:['hp','dell','huawei','apple','asus'], sourceRange:'30d' };
+const geoBrandNames = { hp:'惠普', dell:'戴尔', huawei:'华为', apple:'苹果', asus:'华硕', xiaomi:'小米', acer:'宏碁', honor:'荣耀' };
+const geoBrandColors = ['#3370ff','#e2001a','#ff7d00','#722ed1','#34c724'];
+const geoLenovoColor = '#1a1a2e';
+const geoPlatNames = { doubao:'豆包', deepseek:'DeepSeek', yuanbao:'元宝', qwen:'千问', kimi:'Kimi', wenxin:'文心', quark:'夸克' };
+const geoPlatColors = { doubao:'#6366f1', deepseek:'#3b82f6', yuanbao:'#10b981', qwen:'#8b5cf6', kimi:'#f59e0b', wenxin:'#ef4444', quark:'#06b6d4' };
+
+function geoSetScope(el) {
+  document.querySelectorAll('.geo-scope-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  geoState.scope = el.dataset.scope;
+  geoRenderAll();
+}
+function geoTogglePlatform(el) {
+  const m = el.dataset.model;
+  if (m === 'all') {
+    document.querySelectorAll('.geo-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    geoState.platform = 'all';
+  } else {
+    document.querySelector('.geo-pill[data-model="all"]').classList.remove('active');
+    el.classList.toggle('active');
+    const act = document.querySelectorAll('.geo-pill.active:not([data-model="all"])');
+    if (!act.length) { document.querySelector('.geo-pill[data-model="all"]').classList.add('active'); geoState.platform = 'all'; }
+    else geoState.platform = Array.from(act).map(p => p.dataset.model).join(',');
+  }
+  geoRenderAll();
+}
+function geoToggleBrand(el) {
+  const b = el.dataset.brand, sel = el.classList.contains('selected');
+  if (sel) { el.classList.remove('selected'); geoState.selectedBrands = geoState.selectedBrands.filter(x => x !== b); }
+  else { if (geoState.selectedBrands.length >= 5) return; geoState.selectedBrands.push(b); }
+  document.querySelectorAll('.geo-brand-pill').forEach(p => {
+    const i = geoState.selectedBrands.indexOf(p.dataset.brand);
+    p.className = i >= 0 ? 'geo-brand-pill gc' + i + ' selected' : 'geo-brand-pill';
+  });
+  geoRenderAll();
+}
+function geoSetSourceRange(el) {
+  el.parentElement.querySelectorAll('.geo-rp-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  geoState.sourceRange = el.dataset.range;
+  geoRenderSourceRanking();
+}
+
+function geoGetSampleData() {
+  return {
+    mentionData: {
+      '联想': { doubao:52.3, deepseek:48.1, yuanbao:45.7, qwen:41.2, kimi:50.6, wenxin:44.8, quark:38.5 },
+      '惠普': { doubao:38.1, deepseek:35.4, yuanbao:32.0, qwen:36.8, kimi:33.2, wenxin:37.5, quark:29.1 },
+      '戴尔': { doubao:35.6, deepseek:40.2, yuanbao:33.8, qwen:34.1, kimi:31.5, wenxin:36.0, quark:28.7 },
+      '华为': { doubao:42.0, deepseek:38.5, yuanbao:44.2, qwen:39.8, kimi:37.6, wenxin:40.1, quark:35.4 },
+      '苹果': { doubao:55.8, deepseek:52.3, yuanbao:50.1, qwen:48.6, kimi:54.2, wenxin:51.0, quark:46.3 },
+      '华硕': { doubao:28.3, deepseek:25.7, yuanbao:22.4, qwen:26.1, kimi:24.8, wenxin:27.3, quark:20.6 },
+    },
+    sourceRanking: {
+      '1d': [{name:'IT之家',count:726},{name:'中关村在线',count:725},{name:'IT168',count:622},{name:'太平洋科技',count:586},{name:'抖音',count:546},{name:'什么值得买',count:515},{name:'今日头条',count:388},{name:'联想官网',count:384},{name:'搜狐',count:382},{name:'网易',count:319}],
+      '7d': [{name:'中关村在线',count:4892},{name:'IT之家',count:4756},{name:'抖音',count:3845},{name:'太平洋科技',count:3621},{name:'什么值得买',count:3418},{name:'今日头条',count:2976},{name:'联想官网',count:2654},{name:'搜狐',count:2487},{name:'CSDN',count:2156},{name:'百度知道',count:1987}],
+      '30d': [{name:'抖音',count:18432},{name:'今日头条',count:17856},{name:'中关村在线',count:15678},{name:'搜狐',count:14521},{name:'百家号',count:13890},{name:'IT之家',count:12456},{name:'太平洋科技',count:11234},{name:'什么值得买',count:10876},{name:'联想官网',count:9845},{name:'CSDN',count:8765}],
+    },
+    newSources: [{name:'SAP Global Insight',time:'1小时前'},{name:'四川发布',time:'3小时前'},{name:'联想智库',time:'5小时前'},{name:'WhatSoftware',time:'5小时前'},{name:'数字经济观察',time:'8小时前'},{name:'企业IT前线',time:'12小时前'},{name:'科技日报',time:'1天前'},{name:'智能制造周刊',time:'1天前'}],
+    platformDist: { doubao:{sources:5842,rate:4.28,trend:'up'}, deepseek:{sources:5124,rate:3.76,trend:'up'}, yuanbao:{sources:4867,rate:3.57,trend:'down'}, kimi:{sources:4523,rate:3.32,trend:'up'}, wenxin:{sources:3214,rate:2.36,trend:'down'}, quark:{sources:2876,rate:2.11,trend:'up'}, qwen:{sources:3456,rate:2.54,trend:'up'} }
+  };
+}
+
+function geoRenderAll() {
+  const d = geoGetSampleData();
+  geoRenderPlatDist(d.platformDist);
+  geoRenderMentionChart(d.mentionData);
+  geoRenderRecommendChart(d.mentionData);
+  geoRenderSourceRanking();
+  geoRenderNewSources(d.newSources);
+  geoRenderExposure(d.mentionData);
+}
+
+function geoRenderPlatDist(dist) {
+  const c = document.getElementById('geo-plat-dist'); if(!c) return;
+  const mx = Math.max(...Object.values(dist).map(d=>d.sources));
+  c.innerHTML = Object.entries(dist).map(([k,d]) => {
+    const color = geoPlatColors[k]||'#666', pct = (d.sources/mx*100).toFixed(0);
+    const ti = d.trend==='up'?'▲':'▼', tc = d.trend==='up'?'var(--green)':'var(--red)';
+    return `<div class="geo-plat-card"><div class="gpc-name">${geoPlatNames[k]||k}</div><div class="gpc-bar"><div class="gpc-bar-fill" style="width:${pct}%;background:${color}"></div></div><div class="gpc-stats"><span>信源 <span class="gpc-val">${d.sources.toLocaleString()}</span></span><span style="color:${tc}">${ti} ${d.rate}%</span></div></div>`;
+  }).join('');
+}
+
+function geoRenderMentionChart(md) {
+  const chart = document.getElementById('geo-mention-chart'), legend = document.getElementById('geo-mention-legend'); if(!chart) return;
+  const brands = ['联想', ...geoState.selectedBrands.map(b=>geoBrandNames[b])];
+  const colors = [geoLenovoColor, ...geoState.selectedBrands.map((_,i)=>geoBrandColors[i])];
+  const plats = geoState.platform==='all' ? Object.keys(geoPlatNames) : geoState.platform.split(',');
+  chart.innerHTML = plats.map(p => {
+    const rows = brands.map((b,i) => { const v = md[b]?.[p]||0; return `<div class="geo-bar-row"><div class="gbr-label">${b}</div><div class="gbr-track"><div class="gbr-fill" style="width:${v}%;background:${colors[i]}">${v}%</div></div></div>`; }).join('');
+    return `<div class="geo-bar-group"><div class="geo-bar-group-label">${geoPlatNames[p]||p}</div>${rows}</div>`;
+  }).join('');
+  if(legend) legend.innerHTML = brands.map((b,i)=>`<div class="geo-legend-item"><div class="geo-legend-dot" style="background:${colors[i]}"></div>${b}</div>`).join('');
+}
+
+function geoRenderRecommendChart(md) {
+  const chart = document.getElementById('geo-recommend-chart'); if(!chart) return;
+  const brands = ['联想', ...geoState.selectedBrands.map(b=>geoBrandNames[b])];
+  const colors = [geoLenovoColor, ...geoState.selectedBrands.map((_,i)=>geoBrandColors[i])];
+  const metrics = ['推荐率','前三率','首位率'], mults = [0.75,0.55,0.15];
+  const plats = geoState.platform==='all' ? Object.keys(geoPlatNames) : geoState.platform.split(',');
+  chart.innerHTML = metrics.map((m,mi) => {
+    const rows = brands.map((b,i) => {
+      const avg = plats.reduce((s,p)=>s+(md[b]?.[p]||0),0)/plats.length;
+      const v = (avg*mults[mi]).toFixed(1);
+      return `<div class="geo-bar-row"><div class="gbr-label">${b}</div><div class="gbr-track"><div class="gbr-fill" style="width:${Math.min(v,100)}%;background:${colors[i]}">${v}%</div></div></div>`;
+    }).join('');
+    return `<div class="geo-bar-group"><div class="geo-bar-group-label">${m}</div>${rows}</div>`;
+  }).join('');
+}
+
+function geoRenderSourceRanking() {
+  const list = geoGetSampleData().sourceRanking[geoState.sourceRange]||[];
+  const c = document.getElementById('geo-source-ranking'); if(!c) return;
+  c.innerHTML = list.map((it,i) => {
+    const rc = i===0?'t1':i===1?'t2':i===2?'t3':'tn';
+    return `<div class="geo-src-item"><div class="geo-src-rank ${rc}">${i+1}</div><div class="geo-src-name">${it.name}</div><div class="geo-src-count">${it.count.toLocaleString()}</div></div>`;
+  }).join('');
+}
+
+function geoRenderNewSources(src) {
+  const c = document.getElementById('geo-new-sources'); if(!c) return;
+  c.innerHTML = src.map(s=>`<div class="geo-new-item"><div class="geo-new-dot"></div><div class="geo-new-name">${s.name}</div><div class="geo-new-time">${s.time}</div></div>`).join('');
+}
+
+function geoRenderExposure(md) {
+  const c = document.getElementById('geo-exposure'); if(!c) return;
+  c.innerHTML = Object.keys(geoPlatNames).map(p => {
+    const lv = md['联想']?.[p]||0;
+    const cv = geoState.selectedBrands.map(b=>md[geoBrandNames[b]]?.[p]||0);
+    const avg = cv.length ? (cv.reduce((a,b)=>a+b,0)/cv.length).toFixed(1) : 0;
+    const diff = (lv-avg).toFixed(1), win = diff>=0;
+    return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-light);font-size:12px"><span style="color:var(--text-secondary)">${geoPlatNames[p]}</span><span style="font-weight:600;color:${win?'var(--green)':'var(--red)'}">${win?'+':''}${diff}%</span></div>`;
+  }).join('');
+}
+
+function geoLoadData() {
+  document.getElementById('geo-status').textContent = '加载中...';
+  setTimeout(() => { document.getElementById('geo-status').textContent = '示例数据'; }, 500);
+}
+
+// Init GEO when page switches
+const _origSwitchPage = switchPage;
+switchPage = function(page) {
+  _origSwitchPage(page);
+  if (page === 'geo') geoRenderAll();
+};
+
+function updateGeo() {}
+
+function initBarCharts() {
+  document.querySelectorAll('.bar-chart').forEach(chart => {
+    const chartH = chart.offsetHeight;
+    const maxBarH = Math.max(40, chartH - 50);
+    chart.querySelectorAll('.bar').forEach(bar => {
+      const pct = parseFloat(bar.style.height);
+      if (!isNaN(pct)) {
+        bar.style.height = Math.max(4, Math.round(maxBarH * pct / 100)) + 'px';
+      }
+    });
+  });
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-screen').style.display = 'flex';
+  setInterval(refreshData, 60000);
+
+  // Bar chart init is deferred to after login (app visible)
+});
+
+// Click outside modal to close
+document.querySelectorAll('.modal-mask').forEach(mask => {
+  mask.addEventListener('click', (e) => {
+    if (e.target === mask) mask.classList.remove('show');
+  });
+});
+</script>
+</body>
+</html>

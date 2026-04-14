@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>乐享管理后台</title>
+<style>
+  :root {
+    --red: #e2001a;
+    --bg: #0f1117;
+    --sidebar-bg: #161b22;
+    --card-bg: #1c2028;
+    --border: rgba(255,255,255,0.08);
+    --text: #e6edf3;
+    --subtext: #7d8590;
+    --green: #3fb950;
+    --yellow: #d29922;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif; height:100vh; display:flex; overflow:hidden; }
+
+  /* Login screen */
+  #login-screen {
+    width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+    background:var(--bg);
+  }
+  .login-box {
+    background:var(--card-bg); border:1px solid var(--border); border-radius:12px;
+    padding:40px; width:360px; display:flex; flex-direction:column; gap:16px;
+  }
+  .login-box h2 { font-size:20px; margin-bottom:4px; }
+  .login-box p { color:var(--subtext); font-size:13px; }
+  label { font-size:13px; color:var(--subtext); display:block; margin-bottom:4px; }
+  input[type=text], input[type=password] {
+    width:100%; padding:10px 12px; background:rgba(255,255,255,0.05);
+    border:1px solid var(--border); border-radius:8px; color:var(--text);
+    font-size:14px; outline:none; transition:border-color 0.2s;
+  }
+  input:focus { border-color:rgba(226,0,26,0.5); }
+
+  /* Sidebar */
+  .sidebar {
+    width:220px; background:var(--sidebar-bg); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; flex-shrink:0;
+  }
+  .sidebar-logo {
+    padding:20px; display:flex; align-items:center; gap:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .sidebar-logo .icon { width:28px; height:28px; background:var(--red); border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:900; color:#fff; font-size:13px; }
+  .sidebar-logo span { font-weight:700; font-size:15px; }
+  nav { padding:12px 8px; flex:1; }
+  .nav-item {
+    display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px;
+    cursor:pointer; font-size:13px; color:var(--subtext); transition:all 0.15s; margin-bottom:2px;
+  }
+  .nav-item:hover { background:rgba(255,255,255,0.05); color:var(--text); }
+  .nav-item.active { background:rgba(226,0,26,0.12); color:var(--red); }
+  .nav-item .ni { width:16px; text-align:center; }
+  .sidebar-footer { padding:16px; border-top:1px solid var(--border); }
+  .logout-btn { width:100%; padding:8px; background:none; border:1px solid var(--border); border-radius:8px; color:var(--subtext); cursor:pointer; font-size:13px; transition:all 0.2s; }
+  .logout-btn:hover { border-color:var(--red); color:var(--red); }
+
+  /* Main content */
+  .content { flex:1; overflow-y:auto; padding:28px; display:none; }
+  .content.active { display:block; }
+  .content::-webkit-scrollbar { width:4px; }
+  .content::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); }
+
+  h1 { font-size:20px; font-weight:700; margin-bottom:6px; }
+  .page-sub { color:var(--subtext); font-size:13px; margin-bottom:24px; }
+
+  /* Stats cards */
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:16px; margin-bottom:28px; }
+  .stat-card { background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:18px; }
+  .stat-card .stat-label { font-size:12px; color:var(--subtext); margin-bottom:6px; }
+  .stat-card .stat-value { font-size:28px; font-weight:700; }
+  .stat-card .stat-icon { font-size:20px; float:right; }
+
+  /* Buttons */
+  .btn { padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; border:none; transition:all 0.2s; }
+  .btn-primary { background:var(--red); color:#fff; }
+  .btn-primary:hover { background:#c5001a; }
+  .btn-secondary { background:rgba(255,255,255,0.06); color:var(--text); border:1px solid var(--border); }
+  .btn-secondary:hover { background:rgba(255,255,255,0.1); }
+  .btn-danger { background:rgba(255,59,48,0.1); color:#ff3b30; border:1px solid rgba(255,59,48,0.2); }
+  .btn-danger:hover { background:rgba(255,59,48,0.2); }
+  .btn-sm { padding:4px 10px; font-size:12px; }
+
+  /* Card */
+  .card { background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:20px; }
+  .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .card-title { font-size:15px; font-weight:600; }
+
+  /* Table */
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; padding:8px 12px; color:var(--subtext); border-bottom:1px solid var(--border); font-weight:500; }
+  td { padding:10px 12px; border-bottom:1px solid rgba(255,255,255,0.04); }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(255,255,255,0.02); }
+
+  /* Badge */
+  .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; }
+  .badge-green { background:rgba(63,185,80,0.1); color:var(--green); border:1px solid rgba(63,185,80,0.2); }
+  .badge-red { background:rgba(226,0,26,0.1); color:var(--red); border:1px solid rgba(226,0,26,0.2); }
+  .badge-yellow { background:rgba(210,153,34,0.1); color:var(--yellow); border:1px solid rgba(210,153,34,0.2); }
+
+  /* Upload area */
+  .upload-area {
+    border:2px dashed var(--border); border-radius:10px; padding:32px;
+    text-align:center; cursor:pointer; transition:all 0.2s;
+  }
+  .upload-area:hover, .upload-area.drag { border-color:rgba(226,0,26,0.5); background:rgba(226,0,26,0.04); }
+  .upload-area p { color:var(--subtext); font-size:13px; margin-top:8px; }
+  #file-input { display:none; }
+
+  /* Form */
+  .form-group { margin-bottom:14px; }
+  textarea.form-input {
+    width:100%; padding:10px 12px; background:rgba(255,255,255,0.05);
+    border:1px solid var(--border); border-radius:8px; color:var(--text);
+    font-size:13px; outline:none; resize:vertical; min-height:80px; font-family:inherit;
+  }
+  textarea.form-input:focus { border-color:rgba(226,0,26,0.5); }
+
+  /* Toggle */
+  .toggle { position:relative; width:38px; height:20px; cursor:pointer; }
+  .toggle input { opacity:0; width:0; height:0; }
+  .toggle-slider {
+    position:absolute; inset:0; background:rgba(255,255,255,0.1);
+    border-radius:10px; transition:0.3s;
+  }
+  .toggle input:checked + .toggle-slider { background:var(--red); }
+  .toggle-slider::before {
+    content:''; position:absolute; height:14px; width:14px;
+    left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.3s;
+  }
+  .toggle input:checked + .toggle-slider::before { transform:translateX(18px); }
+
+  .skill-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .skill-row:last-child { border-bottom:none; }
+  .skill-info { flex:1; }
+  .skill-name { font-size:14px; font-weight:500; }
+  .skill-desc { font-size:12px; color:var(--subtext); margin-top:2px; }
+
+  /* Alert */
+  .alert { padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:16px; display:none; }
+  .alert-error { background:rgba(226,0,26,0.1); border:1px solid rgba(226,0,26,0.3); color:#ff6b6b; }
+  .alert-success { background:rgba(63,185,80,0.1); border:1px solid rgba(63,185,80,0.3); color:var(--green); }
+
+  .loading { opacity:0.5; pointer-events:none; }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-box">
+    <div>
+      <h2>🔐 乐享管理后台</h2>
+      <p>请使用管理员账号登录</p>
+    </div>
+    <div id="login-alert" class="alert alert-error"></div>
+    <div class="form-group">
+      <label>用户名</label>
+      <input type="text" id="login-username" value="admin" />
+    </div>
+    <div class="form-group">
+      <label>密码</label>
+      <input type="password" id="login-password" placeholder="输入密码" onkeydown="if(event.key==='Enter')doLogin()" />
+    </div>
+    <button class="btn btn-primary" onclick="doLogin()">登录</button>
+  </div>
+</div>
+
+<!-- Admin Layout -->
+<div id="admin-layout" style="display:none; width:100%; height:100%; display:none; flex-direction:row;">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="icon">L</div>
+      <span>乐享后台</span>
+    </div>
+    <nav>
+      <div class="nav-item active" onclick="switchTab('dashboard')">
+        <span class="ni">📊</span> 数据概览
+      </div>
+      <div class="nav-item" onclick="switchTab('knowledge')">
+        <span class="ni">📚</span> 知识库管理
+      </div>
+      <div class="nav-item" onclick="switchTab('skills')">
+        <span class="ni">🔧</span> Skills 管理
+      </div>
+      <div class="nav-item" onclick="switchTab('conversations')">
+        <span class="ni">💬</span> 对话记录
+      </div>
+      <div class="nav-item" onclick="switchTab('botconfig')">
+        <span class="ni">🤖</span> AI 配置
+      </div>
+      <div class="nav-item" onclick="switchTab('security')">
+        <span class="ni">🔑</span> 修改密码
+      </div>
+      <div class="nav-item" onclick="switchTab('monitor')">
+        <span class="ni">📈</span> 监控
+      </div>
+      <div class="nav-item" onclick="switchTab('service')">
+        <span class="ni">🖥️</span> 服务状态
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">退出登录</button>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="content active" id="tab-dashboard">
+    <h1>数据概览</h1>
+    <p class="page-sub">LeAI Agent Platform 运行状态</p>
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-icon">💬</div><div class="stat-label">总对话数</div><div class="stat-value" id="s-convs">-</div></div>
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">今日对话</div><div class="stat-value" id="s-today">-</div></div>
+      <div class="stat-card"><div class="stat-icon">👍</div><div class="stat-label">好评率</div><div class="stat-value" id="s-sat">-</div></div>
+      <div class="stat-card"><div class="stat-icon">📄</div><div class="stat-label">知识库文档</div><div class="stat-value" id="s-docs">-</div></div>
+      <div class="stat-card"><div class="stat-icon">🔍</div><div class="stat-label">已向量化</div><div class="stat-value" id="s-vecs">-</div></div>
+      <div class="stat-card"><div class="stat-icon">✉️</div><div class="stat-label">累计用户消息</div><div class="stat-value" id="s-msgs">-</div></div>
+    </div>
+
+    <!-- 7日趋势 -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><span class="card-title">近7日对话趋势</span></div>
+      <div id="trend-chart" style="padding:12px 0 4px;display:flex;align-items:flex-end;gap:8px;height:80px"></div>
+    </div>
+
+    <!-- 差评问题 -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><span class="card-title">👎 用户差评问题（最近20条）</span><span style="font-size:12px;color:var(--muted)">这些问题需要补充知识库</span></div>
+      <div id="bad-feedback-list" style="padding:4px 0"></div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-header"><span class="card-title">系统信息</span></div>
+      <table>
+        <tr><td>模型</td><td>qwen-plus (DashScope)</td></tr>
+        <tr><td>知识检索</td><td>混合检索：向量语义 + FTS5 全文</td></tr>
+        <tr><td>向量模型</td><td>text-embedding-v3 (512维)</td></tr>
+        <tr><td>对话记忆</td><td>最近20轮上下文</td></tr>
+        <tr><td>前端地址</td><td><a href="/" target="_blank" style="color:var(--red)">http://localhost:3001</a></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Service Status -->
+  <div class="content" id="tab-service">
+    <h1>🖥️ 服务状态</h1>
+    <p class="page-sub">进程健康、版本信息与运维操作</p>
+
+    <div id="service-alert" class="alert" style="margin-bottom:16px"></div>
+
+    <div class="stats-grid" style="margin-bottom:20px">
+      <!-- 版本信息 -->
+      <div class="stat-card" style="min-width:200px">
+        <div class="stat-icon">📦</div>
+        <div class="stat-label">版本</div>
+        <div class="stat-value" id="sv-version" style="font-size:18px">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="sv-commit">commit: -</div>
+      </div>
+      <!-- 运行时长 -->
+      <div class="stat-card" style="min-width:200px">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-label">运行时长</div>
+        <div class="stat-value" id="sv-uptime" style="font-size:18px">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="sv-starttime">启动时间: -</div>
+      </div>
+      <!-- 内存 -->
+      <div class="stat-card" style="min-width:200px">
+        <div class="stat-icon">🧠</div>
+        <div class="stat-label">内存使用</div>
+        <div class="stat-value" id="sv-mem-heap" style="font-size:18px">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="sv-mem-rss">RSS: -</div>
+      </div>
+      <!-- DB 状态 -->
+      <div class="stat-card" style="min-width:200px">
+        <div class="stat-icon">🗄️</div>
+        <div class="stat-label">数据库</div>
+        <div class="stat-value" id="sv-db-size" style="font-size:18px">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="sv-db-tables">表数量: -</div>
+      </div>
+      <!-- 知识库 -->
+      <div class="stat-card" style="min-width:200px">
+        <div class="stat-icon">📚</div>
+        <div class="stat-label">知识库</div>
+        <div class="stat-value" id="sv-kb-chunks" style="font-size:18px">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="sv-kb-docs">文档数: -</div>
+      </div>
+      <!-- LLM API -->
+      <div class="stat-card" style="min-width:200px">
+        <div class="stat-icon">🤖</div>
+        <div class="stat-label">LLM API</div>
+        <div class="stat-value" id="sv-llm-status" style="font-size:18px">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="sv-llm-latency">延迟: -</div>
+      </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">运维操作</span></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-secondary" onclick="loadServiceHealth()">🔄 刷新状态</button>
+        <button class="btn btn-secondary" onclick="doBackup()" id="backup-btn">💾 手动备份 DB</button>
+        <button class="btn btn-danger" onclick="doRestart()" id="restart-btn">🔁 优雅重启</button>
+        <a href="/health" target="_blank" class="btn btn-secondary">🏥 查看 /health</a>
+        <a href="/metrics" target="_blank" class="btn btn-secondary">📊 查看 /metrics</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitor -->
+  <div class="content" id="tab-monitor">
+    <h1>📈 监控 Dashboard</h1>
+    <p class="page-sub">实时指标快照（每小时自动采集）</p>
+
+    <div id="monitor-alerts" style="margin-bottom:16px"></div>
+
+    <div class="stats-grid" id="monitor-metrics-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-label">活跃用户（近1h）</div>
+        <div class="stat-value" id="m-active-users">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="m-active-users-time"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✉️</div>
+        <div class="stat-label">消息数（近1h）</div>
+        <div class="stat-value" id="m-msg-count">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="m-msg-count-time"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <div class="stat-label">平均回复字数</div>
+        <div class="stat-value" id="m-avg-len">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="m-avg-len-time"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔍</div>
+        <div class="stat-label">反思错误率</div>
+        <div class="stat-value" id="m-refl-err">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="m-refl-err-time"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📎</div>
+        <div class="stat-label">知识库命中率</div>
+        <div class="stat-value" id="m-kb-hit">-</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px" id="m-kb-hit-time"></div>
+      </div>
+      <div class="stat-card" style="display:flex;flex-direction:column;justify-content:center;align-items:center">
+        <button class="btn btn-primary" onclick="refreshMonitor()" id="monitor-refresh-btn">立即刷新</button>
+        <div style="font-size:11px;color:var(--subtext);margin-top:8px" id="monitor-last-refresh">-</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">消息量趋势（近24小时）</span></div>
+      <div id="monitor-trend-chart" style="padding:12px 0 4px;display:flex;align-items:flex-end;gap:4px;height:80px;overflow:hidden"></div>
+    </div>
+
+    <!-- L3.3 回归测试 -->
+    <div class="card" id="regression-card">
+      <div class="card-header">
+        <span class="card-title">🧪 回归测试</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:12px;color:var(--subtext)">用例数：<strong id="regression-case-count">-</strong></span>
+          <button class="btn btn-primary btn-sm" onclick="runRegressionTests()" id="regression-run-btn">运行回归测试</button>
+        </div>
+      </div>
+      <div id="regression-result" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <!-- Knowledge -->
+  <div class="content" id="tab-knowledge">
+    <h1>知识库管理</h1>
+    <p class="page-sub">上传文档、网页、文本，让乐享掌握官方知识</p>
+
+    <div id="kb-alert" class="alert"></div>
+
+    <!-- Upload tabs -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">添加知识</span></div>
+      <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-sm" id="upload-tab-file" onclick="showUploadTab('file')" style="border-color:var(--red);color:var(--red)">📄 上传文件</button>
+        <button class="btn btn-secondary btn-sm" id="upload-tab-url" onclick="showUploadTab('url')">🌐 单个URL</button>
+        <button class="btn btn-secondary btn-sm" id="upload-tab-crawl" onclick="showUploadTab('crawl')">🕷️ 站点批量爬取</button>
+        <button class="btn btn-secondary btn-sm" id="upload-tab-text" onclick="showUploadTab('text')">✏️ 手动输入</button>
+      </div>
+
+      <!-- File upload -->
+      <div id="upload-panel-file">
+        <div class="upload-area" onclick="document.getElementById('file-input').click()" id="drop-area">
+          <div style="font-size:32px">📂</div>
+          <p>点击或拖拽文件到此处</p>
+          <p style="margin-top:4px;font-size:11px">支持：PDF · DOCX · XLSX · TXT · MD · CSV</p>
+        </div>
+        <input type="file" id="file-input" accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.md" onchange="uploadFile(this)">
+        <div class="form-group" style="margin-top:12px">
+          <label>文档标题（可选，留空用文件名）</label>
+          <input type="text" id="file-title" placeholder="例如：联想2024年年报">
+        </div>
+      </div>
+
+      <!-- URL -->
+      <div id="upload-panel-url" style="display:none">
+        <div class="form-group">
+          <label>网页地址</label>
+          <input type="text" id="url-input" placeholder="https://news.lenovo.com/...">
+        </div>
+        <div class="form-group">
+          <label>标题（可选）</label>
+          <input type="text" id="url-title" placeholder="例如：联想官方新闻">
+        </div>
+        <button class="btn btn-primary" onclick="ingestUrl()">导入网页</button>
+      </div>
+
+      <!-- Crawl -->
+      <div id="upload-panel-crawl" style="display:none">
+        <div class="form-group">
+          <label>起始网址（将自动爬取该域名下所有子页面）</label>
+          <input type="text" id="crawl-url" placeholder="https://iknow.lenovo.com.cn/">
+        </div>
+        <div class="form-group">
+          <label>最大爬取页数（留空或填0 = 不限制，爬完为止）</label>
+          <input type="number" id="crawl-max" placeholder="留空=不限制" min="0">
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-primary" id="crawl-start-btn" onclick="startCrawl()">🚀 开始爬取</button>
+          <button class="btn btn-danger btn-sm" id="crawl-cancel-btn" onclick="cancelCrawl()" style="display:none">停止</button>
+        </div>
+        <div id="crawl-progress" style="display:none;margin-top:16px">
+          <div style="display:flex;gap:16px;margin-bottom:8px;font-size:13px">
+            <span>状态：<b id="crawl-status">-</b></span>
+            <span>已入库：<b id="crawl-done" style="color:var(--green)">0</b></span>
+            <span>失败：<b id="crawl-failed" style="color:#e55">0</b></span>
+            <span>队列总数：<b id="crawl-total">0</b></span>
+          </div>
+          <div style="background:var(--bg2);border-radius:6px;padding:10px;height:160px;overflow-y:auto;font-size:11px;font-family:monospace;color:var(--subtext)" id="crawl-log"></div>
+        </div>
+      </div>
+
+      <!-- Lenovo iknow API import -->
+      <div id="upload-panel-lenovo" style="display:none">
+        <div style="background:#fff8f0;border:1px solid #e17000;border-radius:6px;padding:10px;margin-bottom:12px;font-size:13px">
+          直连 <b>iknow.lenovo.com.cn</b> 官方API，共约 <b>26,000+</b> 篇文章，无需浏览器渲染，速度快。
+        </div>
+        <div class="form-group">
+          <label>关键词筛选（留空=全量导入所有文章）</label>
+          <input type="text" id="lenovo-keyword" placeholder="留空导入全部，或填: ThinkPad / 保修 / 驱动 ...">
+        </div>
+        <div class="form-group">
+          <label>最多导入篇数（留空或填0 = 不限制）</label>
+          <input type="number" id="lenovo-max" placeholder="留空=不限制" min="0">
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-primary" id="lenovo-start-btn" onclick="startLenovoCrawl()">🚀 开始导入</button>
+          <button class="btn btn-danger btn-sm" id="lenovo-cancel-btn" onclick="cancelLenovoCrawl()" style="display:none">停止</button>
+          <button class="btn btn-secondary btn-sm" onclick="fixShortDocs()" title="对内容不足200字的文档重新从详情接口补充内容">🔧 补充短内容(存量修复)</button>
+        </div>
+        <div id="lenovo-progress" style="display:none;margin-top:16px">
+          <div style="display:flex;gap:16px;margin-bottom:8px;font-size:13px;flex-wrap:wrap">
+            <span>状态：<b id="lenovo-status">-</b></span>
+            <span>已入库：<b id="lenovo-done" style="color:var(--green)">0</b></span>
+            <span>跳过(已有)：<b id="lenovo-skipped" style="color:#aaa">0</b></span>
+            <span>失败：<b id="lenovo-failed" style="color:#e55">0</b></span>
+            <span>总量：<b id="lenovo-total">0</b></span>
+          </div>
+          <div style="background:var(--bg2);border-radius:6px;padding:10px;height:160px;overflow-y:auto;font-size:11px;font-family:monospace;color:var(--subtext)" id="lenovo-log"></div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div id="upload-panel-text" style="display:none">
+        <div class="form-group">
+          <label>标题 *</label>
+          <input type="text" id="text-title" placeholder="例如：联想客服FAQ">
+        </div>
+        <div class="form-group">
+          <label>内容 *</label>
+          <textarea class="form-input" id="text-content" rows="6" placeholder="粘贴或输入知识内容..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="ingestText()">添加到知识库</button>
+      </div>
+    </div>
+
+    <!-- Graph-RAG 知识图谱 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">🕸️ 知识图谱 (Graph-RAG)</span>
+        <span style="font-size:12px;color:var(--subtext)">实体关系图增强检索，提升多实体问答准确率</span>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+        <span style="font-size:13px">实体数：<b id="kg-entities">-</b></span>
+        <span style="font-size:13px">关系数：<b id="kg-relations">-</b></span>
+        <span id="kg-building-badge" style="display:none;font-size:12px;color:var(--orange);background:#fff8f0;border:1px solid #e17000;border-radius:4px;padding:2px 8px">建图中...</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-secondary btn-sm" onclick="buildKG()">构建知识图谱</button>
+        <button class="btn btn-secondary btn-sm" onclick="loadKGStats()">刷新统计</button>
+      </div>
+      <div id="kg-alert" style="margin-top:8px;font-size:13px;color:var(--subtext)"></div>
+    </div>
+
+    <!-- Search test -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">🔍 搜索测试</span><span style="font-size:12px;color:var(--subtext)">验证知识库召回是否准确</span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="search-test-input" placeholder="输入问题，如：ThinkPad保修政策" style="flex:1" onkeydown="if(event.key==='Enter')testSearch()">
+        <button class="btn btn-primary btn-sm" onclick="testSearch()">搜索</button>
+      </div>
+      <div id="search-test-result" style="margin-top:12px"></div>
+    </div>
+
+    <!-- Doc list -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">知识库文档</span>
+        <span id="docs-total-label" style="font-size:12px;color:var(--subtext)"></span>
+        <button class="btn btn-secondary btn-sm" onclick="loadDocs(1)">刷新</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+        <input type="text" id="docs-search" placeholder="搜索文档标题..." style="flex:1;max-width:300px" onkeydown="if(event.key==='Enter')loadDocs(1)">
+        <button class="btn btn-secondary btn-sm" onclick="loadDocs(1)">搜索</button>
+      </div>
+      <table>
+        <thead><tr><th>标题</th><th>类型</th><th>来源</th><th>时间</th><th>操作</th></tr></thead>
+        <tbody id="docs-table"></tbody>
+      </table>
+      <div id="docs-pagination" style="display:flex;gap:6px;margin-top:12px;align-items:center;flex-wrap:wrap"></div>
+    </div>
+
+    <!-- QA 对管理 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">💬 QA 对管理（L4.2 精确问答双轨）</span>
+        <span id="qa-total-label" style="font-size:12px;color:var(--subtext)"></span>
+        <button class="btn btn-secondary btn-sm" onclick="loadQAList(1)">刷新</button>
+        <button class="btn btn-primary btn-sm" onclick="generateQA()" id="gen-qa-btn">自动生成 QA</button>
+      </div>
+      <div id="qa-alert" style="margin-bottom:8px"></div>
+      <!-- 手动添加 QA -->
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;padding:12px;background:var(--surface1);border-radius:8px">
+        <div style="font-size:13px;font-weight:600;color:var(--text)">手动添加 QA 对</div>
+        <input type="text" id="qa-add-question" placeholder="问题（如：联想官方客服电话是什么）" style="width:100%">
+        <textarea id="qa-add-answer" placeholder="答案（如：联想客服热线：400-990-8888）" style="width:100%;height:80px;resize:vertical;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px"></textarea>
+        <div><button class="btn btn-primary btn-sm" onclick="addQA()">添加</button></div>
+      </div>
+      <!-- QA 列表 -->
+      <table>
+        <thead><tr><th>问题</th><th>答案</th><th>来源</th><th>时间</th><th>操作</th></tr></thead>
+        <tbody id="qa-table"></tbody>
+      </table>
+      <div id="qa-pagination" style="display:flex;gap:6px;margin-top:12px;align-items:center;flex-wrap:wrap"></div>
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="content" id="tab-skills">
+    <h1>Skills 管理</h1>
+    <p class="page-sub">启用或禁用 AI 技能模块。新增技能：在 /skills/ 目录放一个 .js 文件，重启生效。</p>
+    <div class="card">
+      <div id="skills-list"></div>
+    </div>
+
+    <!-- MCP Tools 区域 -->
+    <div class="card" style="margin-top:24px">
+      <div class="card-header">
+        <span class="card-title">🔌 MCP Tools</span>
+        <button class="btn btn-primary btn-sm" onclick="showMcpForm()">+ 注册远程工具</button>
+      </div>
+      <p style="font-size:12px;color:var(--subtext);margin-bottom:14px">MCP 风格工具调用框架。内置工具包装已有 Skill；远程工具通过 HTTP POST 调用外部服务（10秒超时）。</p>
+      <div id="mcp-alert" class="alert" style="display:none;margin-bottom:10px"></div>
+      <div id="mcp-list">
+        <div style="color:var(--subtext);font-size:13px">加载中...</div>
+      </div>
+      <!-- 新增远程工具表单 -->
+      <div id="mcp-form" style="display:none;margin-top:16px;padding:14px;border:1px solid var(--border);border-radius:6px;background:rgba(255,255,255,0.03)">
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)">注册远程 MCP 工具</div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:12px">工具名称 <span style="color:var(--red)">*</span></label>
+          <input type="text" id="mcp-name" placeholder="如：mcp_weather_query（建议 mcp_ 前缀）" style="padding:6px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);width:100%;font-size:13px">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:12px">描述</label>
+          <input type="text" id="mcp-desc" placeholder="工具功能简要说明" style="padding:6px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);width:100%;font-size:13px">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:12px">远程 URL <span style="color:var(--red)">*</span></label>
+          <input type="text" id="mcp-url" placeholder="https://your-mcp-server.com/tool" style="padding:6px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);width:100%;font-size:13px">
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label style="font-size:12px">Input Schema（JSON，可留空）</label>
+          <textarea id="mcp-schema" rows="3" placeholder='{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}' style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);font-size:13px;font-family:monospace;resize:vertical"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="saveMcpTool()">保存</button>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('mcp-form').style.display='none'">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 代码沙箱测试 -->
+    <div class="card" style="margin-top:24px">
+      <div class="card-header">
+        <span class="card-title">🧪 代码沙箱测试</span>
+      </div>
+      <p style="font-size:12px;color:var(--subtext);margin-bottom:14px">安全 JS 执行环境测试。支持 Math.*、基本运算、console.log 输出。禁止 require/process/fetch 等危险操作。</p>
+      <div id="sandbox-alert" class="alert" style="display:none;margin-bottom:10px"></div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label style="font-size:12px">代码（支持多行）</label>
+        <textarea id="sandbox-code" rows="6" placeholder="// 示例：分期付款计算
+let principal = 100000;
+let monthlyRate = 0.005;
+let months = 12;
+let payment = principal * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+console.log('每月还款：' + Math.round(payment * 100) / 100 + ' 元');" style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px;font-family:monospace;resize:vertical;line-height:1.5"></textarea>
+      </div>
+      <button class="btn btn-primary btn-sm" id="sandbox-run-btn" onclick="runSandboxTest()">运行</button>
+      <div id="sandbox-output" style="margin-top:14px;display:none">
+        <div style="font-size:12px;color:var(--subtext);margin-bottom:6px">输出：</div>
+        <pre id="sandbox-result" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;font-family:monospace;white-space:pre-wrap;word-break:break-all;color:var(--text);margin:0;max-height:300px;overflow-y:auto"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 配置 -->
+  <div class="content" id="tab-botconfig">
+    <h1>AI 配置</h1>
+    <p class="page-sub">修改后实时生效（5秒内），无需重启服务</p>
+    <div id="botconfig-alert" class="alert"></div>
+
+    <!-- L2.6 自主进化区域 -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">
+        <span class="card-title">🧬 L2.6 自主进化</span>
+        <button class="btn btn-primary btn-sm" id="evo-btn" onclick="runEvolution()">分析并优化</button>
+      </div>
+      <p style="font-size:12px;color:var(--subtext);margin-bottom:12px">根据用户差评和低质量回答，自动生成行为改进指令注入 System Prompt。数据需 ≥5 条才会触发 LLM 分析。</p>
+      <div id="evo-alert" class="alert" style="display:none"></div>
+      <div style="margin-bottom:8px">
+        <span style="font-size:12px;color:var(--subtext)">上次分析时间：</span>
+        <span id="evo-last-run" style="font-size:12px;color:var(--text)">加载中...</span>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--subtext);display:block;margin-bottom:6px">当前优化指令（自动注入 System Prompt 末尾，不超过200字）：</label>
+        <div id="evo-notes" style="font-size:13px;line-height:1.6;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;min-height:48px;white-space:pre-wrap;color:var(--text)">加载中...</div>
+      </div>
+    </div>
+
+    <!-- L2.8 持续学习区域 -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">
+        <span class="card-title">🧠 L2.8 持续学习</span>
+        <button class="btn btn-primary btn-sm" id="learning-btn" onclick="runLearningCycle()">运行学习周期</button>
+      </div>
+      <p style="font-size:12px;color:var(--subtext);margin-bottom:12px">从高质量对话提取 few-shot 示范，从失败案例提炼改进点，并自动生成回归测试用例（Data 进化）。</p>
+      <div id="learning-alert" class="alert" style="display:none;margin-bottom:10px"></div>
+      <div style="margin-bottom:8px">
+        <span style="font-size:12px;color:var(--subtext)">上次学习时间：</span>
+        <span id="learning-last-at" style="font-size:12px;color:var(--text)">加载中...</span>
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--subtext);display:block;margin-bottom:6px">当前 few-shot 示范（注入 System Prompt，不超过400字）：</label>
+        <textarea id="learning-demos" rows="5" readonly style="width:100%;font-size:12px;font-family:monospace;padding:8px;border:1px solid var(--border);border-radius:6px;background:rgba(255,255,255,0.03);color:var(--text);resize:vertical" placeholder="暂无示范数据，运行学习周期后生成"></textarea>
+      </div>
+    </div>
+
+    <!-- L1.5 Persona 管理 -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">
+        <span class="card-title">🎭 L1.5 Persona 管理</span>
+        <button class="btn btn-primary btn-sm" onclick="showPersonaForm()">+ 新增</button>
+      </div>
+      <p style="font-size:12px;color:var(--subtext);margin-bottom:12px">切换不同角色身份，影响 AI 的回答风格。激活的 Persona 前缀会注入到 System Prompt 开头，实时生效（5秒内）。</p>
+      <div id="persona-alert" class="alert" style="display:none;margin-bottom:10px"></div>
+      <div id="persona-list" style="display:flex;flex-direction:column;gap:8px">
+        <div style="color:var(--subtext);font-size:13px">加载中...</div>
+      </div>
+      <!-- 新增 Persona 表单 -->
+      <div id="persona-form" style="display:none;margin-top:16px;padding:14px;border:1px solid var(--border);border-radius:6px;background:rgba(255,255,255,0.03)">
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)">新增 Persona</div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:12px">名称 <span style="color:var(--red)">*</span></label>
+          <input type="text" id="persona-name" placeholder="如：购物顾问" style="padding:6px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);width:100%;font-size:13px">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:12px">描述</label>
+          <input type="text" id="persona-desc" placeholder="简短描述此角色" style="padding:6px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);width:100%;font-size:13px">
+        </div>
+        <div class="form-group" style="margin-bottom:10px">
+          <label style="font-size:12px">System Prompt 前缀（注入到 Prompt 开头）</label>
+          <textarea id="persona-prefix" rows="4" placeholder="留空则无额外前缀（通用助手风格）" style="width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);font-size:13px;font-family:monospace;resize:vertical"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="createPersona()">创建</button>
+          <button class="btn btn-secondary btn-sm" onclick="hidePersonaForm()">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3.2 检索重排开关 -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header">
+        <span class="card-title">🔀 L3.2 检索重排</span>
+      </div>
+      <p style="font-size:12px;color:var(--subtext);margin-bottom:12px">召回后用 LLM 对结果重新打分排序，取最相关的 top-3 送进 Prompt。仅在召回 &gt;3 条时触发，使用 qwen-turbo。</p>
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px">
+        <input type="checkbox" id="cfg-rerank-enabled" style="width:16px;height:16px;cursor:pointer">
+        <span>启用检索重排（Reranker）</span>
+      </label>
+      <button class="btn btn-sm" onclick="saveRerankConfig()" style="margin-top:12px">保存</button>
+      <div id="rerank-alert" class="alert" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <div class="form-group">
+        <label>System Prompt（中文）</label>
+        <textarea id="cfg-prompt-zh" rows="18" style="width:100%;font-family:monospace;font-size:13px;padding:8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);resize:vertical"></textarea>
+      </div>
+      <div class="form-group" style="margin-top:16px">
+        <label>System Prompt（英文）</label>
+        <textarea id="cfg-prompt-en" rows="14" style="width:100%;font-family:monospace;font-size:13px;padding:8px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);resize:vertical"></textarea>
+      </div>
+      <button class="btn" onclick="saveBotConfig()" style="margin-top:12px">保存配置</button>
+    </div>
+  </div>
+
+  <!-- Security -->
+  <div class="content" id="tab-security">
+    <h1>修改密码</h1>
+    <p class="page-sub">建议使用强密码，至少8位</p>
+    <div class="card" style="max-width:400px">
+      <div id="pwd-alert" class="alert"></div>
+      <div class="form-group">
+        <label>原密码</label>
+        <input type="password" id="pwd-old" placeholder="输入原密码">
+      </div>
+      <div class="form-group">
+        <label>新密码</label>
+        <input type="password" id="pwd-new" placeholder="至少8位">
+      </div>
+      <div class="form-group">
+        <label>确认新密码</label>
+        <input type="password" id="pwd-confirm" placeholder="再输一遍">
+      </div>
+      <button class="btn btn-primary" onclick="changePassword()">确认修改</button>
+    </div>
+  </div>
+
+  <!-- Conversations -->
+  <div class="content" id="tab-conversations">
+    <h1>对话记录</h1>
+    <p class="page-sub">查看所有用户对话</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>会话ID</th><th>首条消息</th><th>消息数</th><th>最后活跃</th></tr></thead>
+        <tbody id="conv-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let isAdmin = false;
+
+  async function doLogin() {
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+    const alert = document.getElementById('login-alert');
+
+    try {
+      const res = await fetch('/api/admin/login', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showAdmin();
+      } else {
+        showAlert(alert, data.error || '登录失败');
+      }
+    } catch(e) {
+      showAlert(alert, '网络错误');
+    }
+  }
+
+  async function checkLogin() {
+    try {
+      const res = await fetch('/api/admin/me');
+      const data = await res.json();
+      if (data.admin) showAdmin();
+    } catch {}
+  }
+
+  function showAdmin() {
+    isAdmin = true;
+    document.getElementById('login-screen').style.display = 'none';
+    const layout = document.getElementById('admin-layout');
+    layout.style.display = 'flex';
+    loadDashboard();
+    loadDocs();
+    loadSkills();
+    loadMcpTools();
+  }
+
+  async function doLogout() {
+    await fetch('/api/admin/logout', { method:'POST' });
+    location.reload();
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+    if (name === 'conversations') loadConversations();
+    if (name === 'knowledge') { loadDocs(); loadKGStats(); loadQAList(1); }
+    if (name === 'skills') { loadSkills(); loadMcpTools(); }
+    if (name === 'botconfig') { loadBotConfig(); loadPersonas(); loadLearningStatus(); }
+    if (name === 'monitor') { loadMonitor(); loadRegressionCaseCount(); }
+    if (name === 'service') { loadServiceHealth(); }
+  }
+
+  async function loadEvolutionNotes() {
+    try {
+      const res = await fetch('/api/admin/evolution-notes');
+      const d = await res.json();
+      const notesEl = document.getElementById('evo-notes');
+      const lastRunEl = document.getElementById('evo-last-run');
+      notesEl.textContent = d.notes || '（尚无优化指令，点击"分析并优化"生成）';
+      if (d.lastRun) {
+        const t = new Date(d.lastRun);
+        lastRunEl.textContent = t.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+      } else {
+        lastRunEl.textContent = '从未运行';
+      }
+    } catch (e) {
+      document.getElementById('evo-notes').textContent = '加载失败：' + e.message;
+    }
+  }
+
+  async function runEvolution() {
+    const btn = document.getElementById('evo-btn');
+    const alertEl = document.getElementById('evo-alert');
+    btn.disabled = true;
+    btn.textContent = '分析中...';
+    alertEl.style.display = 'none';
+    try {
+      const res = await fetch('/api/admin/run-evolution', { method: 'POST' });
+      const d = await res.json();
+      alertEl.style.display = 'block';
+      if (d.success) {
+        alertEl.className = 'alert alert-success';
+        alertEl.textContent = '✅ 进化完成！已更新优化指令。';
+        loadEvolutionNotes();
+      } else {
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = '⚠️ ' + (d.reason || '未知错误');
+      }
+    } catch (e) {
+      alertEl.style.display = 'block';
+      alertEl.className = 'alert alert-error';
+      alertEl.textContent = '❌ 网络错误：' + e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '分析并优化';
+    }
+  }
+
+  // ── L2.8 持续学习 ──
+  async function loadLearningStatus() {
+    try {
+      const res = await fetch('/api/admin/learning-status');
+      const d = await res.json();
+      const lastAtEl = document.getElementById('learning-last-at');
+      const demosEl = document.getElementById('learning-demos');
+      if (d.lastLearningAt) {
+        const t = new Date(d.lastLearningAt);
+        lastAtEl.textContent = t.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+      } else {
+        lastAtEl.textContent = '从未运行';
+      }
+      demosEl.value = d.fewShotDemos || '';
+    } catch (e) {
+      document.getElementById('learning-last-at').textContent = '加载失败';
+    }
+  }
+
+  async function runLearningCycle() {
+    const btn = document.getElementById('learning-btn');
+    const alertEl = document.getElementById('learning-alert');
+    btn.disabled = true;
+    btn.textContent = '学习中...';
+    alertEl.style.display = 'none';
+    try {
+      const res = await fetch('/api/admin/run-learning', { method: 'POST' });
+      const d = await res.json();
+      alertEl.style.display = 'block';
+      if (d.success) {
+        const demoOk = d.results && d.results.demonstrations && d.results.demonstrations.success;
+        const failOk = d.results && d.results.failures && d.results.failures.success;
+        const regGen = d.results && d.results.regressionCases && d.results.regressionCases.generated;
+        alertEl.className = 'alert alert-success';
+        alertEl.textContent = `✅ 学习完成！示范案例: ${demoOk ? '已更新' : '跳过'}，失败模式: ${failOk ? '已更新' : '跳过'}，新增回归用例: ${regGen || 0} 条`;
+        loadLearningStatus();
+      } else {
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = '⚠️ ' + (d.reason || '未知错误');
+      }
+    } catch (e) {
+      alertEl.style.display = 'block';
+      alertEl.className = 'alert alert-error';
+      alertEl.textContent = '❌ 网络错误：' + e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '运行学习周期';
+    }
+  }
+
+  // ── L1.5 Persona 管理 ──
+  async function loadPersonas() {
+    const container = document.getElementById('persona-list');
+    try {
+      const res = await fetch('/api/admin/personas');
+      const personas = await res.json();
+      if (!personas.length) {
+        container.innerHTML = '<div style="color:var(--subtext);font-size:13px">暂无 Persona</div>';
+        return;
+      }
+      container.innerHTML = personas.map(p => `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid ${p.is_active ? 'var(--red)' : 'var(--border)'};border-radius:6px;background:${p.is_active ? 'rgba(220,38,38,0.06)' : 'rgba(255,255,255,0.02)'}">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+              <span style="font-size:13px;font-weight:600;color:var(--text)">${escHtml(p.name)}</span>
+              ${p.is_active ? '<span style="font-size:11px;padding:1px 6px;border-radius:10px;background:var(--red);color:#fff">激活</span>' : ''}
+              ${p.is_default ? '<span style="font-size:11px;padding:1px 6px;border-radius:10px;background:rgba(255,255,255,0.1);color:var(--subtext)">默认</span>' : ''}
+            </div>
+            ${p.description ? `<div style="font-size:12px;color:var(--subtext)">${escHtml(p.description)}</div>` : ''}
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            ${!p.is_active ? `<button class="btn btn-primary btn-sm" onclick="activatePersona(${p.id})">激活</button>` : ''}
+            ${!p.is_default ? `<button class="btn btn-secondary btn-sm" style="color:#f87171;border-color:#f87171" onclick="deletePersona(${p.id}, '${escHtml(p.name)}')">删除</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      container.innerHTML = '<div style="color:var(--subtext);font-size:13px">加载失败</div>';
+    }
+  }
+
+  function showPersonaForm() {
+    document.getElementById('persona-form').style.display = 'block';
+    document.getElementById('persona-name').focus();
+  }
+
+  function hidePersonaForm() {
+    document.getElementById('persona-form').style.display = 'none';
+    document.getElementById('persona-name').value = '';
+    document.getElementById('persona-desc').value = '';
+    document.getElementById('persona-prefix').value = '';
+  }
+
+  async function createPersona() {
+    const name = document.getElementById('persona-name').value.trim();
+    const description = document.getElementById('persona-desc').value.trim();
+    const prompt_prefix = document.getElementById('persona-prefix').value;
+    if (!name) { showPersonaAlert('名称不能为空', true); return; }
+    try {
+      const res = await fetch('/api/admin/personas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description, prompt_prefix })
+      });
+      const d = await res.json();
+      if (!res.ok) { showPersonaAlert(d.error || '创建失败', true); return; }
+      hidePersonaForm();
+      showPersonaAlert('已创建 Persona：' + name, false);
+      loadPersonas();
+    } catch (e) {
+      showPersonaAlert('请求失败', true);
+    }
+  }
+
+  async function activatePersona(id) {
+    try {
+      const res = await fetch(`/api/admin/personas/${id}/activate`, { method: 'PUT' });
+      const d = await res.json();
+      if (!res.ok) { showPersonaAlert(d.error || '激活失败', true); return; }
+      showPersonaAlert('已切换 Persona，5秒内生效', false);
+      loadPersonas();
+    } catch (e) {
+      showPersonaAlert('请求失败', true);
+    }
+  }
+
+  async function deletePersona(id, name) {
+    if (!confirm(`确定删除 Persona「${name}」？`)) return;
+    try {
+      const res = await fetch(`/api/admin/personas/${id}`, { method: 'DELETE' });
+      const d = await res.json();
+      if (!res.ok) { showPersonaAlert(d.error || '删除失败', true); return; }
+      showPersonaAlert('已删除', false);
+      loadPersonas();
+    } catch (e) {
+      showPersonaAlert('请求失败', true);
+    }
+  }
+
+  function showPersonaAlert(msg, isError) {
+    const el = document.getElementById('persona-alert');
+    el.style.display = 'block';
+    el.className = 'alert ' + (isError ? 'alert-error' : 'alert-success');
+    el.textContent = msg;
+    setTimeout(() => { el.style.display = 'none'; }, 3000);
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function loadBotConfig() {
+    loadEvolutionNotes();
+    try {
+      const res = await fetch('/api/admin/bot-config');
+      const data = await res.json();
+      document.getElementById('cfg-prompt-zh').value = data.system_prompt_zh?.value || '';
+      document.getElementById('cfg-prompt-en').value = data.system_prompt_en?.value || '';
+      // L3.2 检索重排开关
+      const rerankVal = data.rerank_enabled?.value;
+      document.getElementById('cfg-rerank-enabled').checked = rerankVal !== '0';
+    } catch (e) {
+      showAlert('botconfig-alert', '加载失败：' + e.message, 'error');
+    }
+  }
+
+  async function saveRerankConfig() {
+    const enabled = document.getElementById('cfg-rerank-enabled').checked ? '1' : '0';
+    try {
+      const res = await fetch('/api/admin/bot-config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rerank_enabled: enabled })
+      });
+      const data = await res.json();
+      if (data.ok) showAlert('rerank-alert', '已保存，立即生效', 'success');
+      else showAlert('rerank-alert', '保存失败', 'error');
+    } catch (e) {
+      showAlert('rerank-alert', '保存失败：' + e.message, 'error');
+    }
+  }
+
+  async function saveBotConfig() {
+    const zh = document.getElementById('cfg-prompt-zh').value.trim();
+    const en = document.getElementById('cfg-prompt-en').value.trim();
+    if (!zh) return showAlert('botconfig-alert', '中文 System Prompt 不能为空', 'error');
+    try {
+      const res = await fetch('/api/admin/bot-config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ system_prompt_zh: zh, system_prompt_en: en })
+      });
+      const data = await res.json();
+      if (data.ok) showAlert('botconfig-alert', '保存成功，5秒内生效', 'success');
+      else showAlert('botconfig-alert', '保存失败', 'error');
+    } catch (e) {
+      showAlert('botconfig-alert', '保存失败：' + e.message, 'error');
+    }
+  }
+
+  async function loadConversations() {
+    const res = await fetch('/api/admin/conversations');
+    const rows = await res.json();
+    const tbody = document.getElementById('conv-table');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="4" style="color:var(--subtext);text-align:center;padding:20px">暂无对话记录</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td style="font-size:11px;color:var(--subtext)">${r.id.slice(0,8)}...</td>
+        <td>${r.first_msg ? r.first_msg.slice(0, 60) + (r.first_msg.length > 60 ? '...' : '') : '-'}</td>
+        <td>${r.msg_count} 条</td>
+        <td>${new Date(r.updated_at).toLocaleString('zh-CN')}</td>
+      </tr>
+    `).join('');
+  }
+
+  async function loadDashboard() {
+    const res = await fetch('/api/admin/stats');
+    if (!res.ok) return;
+    const d = await res.json();
+
+    // 基础卡片
+    document.getElementById('s-convs').textContent = d.overview.totalConvs.toLocaleString();
+    document.getElementById('s-today').textContent = d.overview.todayConvs;
+    document.getElementById('s-sat').textContent = d.overview.satisfaction != null ? d.overview.satisfaction + '%' : '暂无';
+    document.getElementById('s-docs').textContent = d.knowledge.docs.toLocaleString();
+    document.getElementById('s-vecs').textContent = d.knowledge.vectors.toLocaleString();
+    document.getElementById('s-msgs').textContent = d.overview.totalUserMsgs.toLocaleString();
+
+    // 7日趋势柱状图
+    const chart = document.getElementById('trend-chart');
+    if (d.trend && d.trend.length > 0) {
+      const max = Math.max(...d.trend.map(t => t.n), 1);
+      chart.innerHTML = d.trend.map(t => {
+        const pct = Math.max(Math.round(t.n / max * 100), 4);
+        const day = t.day.slice(5); // MM-DD
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <span style="font-size:10px;color:#999">${t.n}</span>
+          <div style="width:100%;height:${pct}%;background:var(--red);border-radius:3px 3px 0 0;min-height:4px"></div>
+          <span style="font-size:10px;color:#999">${day}</span>
+        </div>`;
+      }).join('');
+    } else {
+      chart.innerHTML = '<span style="color:#999;font-size:13px;padding:12px">暂无数据</span>';
+    }
+
+    // 差评问题列表
+    const badList = document.getElementById('bad-feedback-list');
+    if (d.badFeedback && d.badFeedback.length > 0) {
+      badList.innerHTML = d.badFeedback.map(f => `
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px">
+          <span style="color:#ef4444;margin-right:6px">👎</span>
+          <span>${f.title || f.question || '(无内容)'}</span>
+          <span style="float:right;color:#999;font-size:11px">${f.created_at ? f.created_at.slice(0,10) : ''}</span>
+        </div>`).join('');
+    } else {
+      badList.innerHTML = '<div style="padding:12px;color:#999;font-size:13px">暂无差评记录</div>';
+    }
+  }
+
+  let docsCurrentPage = 1;
+
+  async function loadDocs(page) {
+    if (page) docsCurrentPage = page;
+    const q = document.getElementById('docs-search').value.trim();
+    const url = `/api/knowledge?page=${docsCurrentPage}&limit=20${q ? '&q=' + encodeURIComponent(q) : ''}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const tbody = document.getElementById('docs-table');
+
+    if (data.error) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--subtext)">加载失败</td></tr>'; return; }
+    if (!data.docs || !data.docs.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--subtext);text-align:center;padding:20px">暂无文档</td></tr>';
+      document.getElementById('docs-total-label').textContent = '';
+      document.getElementById('docs-pagination').innerHTML = '';
+      return;
+    }
+
+    document.getElementById('docs-total-label').textContent = `共 ${data.total} 篇`;
+    tbody.innerHTML = data.docs.map(d => `
+      <tr>
+        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${d.title}">${d.title}</td>
+        <td><span class="badge badge-yellow">${d.source_type}</span></td>
+        <td style="font-size:11px;color:var(--subtext);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.source_url ? '<a href="'+d.source_url+'" target="_blank" style="color:var(--subtext)">链接</a>' : '-'}</td>
+        <td style="white-space:nowrap">${new Date(d.created_at).toLocaleDateString('zh-CN')}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-secondary btn-sm" onclick="viewDoc(${d.id})" style="margin-right:4px">查看</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteDoc(${d.id}, '${d.title.replace(/'/g,'').replace(/"/g,'')}')">删除</button>
+        </td>
+      </tr>
+    `).join('');
+
+    // Pagination
+    const pages = data.pages;
+    const cur = docsCurrentPage;
+    let pg = '';
+    if (pages > 1) {
+      pg += cur > 1 ? `<button class="btn btn-secondary btn-sm" onclick="loadDocs(${cur-1})">上一页</button>` : '';
+      // show up to 5 page numbers around current
+      const start = Math.max(1, cur - 2), end = Math.min(pages, cur + 2);
+      if (start > 1) pg += `<button class="btn btn-secondary btn-sm" onclick="loadDocs(1)">1</button>${start > 2 ? '<span style="padding:0 4px">...</span>' : ''}`;
+      for (let i = start; i <= end; i++) {
+        pg += `<button class="btn btn-${i===cur?'primary':'secondary'} btn-sm" onclick="loadDocs(${i})">${i}</button>`;
+      }
+      if (end < pages) pg += `${end < pages-1 ? '<span style="padding:0 4px">...</span>' : ''}<button class="btn btn-secondary btn-sm" onclick="loadDocs(${pages})">${pages}</button>`;
+      pg += cur < pages ? `<button class="btn btn-secondary btn-sm" onclick="loadDocs(${cur+1})">下一页</button>` : '';
+      pg += `<span style="font-size:12px;color:var(--subtext);margin-left:4px">第${cur}/${pages}页</span>`;
+    }
+    document.getElementById('docs-pagination').innerHTML = pg;
+  }
+
+  async function deleteDoc(id, title) {
+    if (!confirm(`确定删除「${title}」？`)) return;
+    const res = await fetch('/api/knowledge/' + id, { method:'DELETE' });
+    const d = await res.json();
+    if (d.success) { loadDocs(); loadDashboard(); }
+    else alert('删除失败: ' + d.error);
+  }
+
+  async function loadSkills() {
+    const res = await fetch('/api/admin/skills');
+    const skills = await res.json();
+    const list = document.getElementById('skills-list');
+    list.innerHTML = skills.map(s => `
+      <div class="skill-row">
+        <div class="skill-info">
+          <div class="skill-name">${s.name}</div>
+          <div class="skill-desc">${s.description}</div>
+        </div>
+        <label class="toggle" title="${s.enabled ? '点击禁用' : '点击启用'}">
+          <input type="checkbox" ${s.enabled ? 'checked' : ''} onchange="toggleSkill('${s.name}', this.checked)">
+          <div class="toggle-slider"></div>
+        </label>
+      </div>
+    `).join('');
+  }
+
+  async function toggleSkill(name, enabled) {
+    await fetch('/api/admin/skills/' + name, {
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ enabled })
+    });
+  }
+
+  // --- MCP Tools ---
+  async function loadMcpTools() {
+    try {
+      const res = await fetch('/api/admin/mcp-tools');
+      if (!res.ok) { document.getElementById('mcp-list').innerHTML = '<div style="color:var(--subtext);font-size:13px">加载失败</div>'; return; }
+      const tools = await res.json();
+      const list = document.getElementById('mcp-list');
+      if (!tools.length) {
+        list.innerHTML = '<div style="color:var(--subtext);font-size:13px">暂无 MCP 工具</div>';
+        return;
+      }
+      list.innerHTML = tools.map(t => `
+        <div class="skill-row">
+          <div class="skill-info">
+            <div class="skill-name">${t.name} ${t.endpoint_url ? '<span style="font-size:11px;color:var(--subtext);font-weight:400">远程</span>' : '<span style="font-size:11px;color:var(--green);font-weight:400">本地内置</span>'}</div>
+            <div class="skill-desc">${t.description || ''}${t.endpoint_url ? ' → ' + t.endpoint_url : ''}</div>
+          </div>
+          <label class="toggle" title="${t.enabled ? '点击禁用' : '点击启用'}">
+            <input type="checkbox" ${t.enabled ? 'checked' : ''} onchange="toggleMcpTool(${t.id}, this.checked)">
+            <div class="toggle-slider"></div>
+          </label>
+          ${t.endpoint_url ? `<button class="btn btn-secondary btn-sm" style="font-size:11px;padding:3px 8px;color:var(--red)" onclick="deleteMcpTool(${t.id}, '${t.name}')">删除</button>` : ''}
+        </div>
+      `).join('');
+    } catch(e) {
+      document.getElementById('mcp-list').innerHTML = '<div style="color:var(--subtext);font-size:13px">加载出错</div>';
+    }
+  }
+
+  async function toggleMcpTool(id, enabled) {
+    const res = await fetch('/api/admin/mcp-tools/' + id, {
+      method:'PUT', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ enabled })
+    });
+    if (!res.ok) { const d = await res.json(); showMcpAlert('error', d.error || '操作失败'); }
+  }
+
+  async function deleteMcpTool(id, name) {
+    if (!confirm('确定删除 MCP 工具 ' + name + '？')) return;
+    const res = await fetch('/api/admin/mcp-tools/' + id, { method:'DELETE' });
+    const d = await res.json();
+    if (d.ok) { loadMcpTools(); }
+    else { showMcpAlert('error', d.error || '删除失败'); }
+  }
+
+  function showMcpForm() {
+    document.getElementById('mcp-form').style.display = 'block';
+    document.getElementById('mcp-name').focus();
+  }
+
+  async function saveMcpTool() {
+    const name = document.getElementById('mcp-name').value.trim();
+    const desc = document.getElementById('mcp-desc').value.trim();
+    const url = document.getElementById('mcp-url').value.trim();
+    const schemaRaw = document.getElementById('mcp-schema').value.trim();
+
+    if (!name) { showMcpAlert('error', '工具名称不能为空'); return; }
+    if (!url) { showMcpAlert('error', '远程 URL 不能为空'); return; }
+
+    let input_schema = null;
+    if (schemaRaw) {
+      try { input_schema = JSON.parse(schemaRaw); }
+      catch { showMcpAlert('error', 'Input Schema JSON 格式错误'); return; }
+    }
+
+    const res = await fetch('/api/admin/mcp-tools', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name, description: desc, endpoint_url: url, input_schema })
+    });
+    const d = await res.json();
+    if (res.ok) {
+      document.getElementById('mcp-form').style.display = 'none';
+      document.getElementById('mcp-name').value = '';
+      document.getElementById('mcp-desc').value = '';
+      document.getElementById('mcp-url').value = '';
+      document.getElementById('mcp-schema').value = '';
+      showMcpAlert('success', '工具注册成功');
+      loadMcpTools();
+    } else {
+      showMcpAlert('error', d.error || '注册失败');
+    }
+  }
+
+  function showMcpAlert(type, msg) {
+    const el = document.getElementById('mcp-alert');
+    el.className = 'alert alert-' + (type === 'error' ? 'error' : 'success');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+  }
+
+  // Upload panels
+  function showUploadTab(tab) {
+    ['file','url','crawl','text','biz'].forEach(t => {
+      document.getElementById('upload-panel-' + t).style.display = t === tab ? 'block' : 'none';
+      const btn = document.getElementById('upload-tab-' + t);
+      btn.style.borderColor = t === tab ? 'var(--red)' : '';
+      btn.style.color = t === tab ? 'var(--red)' : '';
+    });
+  }
+
+  // --- Crawl ---
+  let crawlJobId = null;
+  let crawlTimer = null;
+
+  async function startCrawl() {
+    const url = document.getElementById('crawl-url').value.trim();
+    const maxPagesRaw = document.getElementById('crawl-max').value;
+    const maxPages = maxPagesRaw ? Number(maxPagesRaw) : 0; // 0 = unlimited
+    if (!url) { alert('请输入起始网址'); return; }
+
+    document.getElementById('crawl-start-btn').disabled = true;
+    document.getElementById('crawl-cancel-btn').style.display = 'inline-block';
+    document.getElementById('crawl-progress').style.display = 'block';
+    document.getElementById('crawl-log').textContent = '';
+    document.getElementById('crawl-status').textContent = '启动中...';
+
+    const res = await fetch('/api/knowledge/crawl', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, max_pages: Number(maxPages) })
+    });
+    const d = await res.json();
+    if (!d.jobId) { alert('启动失败: ' + d.error); resetCrawlUI(); return; }
+
+    crawlJobId = d.jobId;
+    crawlTimer = setInterval(pollCrawl, 1500);
+  }
+
+  async function pollCrawl() {
+    if (!crawlJobId) return;
+    const res = await fetch('/api/knowledge/crawl/' + crawlJobId);
+    const job = await res.json();
+
+    document.getElementById('crawl-status').textContent = job.status === 'running' ? '爬取中...' : job.status === 'done' ? '✅ 完成' : '已停止';
+    document.getElementById('crawl-done').textContent = job.done;
+    document.getElementById('crawl-failed').textContent = job.failed;
+    document.getElementById('crawl-total').textContent = job.total;
+
+    const logEl = document.getElementById('crawl-log');
+    logEl.textContent = job.logs.map(l => l.msg).join('\n');
+    logEl.scrollTop = logEl.scrollHeight;
+
+    if (job.status !== 'running') {
+      clearInterval(crawlTimer);
+      resetCrawlUI();
+      loadDocs();
+      loadDashboard();
+    }
+  }
+
+  async function cancelCrawl() {
+    if (!crawlJobId) return;
+    await fetch('/api/knowledge/crawl/' + crawlJobId + '/cancel', { method: 'POST' });
+  }
+
+  function resetCrawlUI() {
+    document.getElementById('crawl-start-btn').disabled = false;
+    document.getElementById('crawl-cancel-btn').style.display = 'none';
+    crawlJobId = null;
+  }
+
+  // --- Lenovo iknow API import ---
+  let lenovoJobId = null;
+  let lenovoTimer = null;
+
+  async function startLenovoCrawl() {
+    const keyword = document.getElementById('lenovo-keyword').value.trim();
+    const maxArticles = document.getElementById('lenovo-max').value;
+    document.getElementById('lenovo-start-btn').disabled = true;
+    document.getElementById('lenovo-cancel-btn').style.display = 'inline-block';
+    document.getElementById('lenovo-progress').style.display = 'block';
+    document.getElementById('lenovo-log').textContent = '';
+    document.getElementById('lenovo-status').textContent = '启动中...';
+
+    const res = await fetch('/api/knowledge/lenovo-crawl', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keyword: keyword || ' ', max_articles: maxArticles ? Number(maxArticles) : 0 })
+    });
+    const d = await res.json();
+    if (!d.jobId) { alert('启动失败: ' + d.error); resetLenovoUI(); return; }
+    lenovoJobId = d.jobId;
+    lenovoTimer = setInterval(pollLenovo, 2000);
+  }
+
+  async function pollLenovo() {
+    if (!lenovoJobId) return;
+    const res = await fetch('/api/knowledge/lenovo-crawl/' + lenovoJobId);
+    const job = await res.json();
+    document.getElementById('lenovo-status').textContent = job.status === 'running' ? '导入中...' : job.status === 'done' ? '✅ 完成' : '已停止';
+    document.getElementById('lenovo-done').textContent = job.done;
+    document.getElementById('lenovo-skipped').textContent = job.skipped || 0;
+    document.getElementById('lenovo-failed').textContent = job.failed;
+    document.getElementById('lenovo-total').textContent = job.total;
+    const logEl = document.getElementById('lenovo-log');
+    logEl.textContent = job.logs.map(l => l.msg).join('\n');
+    logEl.scrollTop = logEl.scrollHeight;
+    if (job.status !== 'running') {
+      clearInterval(lenovoTimer);
+      resetLenovoUI();
+      loadDocs();
+      loadDashboard();
+    }
+  }
+
+  async function cancelLenovoCrawl() {
+    if (!lenovoJobId) return;
+    await fetch('/api/knowledge/lenovo-crawl/' + lenovoJobId + '/cancel', { method: 'POST' });
+  }
+
+  function resetLenovoUI() {
+    document.getElementById('lenovo-start-btn').disabled = false;
+    document.getElementById('lenovo-cancel-btn').style.display = 'none';
+    lenovoJobId = null;
+  }
+
+  async function fixShortDocs() {
+    if (!confirm('将对内容不足200字的文档重新从联想详情接口补充内容，可能需要较长时间，确定开始？')) return;
+    const res = await fetch('/api/knowledge/fix-short', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ threshold: 200 }) });
+    const { jobId } = await res.json();
+    if (!jobId) { alert('启动失败'); return; }
+    lenovoJobId = jobId;
+    document.getElementById('lenovo-progress').style.display = 'block';
+    const poll = setInterval(async () => {
+      const r = await fetch('/api/knowledge/fix-short/' + jobId);
+      const job = await r.json();
+      document.getElementById('lenovo-status').textContent = job.status;
+      document.getElementById('lenovo-done').textContent = job.done;
+      document.getElementById('lenovo-skipped').textContent = job.skipped;
+      document.getElementById('lenovo-failed').textContent = job.failed;
+      document.getElementById('lenovo-total').textContent = job.total;
+      const logEl = document.getElementById('lenovo-log');
+      logEl.innerHTML = (job.logs || []).map(l => `<div>[${l.time.substring(11,19)}] ${l.msg}</div>`).join('');
+      logEl.scrollTop = logEl.scrollHeight;
+      if (job.status === 'done' || job.status === 'cancelled') clearInterval(poll);
+    }, 2000);
+  }
+
+  // --- Biz Lenovo 企业官网爬取 ---
+
+  // --- L3.1 知识图谱 ---
+  async function loadKGStats() {
+    try {
+      const res = await fetch('/api/admin/kg-stats');
+      if (!res.ok) return;
+      const d = await res.json();
+      document.getElementById('kg-entities').textContent = d.entities.toLocaleString();
+      document.getElementById('kg-relations').textContent = d.relations.toLocaleString();
+      const badge = document.getElementById('kg-building-badge');
+      badge.style.display = d.building ? 'inline-block' : 'none';
+    } catch (e) {}
+  }
+
+  async function buildKG() {
+    const el = document.getElementById('kg-alert');
+    el.textContent = '正在触发建图...';
+    try {
+      const res = await fetch('/api/admin/build-kg', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      const d = await res.json();
+      el.textContent = d.message || (d.ok ? '后台建图已启动' : '启动失败');
+      if (d.ok) {
+        document.getElementById('kg-building-badge').style.display = 'inline-block';
+        setTimeout(loadKGStats, 5000);
+      }
+    } catch (e) {
+      el.textContent = '请求失败: ' + e.message;
+    }
+  }
+
+  async function testSearch() {
+    const q = document.getElementById('search-test-input').value.trim();
+    if (!q) return;
+    const el = document.getElementById('search-test-result');
+    el.innerHTML = '<span style="color:var(--subtext);font-size:13px">搜索中...</span>';
+    const res = await fetch('/api/knowledge/search?q=' + encodeURIComponent(q) + '&topK=5');
+    const hits = await res.json();
+    if (!hits.length) { el.innerHTML = '<span style="color:var(--subtext);font-size:13px">⚠️ 未找到相关内容，知识库可能为空或关键词不匹配</span>'; return; }
+    el.innerHTML = hits.map((h, i) => `
+      <div style="border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:8px;font-size:13px">
+        <div style="font-weight:600;margin-bottom:4px">[${i+1}] ${h.title}</div>
+        <div style="color:var(--subtext);line-height:1.6">${h.content.slice(0, 300)}${h.content.length > 300 ? '...' : ''}</div>
+        <div style="font-size:11px;color:var(--subtext);margin-top:4px">相关度分: ${h.score?.toFixed ? h.score.toFixed(4) : h.score}</div>
+      </div>
+    `).join('');
+  }
+
+  async function uploadFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const title = document.getElementById('file-title').value || file.name;
+    const alert = document.getElementById('kb-alert');
+    showAlert(alert, `正在处理「${file.name}」...`, 'success');
+
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('title', title);
+
+    try {
+      const res = await fetch('/api/knowledge/upload', { method:'POST', body:fd });
+      const d = await res.json();
+      if (d.success) {
+        showAlert(alert, `✅ 「${d.title}」已入库，共 ${d.chunks} 个知识块`, 'success');
+        loadDocs(); loadDashboard();
+      } else {
+        showAlert(alert, '❌ 上传失败：' + d.error);
+      }
+    } catch(e) {
+      showAlert(alert, '❌ 网络错误');
+    }
+    input.value = '';
+  }
+
+  async function ingestUrl() {
+    const url = document.getElementById('url-input').value.trim();
+    const title = document.getElementById('url-title').value.trim();
+    const alert = document.getElementById('kb-alert');
+    if (!url) return showAlert(alert, '请输入URL');
+
+    showAlert(alert, '正在抓取网页内容...', 'success');
+    try {
+      const res = await fetch('/api/knowledge/url', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ url, title })
+      });
+      const d = await res.json();
+      if (d.success) {
+        showAlert(alert, `✅ 「${d.title}」已入库，共 ${d.chunks} 个知识块`, 'success');
+        document.getElementById('url-input').value = '';
+        loadDocs(); loadDashboard();
+      } else {
+        showAlert(alert, '❌ 失败：' + d.error);
+      }
+    } catch(e) { showAlert(alert, '❌ 网络错误'); }
+  }
+
+  async function ingestText() {
+    const title = document.getElementById('text-title').value.trim();
+    const content = document.getElementById('text-content').value.trim();
+    const alert = document.getElementById('kb-alert');
+    if (!title || !content) return showAlert(alert, '标题和内容不能为空');
+
+    try {
+      const res = await fetch('/api/knowledge/text', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ title, content })
+      });
+      const d = await res.json();
+      if (d.success) {
+        showAlert(alert, `✅ 「${d.title}」已入库，共 ${d.chunks} 个知识块`, 'success');
+        document.getElementById('text-title').value = '';
+        document.getElementById('text-content').value = '';
+        loadDocs(); loadDashboard();
+      } else {
+        showAlert(alert, '❌ 失败：' + d.error);
+      }
+    } catch(e) { showAlert(alert, '❌ 网络错误'); }
+  }
+
+  function showAlert(el, msg, type = 'error') {
+    el.className = 'alert alert-' + type;
+    el.textContent = msg;
+    el.style.display = 'block';
+    if (type === 'success') setTimeout(() => { el.style.display = 'none'; }, 5000);
+  }
+
+  // Drag and drop
+  const dropArea = document.getElementById('drop-area');
+  if (dropArea) {
+    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('drag'); });
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('drag'));
+    dropArea.addEventListener('drop', e => {
+      e.preventDefault(); dropArea.classList.remove('drag');
+      const file = e.dataTransfer.files[0];
+      if (file) { document.getElementById('file-input').files = e.dataTransfer.files; uploadFile(document.getElementById('file-input')); }
+    });
+  }
+
+  async function changePassword() {
+    const old_password = document.getElementById('pwd-old').value;
+    const new_password = document.getElementById('pwd-new').value;
+    const confirm = document.getElementById('pwd-confirm').value;
+    const alert = document.getElementById('pwd-alert');
+    if (!old_password || !new_password) return showAlert(alert, '请填写所有字段');
+    if (new_password !== confirm) return showAlert(alert, '两次新密码不一致');
+    if (new_password.length < 8) return showAlert(alert, '新密码至少8位');
+    try {
+      const res = await fetch('/api/admin/change-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ old_password, new_password })
+      });
+      const d = await res.json();
+      if (d.success) {
+        showAlert(alert, '✅ 密码修改成功', 'success');
+        document.getElementById('pwd-old').value = '';
+        document.getElementById('pwd-new').value = '';
+        document.getElementById('pwd-confirm').value = '';
+      } else {
+        showAlert(alert, '❌ ' + d.error);
+      }
+    } catch(e) { showAlert(alert, '❌ 网络错误'); }
+  }
+
+  // View doc detail
+  async function viewDoc(id) {
+    const res = await fetch('/api/knowledge/' + id);
+    const d = await res.json();
+    if (d.error) { alert('加载失败: ' + d.error); return; }
+    const content = d.content || d.chunks?.map(c => c.content).join('\n\n---\n\n') || '（无内容）';
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+    modal.innerHTML = `
+      <div style="background:#1e1e2e;border:1px solid rgba(255,255,255,0.1);border-radius:12px;max-width:760px;width:100%;max-height:80vh;display:flex;flex-direction:column">
+        <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:600;font-size:15px">${d.title}</div>
+            <div style="font-size:12px;color:var(--subtext);margin-top:4px">${d.source_url ? '<a href="'+d.source_url+'" target="_blank" style="color:#7c8cf8">'+d.source_url+'</a>' : d.source_type}</div>
+          </div>
+          <button onclick="this.closest('[style*=fixed]').remove()" style="background:none;border:none;color:var(--subtext);font-size:20px;cursor:pointer;padding:4px 8px">✕</button>
+        </div>
+        <div style="padding:20px;overflow-y:auto;flex:1;white-space:pre-wrap;font-size:13px;line-height:1.7;color:var(--text)">${content.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      </div>`;
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+  }
+
+  // L3.4 监控 Dashboard
+  async function loadMonitor() {
+    try {
+      const res = await fetch('/api/admin/metrics');
+      const d = await res.json();
+      if (d.error) { console.error('监控数据加载失败', d.error); return; }
+
+      const m = d.metrics;
+      function fmtVal(k, v) {
+        if (v === null || v === undefined) return '-';
+        if (k === 'reflection_error_rate' || k === 'knowledge_hit_rate') return (v * 100).toFixed(1) + '%';
+        return String(Math.round(v));
+      }
+      function fmtTime(t) {
+        if (!t) return '尚无数据';
+        return new Date(t + 'Z').toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+      }
+
+      const mapping = {
+        active_users_1h: 'm-active-users',
+        msg_count_1h: 'm-msg-count',
+        avg_msg_length: 'm-avg-len',
+        reflection_error_rate: 'm-refl-err',
+        knowledge_hit_rate: 'm-kb-hit',
+      };
+      for (const [key, elId] of Object.entries(mapping)) {
+        const row = m[key] || {};
+        const el = document.getElementById(elId);
+        if (el) el.textContent = fmtVal(key, row.metric_value);
+        const timeEl = document.getElementById(elId + '-time');
+        if (timeEl) timeEl.textContent = fmtTime(row.snapshot_at);
+      }
+
+      // 告警区域
+      const alertsEl = document.getElementById('monitor-alerts');
+      if (d.alerts && d.alerts.length > 0) {
+        alertsEl.innerHTML = d.alerts.map(a => `
+          <div style="background:rgba(226,0,26,0.1);border:1px solid rgba(226,0,26,0.3);color:#ff6b6b;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:8px">
+            ⚠️ ${a.message}
+          </div>`).join('');
+      } else {
+        alertsEl.innerHTML = '<div style="background:rgba(63,185,80,0.08);border:1px solid rgba(63,185,80,0.2);color:var(--green);padding:10px 14px;border-radius:8px;font-size:13px">✅ 所有指标正常，无告警</div>';
+      }
+
+      document.getElementById('monitor-last-refresh').textContent = '最后刷新：' + new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+
+      // 消息量趋势图
+      loadMonitorTrend();
+    } catch (e) {
+      console.error('loadMonitor error', e);
+    }
+  }
+
+  async function loadMonitorTrend() {
+    try {
+      const res = await fetch('/api/admin/metrics/trend?key=msg_count_1h&hours=24');
+      const d = await res.json();
+      const chart = document.getElementById('monitor-trend-chart');
+      if (!d.trend || d.trend.length === 0) {
+        chart.innerHTML = '<span style="color:var(--subtext);font-size:13px;padding:12px">暂无趋势数据</span>';
+        return;
+      }
+      const vals = d.trend.map(r => r.metric_value);
+      const max = Math.max(...vals, 1);
+      chart.innerHTML = vals.map((v, i) => {
+        const h = Math.max(4, Math.round((v / max) * 64));
+        const t = d.trend[i].snapshot_at ? new Date(d.trend[i].snapshot_at + 'Z').toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Shanghai' }) : '';
+        return `<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:8px" title="${t}: ${v}条">
+          <div style="width:100%;background:rgba(226,0,26,0.6);border-radius:3px 3px 0 0;height:${h}px"></div>
+        </div>`;
+      }).join('');
+    } catch (e) {
+      console.error('loadMonitorTrend error', e);
+    }
+  }
+
+  async function refreshMonitor() {
+    const btn = document.getElementById('monitor-refresh-btn');
+    btn.disabled = true;
+    btn.textContent = '采集中...';
+    try {
+      await fetch('/api/admin/metrics/collect', { method: 'POST' });
+      await loadMonitor();
+    } catch (e) {
+      console.error('refreshMonitor error', e);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '立即刷新';
+    }
+  }
+
+  // ── QA 对管理（L4.2） ──────────────────────────
+  let qaCurrentPage = 1;
+  const QA_PAGE_SIZE = 20;
+
+  async function loadQAList(page) {
+    if (page) qaCurrentPage = page;
+    const offset = (qaCurrentPage - 1) * QA_PAGE_SIZE;
+    try {
+      const res = await fetch(`/api/knowledge/qa/list?limit=${QA_PAGE_SIZE}&offset=${offset}`);
+      const data = await res.json();
+      const tbody = document.getElementById('qa-table');
+      document.getElementById('qa-total-label').textContent = `共 ${data.total} 条`;
+      if (!data.items || !data.items.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--subtext);text-align:center;padding:20px">暂无 QA 对，可手动添加或点「自动生成 QA」</td></tr>';
+        document.getElementById('qa-pagination').innerHTML = '';
+        return;
+      }
+      tbody.innerHTML = data.items.map(q => `
+        <tr>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${q.question.replace(/"/g,'')}">${q.question}</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--subtext)" title="${q.answer.replace(/"/g,'')}">${q.answer}</td>
+          <td style="font-size:11px;color:var(--muted)">${q.source || '-'}</td>
+          <td style="white-space:nowrap;font-size:12px">${new Date(q.created_at).toLocaleDateString('zh-CN')}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteQAItem(${q.id})">删除</button></td>
+        </tr>
+      `).join('');
+      // Pagination
+      const pages = Math.ceil(data.total / QA_PAGE_SIZE);
+      const cur = qaCurrentPage;
+      let pg = '';
+      if (pages > 1) {
+        if (cur > 1) pg += `<button class="btn btn-secondary btn-sm" onclick="loadQAList(${cur-1})">上一页</button>`;
+        pg += `<span style="font-size:12px;color:var(--subtext);margin:0 6px">第${cur}/${pages}页</span>`;
+        if (cur < pages) pg += `<button class="btn btn-secondary btn-sm" onclick="loadQAList(${cur+1})">下一页</button>`;
+      }
+      document.getElementById('qa-pagination').innerHTML = pg;
+    } catch (e) {
+      document.getElementById('qa-table').innerHTML = '<tr><td colspan="5" style="color:var(--subtext)">加载失败</td></tr>';
+    }
+  }
+
+  async function addQA() {
+    const q = document.getElementById('qa-add-question').value.trim();
+    const a = document.getElementById('qa-add-answer').value.trim();
+    const alertEl = document.getElementById('qa-alert');
+    if (!q || !a) { alertEl.innerHTML = '<div class="alert alert-error">问题和答案不能为空</div>'; return; }
+    try {
+      const res = await fetch('/api/knowledge/qa/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [{ question: q, answer: a, source: 'manual' }] })
+      });
+      const d = await res.json();
+      if (d.imported > 0) {
+        alertEl.innerHTML = '<div class="alert alert-success">✅ 添加成功</div>';
+        document.getElementById('qa-add-question').value = '';
+        document.getElementById('qa-add-answer').value = '';
+        loadQAList(1);
+      } else {
+        alertEl.innerHTML = '<div class="alert alert-error">添加失败，请检查输入</div>';
+      }
+    } catch (e) {
+      alertEl.innerHTML = `<div class="alert alert-error">网络错误：${e.message}</div>`;
+    }
+    setTimeout(() => { alertEl.innerHTML = ''; }, 3000);
+  }
+
+  async function deleteQAItem(id) {
+    if (!confirm('确定删除该 QA 对？')) return;
+    try {
+      const res = await fetch('/api/knowledge/qa/' + id, { method: 'DELETE' });
+      const d = await res.json();
+      if (d.success) loadQAList();
+      else alert('删除失败: ' + d.error);
+    } catch (e) {
+      alert('网络错误: ' + e.message);
+    }
+  }
+
+  async function generateQA() {
+    const btn = document.getElementById('gen-qa-btn');
+    const alertEl = document.getElementById('qa-alert');
+    btn.disabled = true;
+    btn.textContent = '生成中...';
+    try {
+      const res = await fetch('/api/admin/generate-qa?limit=20', { method: 'POST' });
+      const d = await res.json();
+      alertEl.innerHTML = '<div class="alert alert-success">✅ 已在后台生成中，约1-2分钟后刷新列表查看</div>';
+    } catch (e) {
+      alertEl.innerHTML = `<div class="alert alert-error">请求失败：${e.message}</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '自动生成 QA';
+    }
+    setTimeout(() => { alertEl.innerHTML = ''; }, 5000);
+  }
+
+  // ── L3.3 回归测试 ──────────────────────────────
+  async function loadRegressionCaseCount() {
+    try {
+      const res = await fetch('/api/admin/regression-cases');
+      if (!res.ok) return;
+      const data = await res.json();
+      const el = document.getElementById('regression-case-count');
+      if (el) el.textContent = Array.isArray(data) ? data.length : '-';
+    } catch (e) {
+      console.error('loadRegressionCaseCount error', e);
+    }
+  }
+
+  async function runRegressionTests() {
+    const btn = document.getElementById('regression-run-btn');
+    const resultEl = document.getElementById('regression-result');
+    btn.disabled = true;
+    btn.textContent = '测试中...';
+    resultEl.innerHTML = '<div style="color:var(--subtext);font-size:13px">正在执行回归测试，请稍候（约10-30秒）...</div>';
+    try {
+      const res = await fetch('/api/admin/regression-cases/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ limit: 20 })
+      });
+      const data = await res.json();
+      if (data.error) {
+        resultEl.innerHTML = `<div style="color:#f85149;font-size:13px">错误：${data.error}</div>`;
+        return;
+      }
+      const rateColor = data.rate >= 80 ? 'var(--green)' : data.rate >= 60 ? 'var(--yellow)' : '#f85149';
+      let html = `<div style="display:flex;gap:24px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+        <div style="font-size:28px;font-weight:700;color:${rateColor}">${data.rate}%</div>
+        <div style="font-size:13px;color:var(--subtext)">通过 <strong style="color:var(--green)">${data.passed}</strong> / ${data.total}，失败 <strong style="color:#f85149">${data.failed}</strong></div>
+      </div>`;
+      if (data.details && data.details.length) {
+        html += `<table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr>
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)">问题</th>
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)">结果</th>
+            <th style="text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)">缺失关键词</th>
+          </tr></thead><tbody>`;
+        data.details.forEach(d => {
+          const statusIcon = d.passed ? '✅' : '❌';
+          const missing = d.missing_keywords && d.missing_keywords.length ? d.missing_keywords.join(', ') : '-';
+          html += `<tr>
+            <td style="padding:6px 8px;border-bottom:1px solid var(--border)">${d.question}</td>
+            <td style="padding:6px 8px;border-bottom:1px solid var(--border)">${statusIcon}</td>
+            <td style="padding:6px 8px;border-bottom:1px solid var(--border);color:${d.passed ? 'var(--subtext)' : '#f85149'}">${missing}</td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+      }
+      resultEl.innerHTML = html;
+    } catch (e) {
+      resultEl.innerHTML = `<div style="color:#f85149;font-size:13px">请求失败：${e.message}</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '运行回归测试';
+    }
+  }
+
+  // ── 代码沙箱测试 ──────────────────────────────
+  async function runSandboxTest() {
+    const btn = document.getElementById('sandbox-run-btn');
+    const alertEl = document.getElementById('sandbox-alert');
+    const outputEl = document.getElementById('sandbox-output');
+    const resultEl = document.getElementById('sandbox-result');
+    const code = document.getElementById('sandbox-code').value.trim();
+    if (!code) {
+      alertEl.style.display = 'block';
+      alertEl.className = 'alert alert-error';
+      alertEl.textContent = '请输入要执行的代码';
+      setTimeout(() => { alertEl.style.display = 'none'; }, 3000);
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = '运行中...';
+    outputEl.style.display = 'none';
+    try {
+      const res = await fetch('/api/admin/sandbox/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      outputEl.style.display = 'block';
+      if (data.error) {
+        resultEl.style.color = '#f85149';
+        resultEl.textContent = '[错误] ' + data.error + (data.output ? '\n\n[部分输出]\n' + data.output : '');
+      } else {
+        resultEl.style.color = 'var(--text)';
+        resultEl.textContent = data.output || '（执行完毕，无输出）';
+      }
+    } catch (e) {
+      alertEl.style.display = 'block';
+      alertEl.className = 'alert alert-error';
+      alertEl.textContent = '请求失败：' + e.message;
+      setTimeout(() => { alertEl.style.display = 'none'; }, 4000);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '运行';
+    }
+  }
+
+  // ── 服务状态 ──────────────────────────────
+  async function loadServiceHealth() {
+    const alertEl = document.getElementById('service-alert');
+    try {
+      const res = await fetch('/health/detail');
+      if (!res.ok) {
+        alertEl.style.display = 'block';
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = `获取服务详情失败（${res.status}）`;
+        return;
+      }
+      alertEl.style.display = 'none';
+      const d = await res.json();
+
+      // 版本
+      document.getElementById('sv-version').textContent = d.version || '-';
+      document.getElementById('sv-commit').textContent = 'commit: ' + (d.commitHash || '-');
+
+      // 运行时长
+      const upSec = d.uptime || 0;
+      const h = Math.floor(upSec / 3600), m = Math.floor((upSec % 3600) / 60), s = upSec % 60;
+      document.getElementById('sv-uptime').textContent =
+        (h ? h + 'h ' : '') + (m ? m + 'm ' : '') + s + 's';
+      document.getElementById('sv-starttime').textContent =
+        '启动: ' + (d.startTime ? new Date(d.startTime).toLocaleString('zh-CN') : '-');
+
+      // 内存
+      if (d.memory) {
+        document.getElementById('sv-mem-heap').textContent = (d.memory.heap_used_mb || '-') + ' MB';
+        document.getElementById('sv-mem-rss').textContent = 'RSS: ' + (d.memory.rss_mb || '-') + ' MB';
+      }
+
+      // DB
+      if (d.db) {
+        document.getElementById('sv-db-size').textContent =
+          d.db.status === 'ok' ? (d.db.size_mb || 0) + ' MB' : '异常';
+        document.getElementById('sv-db-tables').textContent = '表数量: ' + (d.db.tables || '-');
+      }
+
+      // 知识库
+      if (d.knowledge) {
+        document.getElementById('sv-kb-chunks').textContent = (d.knowledge.chunks || 0).toLocaleString();
+        document.getElementById('sv-kb-docs').textContent = '文档数: ' + (d.knowledge.docs || 0);
+      }
+
+      // LLM
+      if (d.llm_api) {
+        const el = document.getElementById('sv-llm-status');
+        el.textContent = d.llm_api.reachable ? '正常' : '不可达';
+        el.style.color = d.llm_api.reachable ? 'var(--green)' : '#f85149';
+        document.getElementById('sv-llm-latency').textContent = '延迟: ' + (d.llm_api.latency_ms || '-') + 'ms';
+      }
+    } catch (e) {
+      alertEl.style.display = 'block';
+      alertEl.className = 'alert alert-error';
+      alertEl.textContent = '请求失败: ' + e.message;
+    }
+  }
+
+  async function doBackup() {
+    const btn = document.getElementById('backup-btn');
+    const alertEl = document.getElementById('service-alert');
+    btn.disabled = true;
+    btn.textContent = '备份中...';
+    try {
+      const res = await fetch('/api/admin/backup', { method: 'POST' });
+      const data = await res.json();
+      alertEl.style.display = 'block';
+      if (data.success) {
+        alertEl.className = 'alert alert-success';
+        alertEl.textContent = data.output || '备份完成';
+      } else {
+        alertEl.className = 'alert alert-error';
+        alertEl.textContent = '备份失败: ' + (data.error || '未知错误');
+      }
+    } catch (e) {
+      alertEl.style.display = 'block';
+      alertEl.className = 'alert alert-error';
+      alertEl.textContent = '请求失败: ' + e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '💾 手动备份 DB';
+      setTimeout(() => { alertEl.style.display = 'none'; }, 5000);
+    }
+  }
+
+  async function doRestart() {
+    if (!confirm('确认要优雅重启服务吗？当前请求完成后进程将重启，pm2 会自动拉起。')) return;
+    const btn = document.getElementById('restart-btn');
+    const alertEl = document.getElementById('service-alert');
+    btn.disabled = true;
+    btn.textContent = '重启中...';
+    alertEl.style.display = 'block';
+    alertEl.className = 'alert alert-success';
+    alertEl.textContent = '重启指令已发送，服务将在几秒后恢复...';
+    try {
+      await fetch('/api/admin/restart', { method: 'POST' });
+    } catch (_) {
+      // 重启时连接中断是正常的
+    }
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = '🔁 优雅重启';
+    }, 8000);
+  }
+
+  // Boot
+  checkLogin();
+</script>
+</body>
+</html>
