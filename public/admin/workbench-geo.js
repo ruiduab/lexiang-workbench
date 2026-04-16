@@ -9,7 +9,7 @@ const GEO_SOURCES = {
 };
 // 联想乐享项目(143) 点亮AI 实际开启的平台：豆包/DeepSeek/元宝/Kimi（千问/文心/夸克未开启）
 const GEO_PLATFORMS = ['doubao','deepseek','yuanbao','kimi'];
-const geoState = { scope:'all', platform:'all', period:'30d', questions:[], apiData:null, platData:{} };
+const geoState = { scope:'all', platform:'all', period:'30d', questions:[], apiData:null, platData:{}, compare:'brand' };
 const geoPlatNames = { doubao:'豆包', deepseek:'DeepSeek', yuanbao:'元宝', kimi:'Kimi' };
 const geoPlatColors = { doubao:'#6366f1', deepseek:'#3b82f6', yuanbao:'#10b981', kimi:'#f59e0b' };
 
@@ -96,20 +96,96 @@ async function geoLoadData() {
   }
 }
 
+function geoClampPct(v) { return (v == null || isNaN(v)) ? null : Math.min(+v, 100); }
+
 function geoRenderKpis(data) {
   const bcm = data.brand_coverage_metrics || {};
   const cm = data.conversion_metrics || {};
-  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  // 品牌声量：可见度
-  set('gv-brand-visible', geoFmtPct(bcm.brand_exposure_rate));
-  set('gv-comp-visible', geoFmtPct(bcm.competitor_exposure_rate));
-  // 商品曝光：推荐率/前三率/置顶率
-  set('gv-brand-rec', geoFmtPct(cm.brand_priority_rate));
-  set('gv-comp-rec', geoFmtPct(cm.competitor_priority_rate));
-  set('gv-brand-top3', geoFmtPct(cm.brand_top3_rate));
-  set('gv-comp-top3', geoFmtPct(cm.competitor_top3_rate));
-  set('gv-brand-top1', geoFmtPct(cm.brand_top1_rate));
-  set('gv-comp-top1', geoFmtPct(cm.competitor_top1_rate));
+  // 保存原始数据供 compare 切换用
+  geoState._kpiRaw = {
+    visible: { brand: bcm.brand_exposure_rate, comp: geoClampPct(bcm.competitor_exposure_rate) },
+    rec:     { brand: cm.brand_priority_rate,  comp: geoClampPct(cm.competitor_priority_rate) },
+    top1:    { brand: cm.brand_top1_rate,       comp: geoClampPct(cm.competitor_top1_rate) },
+    top3:    { brand: cm.brand_top3_rate,       comp: geoClampPct(cm.competitor_top3_rate) },
+  };
+  geoApplyCompare();
+}
+
+function geoSetCompare(mode) {
+  geoState.compare = mode;
+  document.querySelectorAll('.geo-cmp-btn').forEach(b => {
+    const active = b.dataset.cmp === mode;
+    b.style.background = active ? '#2563eb' : '#fff';
+    b.style.color = active ? '#fff' : '#374151';
+  });
+  geoApplyCompare();
+}
+
+function geoApplyCompare() {
+  const raw = geoState._kpiRaw;
+  if (!raw) return;
+  const mode = geoState.compare;
+  const labels = { visible: ['品牌可见度','竞品可见度'], rec: ['品牌推荐率','竞品推荐率'], top1: ['品牌推荐置顶率','竞品推荐置顶率'], top3: ['品牌推荐前三率','竞品推荐前三率'] };
+  const idMap = { visible: ['gv-brand-visible','gv-comp-visible'], rec: ['gv-brand-rec','gv-comp-rec'], top1: ['gv-brand-top1','gv-comp-top1'], top3: ['gv-brand-top3','gv-comp-top3'] };
+
+  for (const [metric, ids] of Object.entries(idMap)) {
+    const valEl = document.getElementById(ids[0]);
+    const compEl = document.getElementById(ids[1]);
+    const card = valEl?.closest('.geo-kpi');
+    if (!card) continue;
+    const labelEl = card.querySelector('.gk-label');
+    const brandSubEl = card.querySelector('.gk-brand-sub');
+    const compareEl = card.querySelector('.gk-compare');
+    const b = raw[metric].brand;
+    const c = raw[metric].comp;
+
+    if (mode === 'brand') {
+      valEl.textContent = geoFmtPct(b);
+      labelEl.textContent = labels[metric][0];
+      if (brandSubEl) { brandSubEl.style.display = ''; brandSubEl.innerHTML = `${labels[metric][1]} <span>${geoFmtPct(c)}</span>`; }
+      if (compareEl) compareEl.style.display = 'none';
+      card.classList.toggle('highlight', metric === 'visible');
+    } else if (mode === 'competitor') {
+      valEl.textContent = geoFmtPct(c);
+      labelEl.textContent = labels[metric][1];
+      if (brandSubEl) { brandSubEl.style.display = ''; brandSubEl.innerHTML = `${labels[metric][0]} <span>${geoFmtPct(b)}</span>`; }
+      if (compareEl) compareEl.style.display = 'none';
+      card.classList.remove('highlight');
+      if (metric === 'visible') card.style.borderColor = '#f59e0b';
+    } else {
+      // both mode — show comparison bar
+      valEl.textContent = geoFmtPct(b);
+      labelEl.textContent = labels[metric][0];
+      if (brandSubEl) brandSubEl.style.display = 'none';
+      if (compareEl) {
+        compareEl.style.display = '';
+        const bv = b || 0, cv = c || 0;
+        const diff = bv - cv;
+        const diffSign = diff > 0 ? '+' : '';
+        const diffColor = diff > 0 ? '#059669' : diff < 0 ? '#dc2626' : '#6b7280';
+        const maxV = Math.max(bv, cv, 1);
+        compareEl.innerHTML = `
+          <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:#6b7280;margin-bottom:2px"><span>品牌</span><span>${geoFmtPct(b)}</span></div>
+              <div style="height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden"><div style="height:100%;width:${(bv/maxV*100).toFixed(0)}%;background:#2563eb;border-radius:3px"></div></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:#6b7280;margin-bottom:2px"><span>竞品</span><span>${geoFmtPct(c)}</span></div>
+              <div style="height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden"><div style="height:100%;width:${(cv/maxV*100).toFixed(0)}%;background:#f59e0b;border-radius:3px"></div></div>
+            </div>
+          </div>
+          <div style="font-size:10px;color:${diffColor};margin-top:3px;font-weight:600">差值 ${diffSign}${diff.toFixed(2)}pp</div>
+        `;
+      }
+      card.classList.toggle('highlight', metric === 'visible');
+      card.style.borderColor = '';
+    }
+    // reset border when not competitor mode
+    if (mode !== 'competitor') card.style.borderColor = '';
+  }
 }
 
 function geoRenderEcology(data) {

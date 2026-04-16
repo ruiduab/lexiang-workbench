@@ -145,31 +145,45 @@ const PAGE_RENDERERS = {
       </div>
       <div class="geo-status-line" id="geo-status">加载中...</div>
 
-      <!-- 第一行：4 个核心 KPI -->
-      <div class="geo-kpi-grid cols-4">
-        <div class="geo-kpi highlight">
+      <!-- 品牌 vs 竞品切换 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span style="font-size:12px;color:#6b7280">对比视角</span>
+        <div id="geo-compare-toggle" style="display:inline-flex;border:1px solid #d1d5db;border-radius:8px;overflow:hidden">
+          <button onclick="geoSetCompare('brand')" class="geo-cmp-btn active" data-cmp="brand" style="padding:5px 16px;font-size:12px;border:none;cursor:pointer;font-weight:500;transition:all .15s;background:#2563eb;color:#fff">品牌</button>
+          <button onclick="geoSetCompare('competitor')" class="geo-cmp-btn" data-cmp="competitor" style="padding:5px 16px;font-size:12px;border:none;cursor:pointer;font-weight:500;transition:all .15s;background:#fff;color:#374151">竞品</button>
+          <button onclick="geoSetCompare('both')" class="geo-cmp-btn" data-cmp="both" style="padding:5px 16px;font-size:12px;border:none;cursor:pointer;font-weight:500;transition:all .15s;background:#fff;color:#374151">对比</button>
+        </div>
+      </div>
+
+      <!-- 4 个核心 KPI -->
+      <div class="geo-kpi-grid cols-4" id="geo-kpi-cards">
+        <div class="geo-kpi highlight" data-metric="visible">
           <div class="gk-tip" title="AI 答案中提及目标品牌的问题数占比，衡量品牌基础曝光能力">?</div>
           <div class="gk-val" id="gv-brand-visible">--</div>
           <div class="gk-label">品牌可见度</div>
-          <div class="gk-sub">竞品可见度 <span id="gv-comp-visible">--</span></div>
+          <div class="gk-sub gk-compare" style="display:none"></div>
+          <div class="gk-sub gk-brand-sub">竞品可见度 <span id="gv-comp-visible">--</span></div>
         </div>
-        <div class="geo-kpi">
+        <div class="geo-kpi" data-metric="rec">
           <div class="gk-tip" title="AI 答案中推荐目标品牌/产品的次数占比">?</div>
           <div class="gk-val" id="gv-brand-rec">--</div>
           <div class="gk-label">品牌推荐率</div>
-          <div class="gk-sub">竞品推荐率 <span id="gv-comp-rec">--</span></div>
+          <div class="gk-sub gk-compare" style="display:none"></div>
+          <div class="gk-sub gk-brand-sub">竞品推荐率 <span id="gv-comp-rec">--</span></div>
         </div>
-        <div class="geo-kpi">
+        <div class="geo-kpi" data-metric="top1">
           <div class="gk-tip" title="AI 答案中目标品牌/产品出现在推荐首位（置顶）的次数占比">?</div>
           <div class="gk-val" id="gv-brand-top1">--</div>
           <div class="gk-label">品牌推荐置顶率</div>
-          <div class="gk-sub">竞品置顶率 <span id="gv-comp-top1">--</span></div>
+          <div class="gk-sub gk-compare" style="display:none"></div>
+          <div class="gk-sub gk-brand-sub">竞品置顶率 <span id="gv-comp-top1">--</span></div>
         </div>
-        <div class="geo-kpi">
+        <div class="geo-kpi" data-metric="top3">
           <div class="gk-tip" title="AI 答案中目标品牌/产品出现在推荐列表前 3 位的次数占比">?</div>
           <div class="gk-val" id="gv-brand-top3">--</div>
           <div class="gk-label">品牌推荐前三率</div>
-          <div class="gk-sub">竞品前三率 <span id="gv-comp-top3">--</span></div>
+          <div class="gk-sub gk-compare" style="display:none"></div>
+          <div class="gk-sub gk-brand-sub">竞品前三率 <span id="gv-comp-top3">--</span></div>
         </div>
       </div>
 
