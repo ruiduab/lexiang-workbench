@@ -222,8 +222,23 @@ git push -u origin feat/zhangsan-geo-title
    - **描述**：写清楚为什么改、改了哪些地方、有什么注意事项
 4. 点 **Create pull request**
 5. **通知 baiyu** 来 review（微信/钉钉发个链接）
-6. baiyu 通过后点 **Merge pull request** 合并到 main
-7. 合并后**删掉你的分支**（GitHub 上有按钮，本地用 `git branch -d 分支名`）
+
+#### 第 8 步：baiyu 审核通过后，合并 PR
+
+1. 打开你的 PR 页面，往下滚到底部
+2. 确认显示绿色的 **"No conflicts with base branch"**（没有冲突）
+3. 点绿色的 **Merge pull request** 按钮
+4. 再点 **Confirm merge** 确认
+5. 合并成功后，页面会显示 "Pull request successfully merged and closed"
+6. 点 **Delete branch** 按钮删掉你的远程分支（清理用，不删也行但会越来越多）
+7. 回到本地终端清理：
+   ```bash
+   git checkout main
+   git pull
+   git branch -d feat/zhangsan-geo-title   # 删本地分支
+   ```
+
+> 💡 合并后代码会自动部署到线上（https://leaibot.cn/admin/workbench.html），大约 10 秒内生效。
 
 ---
 
