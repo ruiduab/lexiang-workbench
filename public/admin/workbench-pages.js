@@ -135,13 +135,13 @@ const PAGE_RENDERERS = {
       </div>
       <div class="geo-filter-row">
         <span class="geo-label">时间范围</span>
-        <select id="geo-period" onchange="geoSetPeriod(this.value)" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#FCFCFC;color:#454545;border:1px solid #DBDBDB;cursor:pointer;">
+        <select id="geo-period" onchange="geoSetPeriod(this.value)" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#f9fafb;color:#374151;border:1px solid #d1d5db;cursor:pointer;">
           <option value="7d">最近 7 天</option>
           <option value="30d" selected>最近 30 天</option>
           <option value="year">本年度</option>
         </select>
         <span class="geo-label" style="margin-left:16px;">问题筛选</span>
-        <input id="geo-questions" type="text" placeholder="多个问题用逗号分隔，回车筛选" onkeydown="if(event.key==='Enter'){geoSetQuestions(this.value)}" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#FCFCFC;color:#454545;border:1px solid #DBDBDB;min-width:260px;outline:none;">
+        <input id="geo-questions" type="text" placeholder="多个问题用逗号分隔，回车筛选" onkeydown="if(event.key==='Enter'){geoSetQuestions(this.value)}" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#f9fafb;color:#374151;border:1px solid #d1d5db;min-width:260px;outline:none;">
       </div>
       <div class="geo-status-line" id="geo-status">加载中...</div>
 
@@ -177,12 +177,12 @@ const PAGE_RENDERERS = {
       <div class="geo-row">
         <div class="geo-panel">
           <div class="gpnl-title">信源分布图</div>
-          <div id="geo-sites-treemap" style="min-height:260px"><div style="color:#BDBDBD;font-size:12px;padding:12px">加载中...</div></div>
+          <div id="geo-sites-treemap" style="min-height:260px"><div style="color:#9ca3af;font-size:12px;padding:12px">加载中...</div></div>
         </div>
         <div class="geo-panel">
           <div class="gpnl-title">信源排行榜 Top20</div>
           <div class="geo-scroll-wrap" style="max-height:320px">
-            <div id="geo-sites-rank"><div style="color:#BDBDBD;font-size:12px;padding:12px">加载中...</div></div>
+            <div id="geo-sites-rank"><div style="color:#9ca3af;font-size:12px;padding:12px">加载中...</div></div>
           </div>
         </div>
       </div>
@@ -190,12 +190,12 @@ const PAGE_RENDERERS = {
       <!-- 第三行：各平台引用次数 -->
       <div class="geo-row wide-right">
         <div class="geo-panel">
-          <div class="gpnl-title">各 AI 平台引用次数 <span style="font-size:11px;color:#BDBDBD;font-weight:400">· wiki + 官网合计</span></div>
+          <div class="gpnl-title">各 AI 平台引用次数 <span style="font-size:11px;color:#9ca3af;font-weight:400">· wiki + 官网合计</span></div>
           <div class="geo-kpi-grid cols-2" style="margin-bottom:12px">
             <div class="geo-kpi"><div class="gk-val" id="gv-lenovo-cite">--</div><div class="gk-label">联想官网引用次数</div></div>
             <div class="geo-kpi"><div class="gk-val" id="gv-wiki-cite">--</div><div class="gk-label">乐享/业务 wiki 引用次数</div></div>
           </div>
-          <div class="geo-plat-grid" id="geo-plat-dist"><div style="color:#BDBDBD;font-size:12px;padding:12px">加载中...</div></div>
+          <div class="geo-plat-grid" id="geo-plat-dist"><div style="color:#9ca3af;font-size:12px;padding:12px">加载中...</div></div>
         </div>
         <div class="geo-panel">
           <div class="gpnl-title">信源站点总览</div>
@@ -209,9 +209,9 @@ const PAGE_RENDERERS = {
 
       <!-- 第四行：问题列表 -->
       <div class="geo-panel" style="margin-bottom:12px">
-        <div class="gpnl-title">GEO 问题列表 <span style="font-size:11px;color:#BDBDBD;font-weight:400">· 共 <span id="gv-q-count">--</span> 个问题 · 按模型展示可见性</span></div>
+        <div class="gpnl-title">GEO 问题列表 <span style="font-size:11px;color:#9ca3af;font-weight:400">· 共 <span id="gv-q-count">--</span> 个问题 · 按模型展示可见性</span></div>
         <div class="geo-scroll-wrap" style="max-height:500px">
-          <div id="geo-questions-table"><div style="color:#BDBDBD;font-size:12px;padding:12px">加载中...</div></div>
+          <div id="geo-questions-table"><div style="color:#9ca3af;font-size:12px;padding:12px">加载中...</div></div>
         </div>
       </div>
     </div>
@@ -221,7 +221,7 @@ const PAGE_RENDERERS = {
     <div class="page-header">
       <div><div class="page-title">GEO · 各平台信源分布</div><div class="page-desc">各 AI 模型引用的内容发布平台分布及占比</div></div>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="geo-source-model" onchange="geoLoadSourcePage()" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#FCFCFC;color:#454545;border:1px solid #DBDBDB;cursor:pointer;">
+        <select id="geo-source-model" onchange="geoLoadSourcePage()" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#f9fafb;color:#374151;border:1px solid #d1d5db;cursor:pointer;">
           <option value="all">全平台</option>
           <option value="doubao">豆包</option>
           <option value="deepseek">DeepSeek</option>
@@ -232,7 +232,7 @@ const PAGE_RENDERERS = {
     </div>
     <div class="geo-dark">
       <div class="geo-status-line" id="geo-source-status">加载中...</div>
-      <div id="geo-source-list"><div style="color:#BDBDBD;font-size:12px;padding:20px;text-align:center">加载中...</div></div>
+      <div id="geo-source-list"><div style="color:#9ca3af;font-size:12px;padding:20px;text-align:center">加载中...</div></div>
       <div id="geo-source-pager" style="text-align:center;margin-top:12px"></div>
     </div>
   `,
@@ -396,9 +396,9 @@ const PAGE_RENDERERS = {
         <div class="card-header"><div class="card-title">转化漏斗</div></div>
         <div style="display:flex;flex-direction:column;gap:8px;">
           <div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:12px;text-align:right;">浏览</span><div style="flex:1;height:32px;background:var(--primary);border-radius:4px;display:flex;align-items:center;padding:0 10px;color:#fff;font-size:12px;">456,789 (100%)</div></div>
-          <div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:12px;text-align:right;">收藏/对比</span><div style="width:46%;height:32px;background:rgba(255,47,47,0.7);border-radius:4px;display:flex;align-items:center;padding:0 10px;color:#fff;font-size:12px;">212,468 (46.5%)</div></div>
-          <div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:12px;text-align:right;">加购</span><div style="width:15%;height:32px;background:rgba(255,47,47,0.5);border-radius:4px;display:flex;align-items:center;padding:0 10px;color:#fff;font-size:12px;">67,890 (14.9%)</div></div>
-          <div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:12px;text-align:right;">下单</span><div style="width:10%;height:32px;background:rgba(255,47,47,0.3);border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:12px;">44,434 (9.7%)</div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:12px;text-align:right;">收藏/对比</span><div style="width:46%;height:32px;background:rgba(51,112,255,0.7);border-radius:4px;display:flex;align-items:center;padding:0 10px;color:#fff;font-size:12px;">212,468 (46.5%)</div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:12px;text-align:right;">加购</span><div style="width:15%;height:32px;background:rgba(51,112,255,0.5);border-radius:4px;display:flex;align-items:center;padding:0 10px;color:#fff;font-size:12px;">67,890 (14.9%)</div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:12px;text-align:right;">下单</span><div style="width:10%;height:32px;background:rgba(51,112,255,0.3);border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:12px;">44,434 (9.7%)</div></div>
           <div style="display:flex;align-items:center;gap:12px;"><span style="width:100px;font-size:12px;text-align:right;">支付</span><div style="width:7.5%;height:32px;background:var(--green);border-radius:4px;display:flex;align-items:center;padding:0 10px;color:#fff;font-size:12px;">34,567 (7.6%)</div></div>
         </div>
       </div>
@@ -442,7 +442,7 @@ const PAGE_RENDERERS = {
         <div class="card-header"><div class="card-title">会员等级分布</div></div>
         <div class="bar-chart" style="height:140px;">
           <div class="bar-col"><div class="bar-value">58%</div><div class="bar" style="height:87%;background:#8f959e;"></div><div class="bar-label">普通</div></div>
-          <div class="bar-col"><div class="bar-value">22%</div><div class="bar" style="height:66%;background:#BDBDBD;"></div><div class="bar-label">银卡</div></div>
+          <div class="bar-col"><div class="bar-value">22%</div><div class="bar" style="height:66%;background:#c0c0c0;"></div><div class="bar-label">银卡</div></div>
           <div class="bar-col"><div class="bar-value">14%</div><div class="bar" style="height:42%;background:#ffd700;"></div><div class="bar-label">金卡</div></div>
           <div class="bar-col"><div class="bar-value">6%</div><div class="bar" style="height:18%;background:#b8860b;"></div><div class="bar-label">铂金</div></div>
         </div>
@@ -461,25 +461,25 @@ const PAGE_RENDERERS = {
 
     <!-- KPI 卡片 -->
     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-      <div class="kpi-card" style="background:#FFF9F9; border:1px solid #FF2F2F; color:#252525; cursor:pointer;" onclick="filterAndNavigate('all')">
-        <div style="font-size:12px; color:#606060; margin-bottom:8px;">在职员工总数</div>
+      <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; cursor:pointer;" onclick="filterAndNavigate('all')">
+        <div style="font-size:12px; opacity:0.9; margin-bottom:8px;">在职员工总数</div>
         <div style="font-size:32px; font-weight:700; margin-bottom:8px;" id="kpi-total">2,847</div>
-        <div style="font-size:12px; color:#979797;">↑ 8% 较上月</div>
+        <div style="font-size:12px; opacity:0.8;">↑ 8% 较上月</div>
       </div>
-      <div class="kpi-card" style="background:#FFF9F9; border:1px solid #FF2F2F; color:#252525; cursor:pointer;" onclick="filterAndNavigate('approved')">
-        <div style="font-size:12px; color:#606060; margin-bottom:8px;">已认证工数</div>
+      <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; cursor:pointer;" onclick="filterAndNavigate('approved')">
+        <div style="font-size:12px; opacity:0.9; margin-bottom:8px;">已认证工数</div>
         <div style="font-size:32px; font-weight:700; margin-bottom:8px;" id="kpi-approved">2,341</div>
-        <div style="font-size:12px; color:#979797;">82.3% 认证率</div>
+        <div style="font-size:12px; opacity:0.8;">82.3% 认证率</div>
       </div>
-      <div class="kpi-card" style="background:#FFF9F9; border:1px solid #FF2F2F; color:#252525; cursor:pointer;" onclick="filterAndNavigate('rejected')">
-        <div style="font-size:12px; color:#606060; margin-bottom:8px;">已驳回工</div>
+      <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; cursor:pointer;" onclick="filterAndNavigate('rejected')">
+        <div style="font-size:12px; opacity:0.9; margin-bottom:8px;">已驳回工</div>
         <div style="font-size:32px; font-weight:700; margin-bottom:8px;" id="kpi-rejected">45</div>
-        <div style="font-size:12px; color:#979797;">需重新认证</div>
+        <div style="font-size:12px; opacity:0.8;">需重新认证</div>
       </div>
-      <div class="kpi-card" style="background:#FFF9F9; border:1px solid #FF2F2F; color:#252525; cursor:pointer;" onclick="filterAndNavigate('pending')">
-        <div style="font-size:12px; color:#606060; margin-bottom:8px;">本月新增</div>
+      <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; cursor:pointer;" onclick="filterAndNavigate('pending')">
+        <div style="font-size:12px; opacity:0.9; margin-bottom:8px;">本月新增</div>
         <div style="font-size:32px; font-weight:700; margin-bottom:8px;" id="kpi-pending">187</div>
-        <div style="font-size:12px; color:#979797;">↑ 15% 环比</div>
+        <div style="font-size:12px; opacity:0.8;">↑ 15% 环比</div>
       </div>
     </div>
 
@@ -490,19 +490,19 @@ const PAGE_RENDERERS = {
       </div>
       <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; padding:20px;">
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('普通职员')">
-          <div style="font-size:24px; color:#252525; font-weight:700; margin-bottom:4px;" id="dept-normal">1,850</div>
+          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-normal">1,850</div>
           <div style="font-size:12px; color:var(--text-secondary);">普通职员</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('法律')">
-          <div style="font-size:24px; color:#252525; font-weight:700; margin-bottom:4px;" id="dept-legal">186</div>
+          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-legal">186</div>
           <div style="font-size:12px; color:var(--text-secondary);">法律</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('设计师')">
-          <div style="font-size:24px; color:#252525; font-weight:700; margin-bottom:4px;" id="dept-designer">287</div>
+          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-designer">287</div>
           <div style="font-size:12px; color:var(--text-secondary);">设计师</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('编程开发')">
-          <div style="font-size:24px; color:#252525; font-weight:700; margin-bottom:4px;" id="dept-dev">38</div>
+          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-dev">38</div>
           <div style="font-size:12px; color:var(--text-secondary);">编程开发</div>
         </div>
       </div>
@@ -515,22 +515,22 @@ const PAGE_RENDERERS = {
       </div>
       <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; padding:20px;">
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByMethod('email')">
-          <div style="font-size:24px; color:#252525; font-weight:700; margin-bottom:4px;" id="method-email">1,051</div>
+          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="method-email">1,051</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">企业邮箱</div>
           <div style="font-size:12px; color:var(--text-secondary);">45%</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByMethod('contract')">
-          <div style="font-size:24px; color:#252525; font-weight:700; margin-bottom:4px;" id="method-contract">703</div>
+          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="method-contract">703</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">劳动合同</div>
           <div style="font-size:12px; color:var(--text-secondary);">30%</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByMethod('tax')">
-          <div style="font-size:24px; color:#252525; font-weight:700; margin-bottom:4px;" id="method-tax">422</div>
+          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="method-tax">422</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">个人所得税</div>
           <div style="font-size:12px; color:var(--text-secondary);">18%</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByMethod('other')">
-          <div style="font-size:24px; color:#252525; font-weight:700; margin-bottom:4px;" id="method-other">165</div>
+          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="method-other">165</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">其他材料</div>
           <div style="font-size:12px; color:var(--text-secondary);">7%</div>
         </div>
@@ -653,7 +653,7 @@ const PAGE_RENDERERS = {
     <!-- 标签页 -->
     <div style="display:flex; gap:0; margin-bottom:0; border-bottom:2px solid var(--border);">
       <button class="tab-btn" data-status="pending" onclick="switchCertTab('pending', this)" style="padding:12px 24px; border:none; background:none; color:var(--text-secondary); cursor:pointer; border-bottom:3px solid transparent; font-size:14px;" id="tab-pending">
-        <span style="color:#FF2F2F;">待审核/期待奖活动</span> <span style="color:var(--text-secondary);">(51)</span>
+        <span style="color:#10b981;">待审核/期待奖活动</span> <span style="color:var(--text-secondary);">(51)</span>
       </button>
       <button class="tab-btn" data-status="approved" onclick="switchCertTab('approved', this)" style="padding:12px 24px; border:none; background:none; color:var(--text-secondary); cursor:pointer; border-bottom:3px solid transparent; font-size:14px;">
         <span>已通过</span> <span style="color:var(--green);">(2,341)</span>
@@ -751,7 +751,7 @@ const PAGE_RENDERERS = {
         <div style="display:grid; grid-template-columns: 280px 1fr; gap:30px;">
           <!-- 左侧用户卡片 -->
           <div class="card" style="height:fit-content; text-align:center;">
-            <div style="width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, #FF2F2F, #ff6b6b); color:#fff; font-size:40px; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+            <div style="width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, #3370ff, #06b6d4); color:#fff; font-size:40px; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
               ${firstLetter}
             </div>
             <div style="font-size:18px; font-weight:600; margin-bottom:4px;">${cert.applicant_name}</div>
@@ -762,7 +762,7 @@ const PAGE_RENDERERS = {
               <div style="margin-bottom:8px;">申请时间：${cert.created_at}</div>
               <div style="margin-bottom:8px;">申请类型：${cert.cert_type || '首次申请'}</div>
               <div style="margin-top:8px;">
-                <span style="display:inline-block; padding:4px 8px; background:#FF2F2F08; color:#FF2F2F; border-radius:3px; font-size:11px;">
+                <span style="display:inline-block; padding:4px 8px; background:#3370ff08; color:#3370ff; border-radius:3px; font-size:11px;">
                   ${cert.status === 'pending' ? '⏳ 待审核' : cert.status === 'approved' ? '✓ 已通过' : '✗ 已驳回'}
                 </span>
               </div>
@@ -836,10 +836,10 @@ const PAGE_RENDERERS = {
               <div style="padding:20px;">
                 <div style="color:var(--text-secondary); font-size:12px; margin-bottom:12px;">已上传材料：</div>
                 <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:20px;">
-                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; transition:all 0.2s;" onclick="showMaterialPreview('${cert.method}', '📄')" onmouseover="this.style.background='#DBDBDB'" onmouseout="this.style.background='var(--border)'">
+                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; transition:all 0.2s;" onclick="showMaterialPreview('${cert.method}', '📄')" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='var(--border)'">
                     📄
                   </div>
-                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; transition:all 0.2s;" onclick="showMaterialPreview('在职证明', '📄')" onmouseover="this.style.background='#DBDBDB'" onmouseout="this.style.background='var(--border)'">
+                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; transition:all 0.2s;" onclick="showMaterialPreview('在职证明', '📄')" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='var(--border)'">
                     📄
                   </div>
                 </div>
@@ -907,7 +907,7 @@ const PAGE_RENDERERS = {
           <!-- 左侧用户卡片 -->
           <div style="display:flex; flex-direction:column; gap:16px;">
             <div class="card" style="text-align:center; padding:30px 20px;">
-              <div style="width:120px; height:120px; border-radius:50%; background:linear-gradient(135deg, #FF2F2F, #ff6b6b); color:#fff; font-size:48px; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+              <div style="width:120px; height:120px; border-radius:50%; background:linear-gradient(135deg, #3370ff, #06b6d4); color:#fff; font-size:48px; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
                 ${firstLetter}
               </div>
               <div style="font-size:18px; font-weight:600; margin-bottom:4px;">${emp.real_name || '-'}</div>
@@ -916,7 +916,7 @@ const PAGE_RENDERERS = {
               <div style="font-size:12px; color:var(--text-secondary); margin-bottom:16px;">联想账号</div>
               <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
                 <span style="display:inline-block; padding:4px 8px; background:#34c72408; color:#34c724; border-radius:3px; font-size:12px;">✓ 已实名</span>
-                <span style="display:inline-block; padding:4px 8px; background:#FF2F2F08; color:#FF2F2F; border-radius:3px; font-size:12px;">${emp.dept_status || '-'}</span>
+                <span style="display:inline-block; padding:4px 8px; background:#3370ff08; color:#3370ff; border-radius:3px; font-size:12px;">${emp.dept_status || '-'}</span>
               </div>
             </div>
           </div>
@@ -980,7 +980,7 @@ const PAGE_RENDERERS = {
                   <div>
                     <div style="color:var(--text-secondary); font-size:12px; margin-bottom:8px;">会员等级</div>
                     <div style="font-size:14px;">
-                      <span style="display:inline-block; padding:2px 6px; background:#FF2F2F08; color:#FF2F2F; border-radius:3px; font-size:12px;">${emp.member_level || '-'}</span>
+                      <span style="display:inline-block; padding:2px 6px; background:#3370ff08; color:#3370ff; border-radius:3px; font-size:12px;">${emp.member_level || '-'}</span>
                     </div>
                   </div>
                   <div>
@@ -1040,7 +1040,7 @@ const PAGE_RENDERERS = {
                   <div>
                     <div style="color:var(--text-secondary); font-size:12px; margin-bottom:8px;">职员认证状态</div>
                     <div style="font-size:14px;">
-                      <span style="display:inline-block; padding:4px 8px; background:#FF2F2F08; color:#FF2F2F; border-radius:3px; font-size:12px;">${emp.dept_status || '-'}</span>
+                      <span style="display:inline-block; padding:4px 8px; background:#3370ff08; color:#3370ff; border-radius:3px; font-size:12px;">${emp.dept_status || '-'}</span>
                     </div>
                   </div>
                   <div>
@@ -1076,10 +1076,10 @@ const PAGE_RENDERERS = {
               <div style="padding:20px;">
                 <div style="color:var(--text-secondary); font-size:12px; margin-bottom:12px;">上传的认证材料</div>
                 <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
-                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#DBDBDB'" onmouseout="this.style.background='var(--border)'" onclick="showMaterialPreview('劳动合同', '📄')">
+                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='var(--border)'" onclick="showMaterialPreview('劳动合同', '📄')">
                     📄 劳动合同
                   </div>
-                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#DBDBDB'" onmouseout="this.style.background='var(--border)'" onclick="showMaterialPreview('在职证明', '📄')">
+                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='var(--border)'" onclick="showMaterialPreview('在职证明', '📄')">
                     📄 在职证明
                   </div>
                 </div>

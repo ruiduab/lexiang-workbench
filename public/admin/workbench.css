@@ -1,25 +1,23 @@
 :root {
-  /* 联想官网UI设计规范 1.3 */
-  --primary: #FF2F2F;
-  --primary-light: #FFF9F9;
-  --primary-hover: #FF2F2F;  /* hover用opacity控制 */
-  --red: #FF2F2F;
-  --red-light: #FFF9F9;
+  --primary: #3370ff;
+  --primary-light: rgba(51,112,255,0.08);
+  --primary-hover: #245bdb;
+  --red: #e2001a;
+  --red-light: rgba(226,0,26,0.08);
   --green: #34c724;
   --green-light: rgba(52,199,36,0.08);
   --orange: #ff7d00;
   --orange-light: rgba(255,125,0,0.08);
   --purple: #722ed1;
   --purple-light: rgba(114,46,209,0.08);
-  --bg: #F6F6F6;
+  --bg: #f5f6f7;
   --sidebar-bg: #fff;
-  --card-bg: #FCFCFC;
-  --border: #DBDBDB;
-  --border-light: #DBDBDB;
-  --text: #252525;
-  --text-secondary: #454545;
-  --text-tertiary: #979797;
-  --text-disabled: #BDBDBD;
+  --card-bg: #fff;
+  --border: #dee0e3;
+  --border-light: #e5e6eb;
+  --text: #1f2329;
+  --text-secondary: #646a73;
+  --text-tertiary: #8f959e;
   --shadow: 0 1px 2px rgba(0,0,0,0.06);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
   --radius: 8px;
@@ -29,9 +27,8 @@ body.dark-mode {
   --bg: #1a1b1e; --sidebar-bg: #25262b; --card-bg: #2c2e33;
   --border: #373a40; --border-light: #373a40;
   --text: #e4e5e7; --text-secondary: #adb5bd; --text-tertiary: #868e96;
-  --text-disabled: #555;
   --shadow: 0 1px 2px rgba(0,0,0,0.3); --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-  --primary-light: rgba(255,47,47,0.15); --red-light: rgba(255,47,47,0.15);
+  --primary-light: rgba(51,112,255,0.15); --red-light: rgba(226,0,26,0.15);
   --green-light: rgba(52,199,36,0.15); --orange-light: rgba(255,125,0,0.15);
   --purple-light: rgba(114,46,209,0.15);
 }
@@ -43,7 +40,7 @@ body.dark-mode .card { background: var(--card-bg); border-color: var(--border); 
 body.dark-mode .kpi-card { background: var(--card-bg); border-color: var(--border); }
 body.dark-mode table tr:hover { background: rgba(255,255,255,0.03); }
 body.dark-mode input, body.dark-mode select, body.dark-mode textarea { background: var(--bg); color: var(--text); border-color: var(--border); }
-body.dark-mode .demo-banner { background: rgba(255,47,47,0.1); border-color: rgba(255,47,47,0.2); }
+body.dark-mode .demo-banner { background: rgba(51,112,255,0.1); border-color: rgba(51,112,255,0.2); }
 body.dark-mode #search-dropdown { background: var(--card-bg); border-color: var(--border); }
 body.dark-mode .search-item.active { background: var(--primary-light); }
 body.dark-mode .ai-panel { background: var(--sidebar-bg); }
@@ -62,15 +59,15 @@ body { background:var(--bg); color:var(--text); font-family:-apple-system,'PingF
 .login-title { font-size:24px; font-weight:600; margin-bottom:8px; }
 .login-sub { color:var(--text-secondary); margin-bottom:32px; }
 .form-label { font-size:13px; color:var(--text-secondary); margin-bottom:6px; display:block; }
-.form-input { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:14px; outline:none; transition:border-color 0.2s; background:#FCFCFC; color:var(--text); }
-.form-input:focus { border-color:#454545; box-shadow:none; }
+.form-input { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:14px; outline:none; transition:border-color 0.2s; background:#fff; color:var(--text); }
+.form-input:focus { border-color:var(--primary); box-shadow:0 0 0 2px rgba(51,112,255,0.1); }
 .form-group { margin-bottom:20px; }
 .btn { padding:10px 20px; border-radius:var(--radius); font-size:14px; cursor:pointer; border:none; transition:all 0.15s; font-weight:500; display:inline-flex; align-items:center; gap:6px; }
 .btn-primary { background:var(--primary); color:#fff; }
-.btn-primary:hover { opacity:0.88; }
+.btn-primary:hover { background:var(--primary-hover); }
 .btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
-.btn-secondary { background:#fff; color:var(--text); border:1px solid #252525; }
-.btn-secondary:hover { background:#F6F6F6; }
+.btn-secondary { background:#fff; color:var(--text); border:1px solid var(--border); }
+.btn-secondary:hover { background:var(--bg); }
 .btn-danger { background:rgba(255,59,48,0.06); color:#ff3b30; border:1px solid rgba(255,59,48,0.15); }
 .btn-danger:hover { background:rgba(255,59,48,0.12); }
 .btn-sm { padding:6px 12px; font-size:12px; }
@@ -282,7 +279,7 @@ table { width:100%; border-collapse:collapse; font-size:13px; }
 th { text-align:left; padding:8px 10px; color:var(--text-tertiary); font-weight:500; border-bottom:1px solid var(--border-light); font-size:12px; }
 td { padding:8px 10px; border-bottom:1px solid var(--border-light); }
 tr:last-child td { border-bottom:none; }
-tr:hover td { background:#F6F6F6; }
+tr:hover td { background:rgba(51,112,255,0.02); }
 .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:500; }
 
 .empty-state { text-align:center; padding:60px 20px; color:var(--text-tertiary); }
@@ -298,7 +295,7 @@ tr:hover td { background:#F6F6F6; }
 .tab-content.active { display:block; }
 
 /* ===== Status badges ===== */
-.status-on { background:var(--green-light); color:#34c724; }
+.status-on { background:var(--green-light); color:#16a34a; }
 .status-off { background:rgba(0,0,0,0.04); color:var(--text-tertiary); }
 .status-warn { background:var(--orange-light); color:#d97706; }
 .demo-banner { background:linear-gradient(90deg,#fff7ed,#fef3c7); border:1px solid #fde68a; border-radius:8px; padding:8px 14px; margin-bottom:12px; font-size:12px; color:#92400e; display:flex; align-items:center; gap:6px; }
@@ -306,22 +303,22 @@ tr:hover td { background:#F6F6F6; }
 .status-error { background:var(--red-light); color:var(--red); }
 
 /* ===== GEO Dashboard (light theme) ===== */
-.geo-dark { background:#ffffff; color:#252525; border-radius:12px; padding:18px; margin:-4px 0 0; border:1px solid #DBDBDB; }
-.geo-dark .geo-scope-bar { display:flex; gap:0; border-bottom:1px solid #DBDBDB; margin-bottom:16px; }
-.geo-dark .geo-scope-tab { padding:10px 20px; font-size:13px; color:#979797; cursor:pointer; border-bottom:2px solid transparent; font-weight:500; transition:all 0.15s; }
-.geo-dark .geo-scope-tab:hover { color:#252525; }
-.geo-dark .geo-scope-tab.active { color:#FF2F2F; border-bottom-color:#FF2F2F; font-weight:600; }
+.geo-dark { background:#ffffff; color:#1f2937; border-radius:12px; padding:18px; margin:-4px 0 0; border:1px solid #e5e7eb; }
+.geo-dark .geo-scope-bar { display:flex; gap:0; border-bottom:1px solid #e5e7eb; margin-bottom:16px; }
+.geo-dark .geo-scope-tab { padding:10px 20px; font-size:13px; color:#6b7280; cursor:pointer; border-bottom:2px solid transparent; font-weight:500; transition:all 0.15s; }
+.geo-dark .geo-scope-tab:hover { color:#1f2937; }
+.geo-dark .geo-scope-tab.active { color:#2563eb; border-bottom-color:#2563eb; font-weight:600; }
 .geo-dark .geo-filter-row { display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
-.geo-dark .geo-filter-row .geo-label { font-size:12px; color:#979797; margin-right:2px; }
-.geo-dark .geo-pill { padding:5px 14px; border-radius:16px; font-size:12px; cursor:pointer; border:1px solid #DBDBDB; background:#FCFCFC; color:#454545; transition:all 0.15s; user-select:none; }
-.geo-dark .geo-pill:hover { border-color:#FF2F2F; color:#FF2F2F; }
-.geo-dark .geo-pill.active { background:#FF2F2F; color:#fff; border-color:#FF2F2F; }
-.geo-dark .geo-pill-disabled { padding:5px 14px; border-radius:16px; font-size:12px; border:1px dashed #DBDBDB; background:#F6F6F6; color:#BDBDBD; user-select:none; cursor:not-allowed; }
-.geo-dark .geo-status-line { font-size:12px; color:#979797; margin-bottom:10px; }
+.geo-dark .geo-filter-row .geo-label { font-size:12px; color:#6b7280; margin-right:2px; }
+.geo-dark .geo-pill { padding:5px 14px; border-radius:16px; font-size:12px; cursor:pointer; border:1px solid #d1d5db; background:#f9fafb; color:#374151; transition:all 0.15s; user-select:none; }
+.geo-dark .geo-pill:hover { border-color:#2563eb; color:#2563eb; }
+.geo-dark .geo-pill.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+.geo-dark .geo-pill-disabled { padding:5px 14px; border-radius:16px; font-size:12px; border:1px dashed #d1d5db; background:#f3f4f6; color:#9ca3af; user-select:none; cursor:not-allowed; }
+.geo-dark .geo-status-line { font-size:12px; color:#6b7280; margin-bottom:10px; }
 
-.geo-dark .geo-module-title { font-size:13px; font-weight:600; color:#252525; margin:18px 0 10px; display:flex; align-items:center; gap:8px; }
-.geo-dark .geo-module-title::before { content:''; width:3px; height:14px; background:#FF2F2F; border-radius:2px; }
-.geo-dark .geo-module-title .gmt-hint { font-size:11px; color:#979797; font-weight:400; margin-left:6px; }
+.geo-dark .geo-module-title { font-size:13px; font-weight:600; color:#1f2937; margin:18px 0 10px; display:flex; align-items:center; gap:8px; }
+.geo-dark .geo-module-title::before { content:''; width:3px; height:14px; background:#2563eb; border-radius:2px; }
+.geo-dark .geo-module-title .gmt-hint { font-size:11px; color:#6b7280; font-weight:400; margin-left:6px; }
 .geo-dark .geo-module-title .gmt-tag { font-size:10px; color:#b45309; background:#fef3c7; padding:2px 8px; border-radius:10px; margin-left:8px; font-weight:500; }
 
 /* 指标卡片 */
@@ -329,75 +326,75 @@ tr:hover td { background:#F6F6F6; }
 .geo-dark .geo-kpi-grid.cols-2 { grid-template-columns:repeat(2,1fr); }
 .geo-dark .geo-kpi-grid.cols-3 { grid-template-columns:repeat(3,1fr); }
 .geo-dark .geo-kpi-grid.cols-4 { grid-template-columns:repeat(4,1fr); }
-.geo-dark .geo-kpi { background:#FCFCFC; border-radius:10px; padding:18px 16px; border:1px solid #DBDBDB; position:relative; }
-.geo-dark .geo-kpi.highlight { background:#FFF9F9; border-color:#FF2F2F; color:#252525; }
-.geo-dark .geo-kpi .gk-val { font-size:30px; font-weight:700; color:#252525; margin-bottom:4px; line-height:1.1; }
-.geo-dark .geo-kpi.highlight .gk-val { color:#252525; }
-.geo-dark .geo-kpi .gk-label { font-size:12px; color:#979797; }
-.geo-dark .geo-kpi.highlight .gk-label { color:#606060; }
-.geo-dark .geo-kpi .gk-tip { position:absolute; top:12px; right:12px; width:14px; height:14px; border-radius:50%; background:#DBDBDB; color:#979797; font-size:10px; display:flex; align-items:center; justify-content:center; cursor:help; }
-.geo-dark .geo-kpi.highlight .gk-tip { background:#DBDBDB; color:#606060; }
-.geo-dark .geo-kpi .gk-sub { font-size:11px; color:#BDBDBD; margin-top:4px; }
-.geo-dark .geo-kpi.highlight .gk-sub { color:#979797; }
+.geo-dark .geo-kpi { background:#f9fafb; border-radius:10px; padding:18px 16px; border:1px solid #e5e7eb; position:relative; }
+.geo-dark .geo-kpi.highlight { background:linear-gradient(135deg,#16a34a,#0d7a36); border-color:transparent; color:#fff; }
+.geo-dark .geo-kpi .gk-val { font-size:30px; font-weight:700; color:#111827; margin-bottom:4px; line-height:1.1; }
+.geo-dark .geo-kpi.highlight .gk-val { color:#fff; }
+.geo-dark .geo-kpi .gk-label { font-size:12px; color:#6b7280; }
+.geo-dark .geo-kpi.highlight .gk-label { color:rgba(255,255,255,0.9); }
+.geo-dark .geo-kpi .gk-tip { position:absolute; top:12px; right:12px; width:14px; height:14px; border-radius:50%; background:#e5e7eb; color:#6b7280; font-size:10px; display:flex; align-items:center; justify-content:center; cursor:help; }
+.geo-dark .geo-kpi.highlight .gk-tip { background:rgba(255,255,255,0.2); color:#fff; }
+.geo-dark .geo-kpi .gk-sub { font-size:11px; color:#9ca3af; margin-top:4px; }
+.geo-dark .geo-kpi.highlight .gk-sub { color:rgba(255,255,255,0.8); }
 
 /* 平台分布卡片网格 */
 .geo-dark .geo-plat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; }
-.geo-dark .geo-plat-card { background:#FCFCFC; border:1px solid #DBDBDB; border-radius:10px; padding:14px; }
-.geo-dark .geo-plat-card .gpc-name { font-size:13px; font-weight:600; color:#252525; margin-bottom:10px; }
-.geo-dark .geo-plat-card .gpc-row { display:flex; justify-content:space-between; font-size:11px; color:#979797; margin-bottom:6px; }
-.geo-dark .geo-plat-card .gpc-val { color:#252525; font-weight:600; font-size:13px; }
-.geo-dark .geo-plat-card .gpc-bar { height:3px; background:#DBDBDB; border-radius:2px; overflow:hidden; margin-top:4px; }
-.geo-dark .geo-plat-card .gpc-bar-fill { height:100%; border-radius:2px; background:#FF2F2F; }
+.geo-dark .geo-plat-card { background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; padding:14px; }
+.geo-dark .geo-plat-card .gpc-name { font-size:13px; font-weight:600; color:#111827; margin-bottom:10px; }
+.geo-dark .geo-plat-card .gpc-row { display:flex; justify-content:space-between; font-size:11px; color:#6b7280; margin-bottom:6px; }
+.geo-dark .geo-plat-card .gpc-val { color:#111827; font-weight:600; font-size:13px; }
+.geo-dark .geo-plat-card .gpc-bar { height:3px; background:#e5e7eb; border-radius:2px; overflow:hidden; margin-top:4px; }
+.geo-dark .geo-plat-card .gpc-bar-fill { height:100%; border-radius:2px; background:#2563eb; }
 
 /* 待开放占位 */
-.geo-dark .geo-placeholder { background:#FCFCFC; border:1px dashed #DBDBDB; border-radius:10px; padding:28px; text-align:center; color:#BDBDBD; font-size:12px; }
-.geo-dark .geo-placeholder .gp-title { color:#979797; font-size:13px; margin-bottom:6px; }
+.geo-dark .geo-placeholder { background:#f9fafb; border:1px dashed #d1d5db; border-radius:10px; padding:28px; text-align:center; color:#9ca3af; font-size:12px; }
+.geo-dark .geo-placeholder .gp-title { color:#6b7280; font-size:13px; margin-bottom:6px; }
 
 /* 左右两栏 */
 .geo-dark .geo-row { display:grid; grid-template-columns:1fr 360px; gap:12px; margin-bottom:12px; }
 .geo-dark .geo-row.wide-right { grid-template-columns:1fr 420px; }
-.geo-dark .geo-panel { background:#ffffff; border:1px solid #DBDBDB; border-radius:10px; padding:14px; }
-.geo-dark .geo-panel .gpnl-title { font-size:13px; color:#252525; font-weight:600; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+.geo-dark .geo-panel { background:#ffffff; border:1px solid #e5e7eb; border-radius:10px; padding:14px; }
+.geo-dark .geo-panel .gpnl-title { font-size:13px; color:#111827; font-weight:600; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
 .geo-dark .geo-panel .gpnl-title .gpnl-tag { font-size:10px; color:#b45309; background:#fef3c7; padding:2px 8px; border-radius:10px; font-weight:500; }
 
 /* Treemap 信源分布 */
-.geo-dark .geo-treemap { display:flex; flex-wrap:wrap; gap:2px; min-height:260px; background:#F6F6F6; border-radius:6px; padding:2px; }
+.geo-dark .geo-treemap { display:flex; flex-wrap:wrap; gap:2px; min-height:260px; background:#f3f4f6; border-radius:6px; padding:2px; }
 .geo-dark .geo-treemap .gtm-cell { display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-size:11px; padding:4px; overflow:hidden; text-align:center; line-height:1.3; }
 .geo-dark .geo-treemap .gtm-cell .gtm-name { font-weight:600; }
 .geo-dark .geo-treemap .gtm-cell .gtm-pct { font-size:10px; opacity:0.85; margin-top:2px; }
 
 /* 排行榜 */
 .geo-dark .geo-rank-list { list-style:none; padding:0; margin:0; }
-.geo-dark .geo-rank-list li { display:flex; align-items:center; gap:10px; padding:9px 10px; border-bottom:1px solid #F6F6F6; font-size:12px; color:#454545; }
+.geo-dark .geo-rank-list li { display:flex; align-items:center; gap:10px; padding:9px 10px; border-bottom:1px solid #f3f4f6; font-size:12px; color:#374151; }
 .geo-dark .geo-rank-list li:last-child { border-bottom:none; }
-.geo-dark .geo-rank-list .grl-idx { width:22px; height:22px; border-radius:50%; background:#DBDBDB; color:#979797; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.geo-dark .geo-rank-list li:nth-child(1) .grl-idx { background:#FF2F2F; color:#fff; }
-.geo-dark .geo-rank-list li:nth-child(2) .grl-idx { background:#FF2F2F; color:#fff; }
-.geo-dark .geo-rank-list li:nth-child(3) .grl-idx { background:#FF2F2F; color:#fff; }
+.geo-dark .geo-rank-list .grl-idx { width:22px; height:22px; border-radius:50%; background:#e5e7eb; color:#6b7280; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.geo-dark .geo-rank-list li:nth-child(1) .grl-idx { background:#2563eb; color:#fff; }
+.geo-dark .geo-rank-list li:nth-child(2) .grl-idx { background:#2563eb; color:#fff; }
+.geo-dark .geo-rank-list li:nth-child(3) .grl-idx { background:#2563eb; color:#fff; }
 .geo-dark .geo-rank-list .grl-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.geo-dark .geo-rank-list .grl-count { color:#979797; font-size:11px; font-variant-numeric:tabular-nums; }
+.geo-dark .geo-rank-list .grl-count { color:#6b7280; font-size:11px; font-variant-numeric:tabular-nums; }
 
 /* wiki top50 可滚动 */
 .geo-dark .geo-scroll-wrap { max-height:380px; overflow-y:auto; }
 .geo-dark .geo-scroll-wrap::-webkit-scrollbar { width:6px; }
-.geo-dark .geo-scroll-wrap::-webkit-scrollbar-thumb { background:#DBDBDB; border-radius:3px; }
+.geo-dark .geo-scroll-wrap::-webkit-scrollbar-thumb { background:#d1d5db; border-radius:3px; }
 
 /* 意图网格（各平台意图覆盖矩阵） */
 .geo-dark .geo-intent-table { width:100%; border-collapse:collapse; font-size:12px; }
-.geo-dark .geo-intent-table th { background:#FCFCFC; color:#979797; font-weight:500; padding:8px 10px; text-align:center; border:1px solid #DBDBDB; font-size:11px; }
-.geo-dark .geo-intent-table td { padding:8px 10px; text-align:center; border:1px solid #DBDBDB; color:#454545; }
-.geo-dark .geo-intent-table td.name { text-align:left; color:#252525; }
-.geo-dark .geo-intent-table .yes { color:#34c724; }
-.geo-dark .geo-intent-table .no { color:#BDBDBD; }
+.geo-dark .geo-intent-table th { background:#f9fafb; color:#6b7280; font-weight:500; padding:8px 10px; text-align:center; border:1px solid #e5e7eb; font-size:11px; }
+.geo-dark .geo-intent-table td { padding:8px 10px; text-align:center; border:1px solid #e5e7eb; color:#374151; }
+.geo-dark .geo-intent-table td.name { text-align:left; color:#111827; }
+.geo-dark .geo-intent-table .yes { color:#059669; }
+.geo-dark .geo-intent-table .no { color:#9ca3af; }
 
 /* 转化看板表 */
-.geo-dark .geo-conv-section { background:#ffffff; border:1px solid #DBDBDB; border-radius:10px; padding:16px; margin-bottom:12px; }
-.geo-dark .geo-conv-title { font-size:13px; font-weight:600; color:#252525; margin-bottom:12px; }
+.geo-dark .geo-conv-section { background:#ffffff; border:1px solid #e5e7eb; border-radius:10px; padding:16px; margin-bottom:12px; }
+.geo-dark .geo-conv-title { font-size:13px; font-weight:600; color:#111827; margin-bottom:12px; }
 .geo-dark .geo-conv-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
-.geo-dark .geo-conv-cell { background:#FCFCFC; border-radius:8px; padding:14px; }
-.geo-dark .geo-conv-cell .gcc-label { font-size:11px; color:#979797; margin-bottom:6px; }
-.geo-dark .geo-conv-cell .gcc-val { font-size:22px; font-weight:700; color:#252525; }
-.geo-dark .geo-conv-cell .gcc-def { font-size:10px; color:#BDBDBD; margin-top:4px; line-height:1.4; }
+.geo-dark .geo-conv-cell { background:#f9fafb; border-radius:8px; padding:14px; }
+.geo-dark .geo-conv-cell .gcc-label { font-size:11px; color:#6b7280; margin-bottom:6px; }
+.geo-dark .geo-conv-cell .gcc-val { font-size:22px; font-weight:700; color:#111827; }
+.geo-dark .geo-conv-cell .gcc-def { font-size:10px; color:#9ca3af; margin-top:4px; line-height:1.4; }
 
 /* ===== Bar Chart (shared) ===== */
 .bar-chart { display:flex; align-items:flex-end; gap:12px; padding:10px 0; }
@@ -408,7 +405,7 @@ tr:hover td { background:#F6F6F6; }
 
 /* ===== Behavior badges ===== */
 .badge-blue { background:var(--primary-light); color:var(--primary); }
-.badge-green { background:var(--green-light); color:#34c724; }
+.badge-green { background:var(--green-light); color:#16a34a; }
 .badge-orange { background:var(--orange-light); color:#d97706; }
 .badge-purple { background:var(--purple-light); color:var(--purple); }
 .badge-red { background:var(--red-light); color:var(--red); }
