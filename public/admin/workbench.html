@@ -2203,7 +2203,7 @@ function geoRenderPlatDist() {
   const mx = Math.max(...rows.map(r => r.cites), 1);
   c.innerHTML = rows.map(r => {
     const color = geoPlatColors[r.p] || '#3b82f6';
-    const pct = (r.cites / mx * 100).toFixed(0);
+    const pct = Math.min(r.brand, 100).toFixed(0);
     if (r.missing) {
       return `<div class="geo-plat-card"><div class="gpc-name">${geoPlatNames[r.p] || r.p}</div><div style="color:#6b7390;font-size:11px">无数据</div></div>`;
     }
