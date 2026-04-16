@@ -461,22 +461,22 @@ const PAGE_RENDERERS = {
 
     <!-- KPI 卡片 -->
     <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
-      <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; cursor:pointer;" onclick="filterAndNavigate('all')">
+      <div class="kpi-card" style="background:linear-gradient(135deg,#FF2F2F,#cc2626); color:#fff; cursor:pointer;" onclick="filterAndNavigate('all')">
         <div style="font-size:12px; opacity:0.9; margin-bottom:8px;">在职员工总数</div>
         <div style="font-size:32px; font-weight:700; margin-bottom:8px;" id="kpi-total">2,847</div>
         <div style="font-size:12px; opacity:0.8;">↑ 8% 较上月</div>
       </div>
-      <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; cursor:pointer;" onclick="filterAndNavigate('approved')">
+      <div class="kpi-card" style="background:linear-gradient(135deg,#FF2F2F,#cc2626); color:#fff; cursor:pointer;" onclick="filterAndNavigate('approved')">
         <div style="font-size:12px; opacity:0.9; margin-bottom:8px;">已认证工数</div>
         <div style="font-size:32px; font-weight:700; margin-bottom:8px;" id="kpi-approved">2,341</div>
         <div style="font-size:12px; opacity:0.8;">82.3% 认证率</div>
       </div>
-      <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; cursor:pointer;" onclick="filterAndNavigate('rejected')">
+      <div class="kpi-card" style="background:linear-gradient(135deg,#FF2F2F,#cc2626); color:#fff; cursor:pointer;" onclick="filterAndNavigate('rejected')">
         <div style="font-size:12px; opacity:0.9; margin-bottom:8px;">已驳回工</div>
         <div style="font-size:32px; font-weight:700; margin-bottom:8px;" id="kpi-rejected">45</div>
         <div style="font-size:12px; opacity:0.8;">需重新认证</div>
       </div>
-      <div class="kpi-card" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; cursor:pointer;" onclick="filterAndNavigate('pending')">
+      <div class="kpi-card" style="background:linear-gradient(135deg,#FF2F2F,#cc2626); color:#fff; cursor:pointer;" onclick="filterAndNavigate('pending')">
         <div style="font-size:12px; opacity:0.9; margin-bottom:8px;">本月新增</div>
         <div style="font-size:32px; font-weight:700; margin-bottom:8px;" id="kpi-pending">187</div>
         <div style="font-size:12px; opacity:0.8;">↑ 15% 环比</div>
@@ -490,19 +490,19 @@ const PAGE_RENDERERS = {
       </div>
       <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; padding:20px;">
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('普通职员')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-normal">1,850</div>
+          <div style="font-size:24px; color:#FF2F2F; font-weight:700; margin-bottom:4px;" id="dept-normal">1,850</div>
           <div style="font-size:12px; color:var(--text-secondary);">普通职员</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('法律')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-legal">186</div>
+          <div style="font-size:24px; color:#FF2F2F; font-weight:700; margin-bottom:4px;" id="dept-legal">186</div>
           <div style="font-size:12px; color:var(--text-secondary);">法律</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('设计师')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-designer">287</div>
+          <div style="font-size:24px; color:#FF2F2F; font-weight:700; margin-bottom:4px;" id="dept-designer">287</div>
           <div style="font-size:12px; color:var(--text-secondary);">设计师</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('编程开发')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-dev">38</div>
+          <div style="font-size:24px; color:#FF2F2F; font-weight:700; margin-bottom:4px;" id="dept-dev">38</div>
           <div style="font-size:12px; color:var(--text-secondary);">编程开发</div>
         </div>
       </div>
@@ -515,22 +515,22 @@ const PAGE_RENDERERS = {
       </div>
       <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; padding:20px;">
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByMethod('email')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="method-email">1,051</div>
+          <div style="font-size:24px; color:#FF2F2F; font-weight:700; margin-bottom:4px;" id="method-email">1,051</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">企业邮箱</div>
           <div style="font-size:12px; color:var(--text-secondary);">45%</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByMethod('contract')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="method-contract">703</div>
+          <div style="font-size:24px; color:#FF2F2F; font-weight:700; margin-bottom:4px;" id="method-contract">703</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">劳动合同</div>
           <div style="font-size:12px; color:var(--text-secondary);">30%</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByMethod('tax')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="method-tax">422</div>
+          <div style="font-size:24px; color:#FF2F2F; font-weight:700; margin-bottom:4px;" id="method-tax">422</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">个人所得税</div>
           <div style="font-size:12px; color:var(--text-secondary);">18%</div>
         </div>
         <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByMethod('other')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="method-other">165</div>
+          <div style="font-size:24px; color:#FF2F2F; font-weight:700; margin-bottom:4px;" id="method-other">165</div>
           <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">其他材料</div>
           <div style="font-size:12px; color:var(--text-secondary);">7%</div>
         </div>
@@ -653,7 +653,7 @@ const PAGE_RENDERERS = {
     <!-- 标签页 -->
     <div style="display:flex; gap:0; margin-bottom:0; border-bottom:2px solid var(--border);">
       <button class="tab-btn" data-status="pending" onclick="switchCertTab('pending', this)" style="padding:12px 24px; border:none; background:none; color:var(--text-secondary); cursor:pointer; border-bottom:3px solid transparent; font-size:14px;" id="tab-pending">
-        <span style="color:#10b981;">待审核/期待奖活动</span> <span style="color:var(--text-secondary);">(51)</span>
+        <span style="color:#FF2F2F;">待审核/期待奖活动</span> <span style="color:var(--text-secondary);">(51)</span>
       </button>
       <button class="tab-btn" data-status="approved" onclick="switchCertTab('approved', this)" style="padding:12px 24px; border:none; background:none; color:var(--text-secondary); cursor:pointer; border-bottom:3px solid transparent; font-size:14px;">
         <span>已通过</span> <span style="color:var(--green);">(2,341)</span>

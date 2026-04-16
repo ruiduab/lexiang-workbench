@@ -266,7 +266,7 @@ async function loadEmployeeList(page = 1) {
 
 // ===== 统一表格行渲染函数 =====
 function renderEmployeeRow(emp) {
-  const statusColor = emp.status === 'approved' ? '#10b981' : emp.status === 'pending' ? '#f59e0b' : '#ef4444';
+  const statusColor = emp.status === 'approved' ? '#FF2F2F' : emp.status === 'pending' ? '#f59e0b' : '#ef4444';
   return `
     <tr style="border-bottom:1px solid var(--border-light); height:44px; cursor:pointer;" onclick="showEmpDetail('${emp.account || ''}')">
       <td style="text-align:center; padding:12px;"><input type="checkbox"/></td>
@@ -277,14 +277,14 @@ function renderEmployeeRow(emp) {
       <td style="padding:12px; font-size:12px;">${emp.position || '-'}</td>
       <td style="padding:12px; font-size:12px;">${emp.company || '-'}</td>
       <td style="padding:12px;">
-        <span style="display:inline-block; padding:2px 6px; border-radius:3px; background:rgba(16,185,129,0.1); color:#10b981; font-size:11px;">
+        <span style="display:inline-block; padding:2px 6px; border-radius:3px; background:rgba(255,47,47,0.08); color:#FF2F2F; font-size:11px;">
           ${emp.dept_status || '-'}
         </span>
       </td>
       <td style="padding:12px; font-size:12px;">${emp.material_method || '-'}</td>
       <td style="padding:12px; font-size:12px;">${emp.cert_time || '-'}</td>
       <td style="padding:12px;">
-        <span style="display:inline-block; padding:2px 6px; border-radius:3px; background:rgba(16,185,129,0.1); color:${statusColor}; font-size:11px;">
+        <span style="display:inline-block; padding:2px 6px; border-radius:3px; background:rgba(255,47,47,0.08); color:${statusColor}; font-size:11px;">
           ${emp.current_status || '-'}
         </span>
       </td>
@@ -390,7 +390,7 @@ function loadCertificationTable(page = 1) {
         <td style="padding:12px; font-family:monospace; font-size:12px;">${cert.id}</td>
         <td style="padding:12px;">${cert.applicant}</td>
         <td style="padding:12px;">
-          <span style="display:inline-block; padding:3px 8px; border-radius:3px; background:rgba(16,185,129,0.1); color:#10b981; font-size:11px;">
+          <span style="display:inline-block; padding:3px 8px; border-radius:3px; background:rgba(255,47,47,0.08); color:#FF2F2F; font-size:11px;">
             ${cert.method === 'email' ? '企业邮箱' : cert.method === 'contract' ? '劳动合同' : cert.method === 'tax' ? '个人所得税' : '其他'}
           </span>
         </td>
@@ -404,7 +404,7 @@ function loadCertificationTable(page = 1) {
         <td style="padding:12px;">${cert.reviewer}</td>
         <td style="padding:12px;">
           ${cert.status === 'pending'
-            ? `<button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); showCertDetailPage(this, '${cert.id}')" style="padding:4px 8px; font-size:12px; background:#10b981; border:none;">审核</button>`
+            ? `<button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); showCertDetailPage(this, '${cert.id}')" style="padding:4px 8px; font-size:12px; background:#FF2F2F; border:none;">审核</button>`
             : `<button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); viewCertFromList(this, '${cert.applicant}')" style="padding:4px 8px; font-size:12px;">查看</button>`
           }
         </td>
@@ -568,7 +568,7 @@ function showCertDetail(certId) {
         <textarea style="width:100%; height:80px; padding:8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text); font-size:12px;" placeholder="请输入审核意见"></textarea>
       </div>
       <div style="display:flex; gap:8px;">
-        <button class="btn btn-primary" onclick="approveRequest()" style="background:#22c55e; border:none; flex:1;">✓ 批准</button>
+        <button class="btn btn-primary" onclick="approveRequest()" style="background:#FF2F2F; border:none; flex:1;">✓ 批准</button>
         <button class="btn btn-secondary" onclick="rejectRequest()" style="background:#ef4444; border:none; flex:1;">✗ 拒绝</button>
       </div>
     </div>
@@ -1000,7 +1000,7 @@ async function showCertificationDetail(certId) {
           <div style="margin-bottom:12px;">
             <div style="color:var(--text-secondary); font-size:12px; margin-bottom:4px;">实名认证</div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${detail.realname_verified ? '#22c55e' : '#ef4444'};"></span>
+              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${detail.realname_verified ? '#FF2F2F' : '#ef4444'};"></span>
               <span>${detail.realname_verified ? '✓ 已认证' : '✗ 未认证'}</span>
               ${detail.realname_verified_at ? `<span style="color:var(--text-tertiary); font-size:11px;">${new Date(detail.realname_verified_at).toLocaleDateString()}</span>` : ''}
             </div>
@@ -1008,7 +1008,7 @@ async function showCertificationDetail(certId) {
           <div>
             <div style="color:var(--text-secondary); font-size:12px; margin-bottom:4px;">在职认证</div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${detail.employee_verified ? '#22c55e' : '#ef4444'};"></span>
+              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${detail.employee_verified ? '#FF2F2F' : '#ef4444'};"></span>
               <span>${detail.employee_verified ? '✓ 已认证' : '✗ 未认证'}</span>
               ${detail.employee_verified_at ? `<span style="color:var(--text-tertiary); font-size:11px;">${new Date(detail.employee_verified_at).toLocaleDateString()}</span>` : ''}
             </div>
