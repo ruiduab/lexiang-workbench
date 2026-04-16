@@ -274,11 +274,7 @@ function renderEmployeeRow(emp) {
       <td style="padding:12px; font-size:12px;">${emp.real_name || '-'}</td>
       <td style="padding:12px; font-size:12px;">${emp.lenovo_id || '-'}</td>
       <td style="padding:12px; font-size:12px;">${emp.phone || '-'}</td>
-      <td style="padding:12px;">
-        <span style="display:inline-block; padding:2px 6px; border-radius:3px; background:rgba(16,185,129,0.1); color:#10b981; font-size:11px;">
-          ${emp.is_realname || '-'}
-        </span>
-      </td>
+      <td style="padding:12px; font-size:12px;">${emp.position || '-'}</td>
       <td style="padding:12px; font-size:12px;">${emp.company || '-'}</td>
       <td style="padding:12px;">
         <span style="display:inline-block; padding:2px 6px; border-radius:3px; background:rgba(16,185,129,0.1); color:#10b981; font-size:11px;">
