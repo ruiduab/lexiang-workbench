@@ -335,7 +335,25 @@ git log -p 文件名           # 看某个文件的所有改动历史
 
 ---
 
-## 第七部分：求助
+## 第七部分：项目文件结构（改代码前必看）
+
+工作台页面（`workbench.html`）已拆分为多个模块文件，**改代码前先确认要改哪个文件**：
+
+| 文件 | 内容 | 什么时候改这个 |
+|------|------|---------------|
+| `public/admin/workbench.html` | HTML 骨架 + 核心框架（菜单、登录、路由） | 改菜单结构、登录逻辑、页面路由 |
+| `public/admin/workbench.css` | 全部样式 | 改任何页面的样式/颜色/布局 |
+| `public/admin/workbench-pages.js` | 各页面的 HTML 模板 | 改页面内容结构（增删表格、卡片等） |
+| `public/admin/workbench-geo.js` | GEO 看板业务逻辑 | 改 GEO 数据展示、图表、API 调用 |
+| `public/admin/workbench-ai.js` | AI 助手面板 | 改 AI 对话、发送消息、快捷指令 |
+| `public/admin/workbench-data.js` | 数据加载 / 知识库 / CMS 等业务函数 | 改数据接口调用、知识库上传、CMS 编辑器 |
+| `public/admin/workbench-employee.js` | 员工管理 + 认证审核 | 改员工列表、认证流程 |
+
+> ⚠️ **不要把所有改动塞进 `workbench.html`**！拆分的目的就是减少冲突 — 你改 GEO 的文件，同事改员工管理的文件，互不影响。
+
+---
+
+## 第八部分：求助
 
 - 卡住了直接问 baiyu，别死磕
 - 不确定的命令**先 Google 或问 ChatGPT** 再敲，尤其是带 `--force`、`reset`、`rm` 的
