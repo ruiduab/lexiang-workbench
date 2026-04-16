@@ -11,7 +11,7 @@ const GEO_SOURCES = {
 const GEO_PLATFORMS = ['doubao','deepseek','yuanbao','kimi'];
 const geoState = { scope:'all', platform:'all', period:'30d', questions:[], apiData:null, platData:{} };
 const geoPlatNames = { doubao:'豆包', deepseek:'DeepSeek', yuanbao:'元宝', kimi:'Kimi' };
-const geoPlatColors = { doubao:'#FF2F2F', deepseek:'#454545', yuanbao:'#606060', kimi:'#979797' };
+const geoPlatColors = { doubao:'#cd6155', deepseek:'#454545', yuanbao:'#e8a87c', kimi:'#d4c36a' };
 
 function geoSetScope(el) {
   document.querySelectorAll('.geo-scope-tab').forEach(t => t.classList.remove('active'));
@@ -151,7 +151,7 @@ function geoRenderPlatDist() {
 }
 
 // ===== GEO 信源分布 (sites API) =====
-const GEO_TREEMAP_COLORS = ['#FF2F2F','#252525','#cc2626','#454545','#e64545','#606060','#992020','#979797','#d93333','#BDBDBD','#b32424','#7a7a7a','#a62222','#555555','#bf2828','#6b6b6b'];
+const GEO_TREEMAP_COLORS = ['#cd6155','#e8a87c','#d4c36a','#c48bc8','#82c8a0','#e07b7b','#d4a06a','#7eb8c9','#b8a9d4','#9bc49b','#d9958a','#c4b86a','#a0899e','#8fb8a0','#cc9b7a','#b0a4c4'];
 
 async function geoLoadSites() {
   try {
