@@ -2947,7 +2947,7 @@ fetch('/wiki/articles.json')
 
     # --- 第六步：生成子站 index.html ---
     print(f'\n[{datetime.now():%H:%M:%S}] === 生成子站 index.html ===')
-    BU_DIR_LABELS = {'wiki-c': '消费产品', 'wiki-b': '企业购', 'wiki-biz': '商用'}
+    BU_DIR_LABELS = {'wiki-c': '消费', 'wiki-b': 'SMB', 'wiki-biz': '政企'}
     # 默认分类标签
     _DEFAULT_CAT_LABELS = {
         'brand_news': '品牌/新闻', 'notebook': '笔记本', 'desktop': '台式机', 'monitor': '显示器',
@@ -3015,6 +3015,11 @@ fetch('/wiki/articles.json')
         sub_html = sub_html.replace(
             'href="/wiki/">联想乐享知识库',
             f'href="/{dir_name}/">联想乐享知识库'
+        )
+        # Hero区大标题加子站后缀
+        sub_html = sub_html.replace(
+            '<h1>联想<em>乐享</em>知识库</h1>',
+            f'<h1>联想<em>乐享</em>知识库——{label}</h1>'
         )
         sub_html = sub_html.replace(
             '<a class="logo" href="/wiki/">',
