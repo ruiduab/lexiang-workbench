@@ -66,10 +66,10 @@
     <div class="topbar-right">
       <div style="position:relative">
         <input class="topbar-search" placeholder="搜索菜单或输入指令..." id="global-search" autocomplete="off">
-        <div id="search-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.12);margin-top:4px;max-height:320px;overflow-y:auto;z-index:100">
+        <div id="search-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:2px;box-shadow:0 3px 6px -4px rgba(0,0,0,0.12),0 6px 16px rgba(0,0,0,0.08);margin-top:4px;max-height:320px;overflow-y:auto;z-index:100">
         </div>
       </div>
-      <div style="cursor:pointer;padding:4px 8px;border-radius:6px;font-size:14px" onclick="toggleDarkMode()" title="切换深色模式" id="dark-mode-btn">🌙</div>
+      <div style="cursor:pointer;padding:4px 8px;border-radius:2px;font-size:14px" onclick="toggleDarkMode()" title="切换深色模式" id="dark-mode-btn">🌙</div>
       <div class="ai-toggle" id="ai-toggle-btn" onclick="toggleAI()">🤖 AI 助手</div>
     </div>
   </div>
@@ -132,14 +132,14 @@ const STATE = {
 // ===== MENU DEFINITION =====
 const MENU_TREE = {
   dashboard: {
-    icon: '<span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:linear-gradient(135deg,#f59e0b,#f97316);border-radius:6px;color:#fff;font-size:13px;font-weight:700">📊</span>', label: '乐享运营', children: {
+    icon: '<span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#E5261B;border-radius:2px;color:#fff;font-size:13px;font-weight:700">📊</span>', label: '乐享运营', children: {
       'dashboard.overview': { label: '运营总览' },
       'dashboard.query': { label: 'Query 分析' },
       'dashboard.behavior': { label: '客户行为' }
     }
   },
   geo: {
-    icon: '<span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:6px;color:#fff;font-size:11px;font-weight:700">GEO</span>', label: 'GEO 看板', children: {
+    icon: '<span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#0D1B2E;border-radius:2px;color:#fff;font-size:11px;font-weight:700">GEO</span>', label: 'GEO 看板', children: {
       'dashboard.geo': { label: '整体数据概览' },
       'dashboard.geoSource': { label: '各平台信源分布' },
       'dashboard.geoIntent': { label: '各平台意图分布' },
@@ -148,7 +148,7 @@ const MENU_TREE = {
     }
   },
   employee: {
-    icon: '<span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:linear-gradient(135deg,#3b82f6,#06b6d4);border-radius:6px;color:#fff;font-size:14px;font-weight:700">👥</span>', label: '在职员工管理', children: {
+    icon: '<span class="menu-icon" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#1890FF;border-radius:2px;color:#fff;font-size:14px;font-weight:700">👥</span>', label: '在职员工管理', children: {
       'employee.overview': { label: '概览' },
       'employee.certification': { label: '认证审核' }
     }
@@ -418,7 +418,7 @@ function showMaterialPreview(title, icon) {
   const modal = document.createElement('div');
   modal.style.cssText = `
     background: var(--card-bg);
-    border-radius: 12px;
+    border-radius: 2px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     max-width: 600px;
     width: 90%;
@@ -434,7 +434,7 @@ function showMaterialPreview(title, icon) {
       <button onclick="document.getElementById('material-preview-overlay').remove()" style="background: none; border: none; cursor: pointer; font-size: 24px; color: var(--text-secondary);">×</button>
     </div>
     <div style="padding: 40px; text-align: center;">
-      <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #e5e7eb, #f3f4f6); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+      <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, #e5e7eb, #f3f4f6); border-radius: 2px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
         <div style="font-size: 120px; opacity: 0.3;">${icon}</div>
       </div>
       <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">

@@ -327,7 +327,7 @@ async function viewConversation(convId) {
       <div class="card-header"><div class="card-title">对话 #${convId} (${msgs.length}条消息)</div><button class="btn btn-sm" onclick="document.getElementById('conv-detail').style.display='none'">关闭</button></div>
       <div style="max-height:400px;overflow-y:auto;padding:8px">
         ${msgs.map(m => `<div style="margin-bottom:8px;${m.role==='user'?'text-align:right':''}">
-          <span style="display:inline-block;max-width:80%;padding:6px 10px;border-radius:10px;font-size:13px;white-space:pre-wrap;${m.role==='user'?'background:var(--primary);color:#fff':'background:#f0f0f0'}">${escapeHtml((m.content||'').slice(0,500))}</span>
+          <span style="display:inline-block;max-width:80%;padding:6px 10px;border-radius:2px;font-size:13px;white-space:pre-wrap;${m.role==='user'?'background:var(--primary);color:#fff':'background:#f0f0f0'}">${escapeHtml((m.content||'').slice(0,500))}</span>
           <div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">${m.role} · ${(m.created_at||'').slice(11,19)}</div>
         </div>`).join('')}
       </div>
@@ -388,18 +388,18 @@ async function consoleSend() {
   input.value = '';
   const msgsEl = document.getElementById('console-msgs');
   const debugEl = document.getElementById('console-debug');
-  msgsEl.innerHTML += `<div style="margin-bottom:8px;text-align:right"><span style="background:var(--primary);color:#fff;padding:4px 10px;border-radius:12px;display:inline-block;max-width:80%">${escapeHtml(msg)}</span></div>`;
+  msgsEl.innerHTML += `<div style="margin-bottom:8px;text-align:right"><span style="background:var(--primary);color:#fff;padding:4px 10px;border-radius:2px;display:inline-block;max-width:80%">${escapeHtml(msg)}</span></div>`;
   msgsEl.scrollTop = msgsEl.scrollHeight;
   debugEl.textContent += `[${new Date().toLocaleTimeString()}] → 发送: ${msg}\n`;
   try {
     const res = await fetch('/api/harness/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg,currentPage:'ai.console'}) });
     const data = await res.json();
-    msgsEl.innerHTML += `<div style="margin-bottom:8px"><span style="background:#f0f0f0;padding:4px 10px;border-radius:12px;display:inline-block;max-width:80%;white-space:pre-wrap">${escapeHtml(data.reply||'无回复')}</span></div>`;
+    msgsEl.innerHTML += `<div style="margin-bottom:8px"><span style="background:#f0f0f0;padding:4px 10px;border-radius:2px;display:inline-block;max-width:80%;white-space:pre-wrap">${escapeHtml(data.reply||'无回复')}</span></div>`;
     msgsEl.scrollTop = msgsEl.scrollHeight;
     debugEl.textContent += `[${new Date().toLocaleTimeString()}] ← 回复: ${(data.reply||'').slice(0,100)}...\n`;
     if (data.toolsUsed) debugEl.textContent += `[${new Date().toLocaleTimeString()}] 🔧 使用工具: ${data.toolsUsed.join(', ')}\n`;
   } catch (e) {
-    msgsEl.innerHTML += `<div style="margin-bottom:8px"><span style="background:var(--red-light);color:var(--red);padding:4px 10px;border-radius:12px;display:inline-block">错误: ${e.message}</span></div>`;
+    msgsEl.innerHTML += `<div style="margin-bottom:8px"><span style="background:var(--red-light);color:var(--red);padding:4px 10px;border-radius:2px;display:inline-block">错误: ${e.message}</span></div>`;
     debugEl.textContent += `[${new Date().toLocaleTimeString()}] ❌ 错误: ${e.message}\n`;
   }
 }
@@ -662,7 +662,7 @@ const PAGE_COMPONENTS = {
   'hero-banner': {
     label:'轮播横幅', icon:'🖼️',
     defaults: { imageUrl:'https://p1.lefile.cn/fes/cms/2025/01/04/m1g9tq5hr8xekovb0zi3dlpna2fuwj.jpg', title:'618 年中盛典', subtitle:'全场低至5折', buttonText:'立即抢购', buttonLink:'#', height:320, bgColor:'#1a1a2e' },
-    render: p => `<div style="background:${p.bgColor};color:#fff;height:${p.height}px;display:flex;flex-direction:column;align-items:center;justify-content:center;background-image:url(${p.imageUrl});background-size:cover;background-position:center;border-radius:8px;text-align:center">
+    render: p => `<div style="background:${p.bgColor};color:#fff;height:${p.height}px;display:flex;flex-direction:column;align-items:center;justify-content:center;background-image:url(${p.imageUrl});background-size:cover;background-position:center;border-radius:2px;text-align:center">
       <div style="font-size:32px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,0.3)">${p.title}</div>
       <div style="font-size:16px;margin-top:8px;opacity:0.9">${p.subtitle}</div>
       ${p.buttonText ? `<div style="margin-top:20px;padding:10px 28px;background:#fff;color:${p.bgColor};border-radius:24px;font-weight:600;font-size:14px">${p.buttonText}</div>` : ''}
@@ -684,8 +684,8 @@ const PAGE_COMPONENTS = {
     render: p => `<div style="padding:24px">
       <div style="font-size:18px;font-weight:700;margin-bottom:16px">${p.title}</div>
       <div style="display:grid;grid-template-columns:repeat(${p.columns},1fr);gap:12px">
-        ${(p.products||[]).map(pr => `<div style="border:1px solid #eee;border-radius:8px;padding:12px;text-align:center">
-          <div style="height:100px;background:#f5f5f5;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:24px">${pr.image ? `<img src="${pr.image}" style="max-height:100%;max-width:100%">` : '📦'}</div>
+        ${(p.products||[]).map(pr => `<div style="border:1px solid #eee;border-radius:2px;padding:12px;text-align:center">
+          <div style="height:100px;background:#f5f5f5;border-radius:2px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:24px">${pr.image ? `<img src="${pr.image}" style="max-height:100%;max-width:100%">` : '📦'}</div>
           <div style="margin-top:8px;font-size:13px;font-weight:500">${pr.name}</div>
           <div style="color:var(--red);font-weight:700;margin-top:4px">¥${pr.price}</div>
         </div>`).join('')}
@@ -716,7 +716,7 @@ const PAGE_COMPONENTS = {
     render: p => {
       const dir = p.imagePosition === 'right' ? 'row-reverse' : 'row';
       return `<div style="display:flex;flex-direction:${dir};gap:20px;padding:24px;align-items:center">
-        <div style="flex:1;height:160px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:32px">${p.imageUrl ? `<img src="${p.imageUrl}" style="max-height:100%;max-width:100%;border-radius:8px">` : '🖼️'}</div>
+        <div style="flex:1;height:160px;background:#f0f0f0;border-radius:2px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:32px">${p.imageUrl ? `<img src="${p.imageUrl}" style="max-height:100%;max-width:100%;border-radius:2px">` : '🖼️'}</div>
         <div style="flex:1"><div style="font-size:18px;font-weight:700">${p.title}</div><div style="margin-top:8px;font-size:13px;color:#666;line-height:1.6">${p.description}</div></div>
       </div>`;
     },
@@ -735,7 +735,7 @@ const PAGE_COMPONENTS = {
     render: p => {
       const remain = Math.max(0, new Date(p.endTime) - new Date());
       const d = Math.floor(remain/86400000), h = Math.floor(remain%86400000/3600000), m = Math.floor(remain%3600000/60000);
-      return `<div style="background:${p.bgColor};color:${p.textColor};padding:20px;text-align:center;border-radius:8px">
+      return `<div style="background:${p.bgColor};color:${p.textColor};padding:20px;text-align:center;border-radius:2px">
         <div style="font-size:18px;font-weight:700">${p.title}</div>
         <div style="font-size:28px;font-weight:800;margin-top:8px;letter-spacing:2px">${d}天 ${h}时 ${m}分</div>
       </div>`;
@@ -1180,17 +1180,17 @@ async function loadBotConfig() {
     const cfg = _botConfig;
     el.innerHTML = `
       <div class="card"><div class="card-header"><div class="card-title">System Prompt</div></div>
-        <textarea id="cfg-prompt" rows="6" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:monospace;resize:vertical;background:#f5f6f7">${cfg.system_prompt || ''}</textarea>
+        <textarea id="cfg-prompt" rows="6" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:2px;font-size:12px;font-family:monospace;resize:vertical;background:#f5f6f7">${cfg.system_prompt || ''}</textarea>
       </div>
       <div class="grid-2">
         <div class="card"><div class="card-title">模型配置</div><div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">主模型:</label><input id="cfg-model" value="${cfg.model || 'qwen-plus'}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Temperature:</label><input id="cfg-temp" type="number" step="0.1" min="0" max="2" value="${cfg.temperature || 0.7}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Max Tokens:</label><input id="cfg-tokens" type="number" value="${cfg.max_tokens || 1024}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">主模型:</label><input id="cfg-model" value="${cfg.model || 'qwen-plus'}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:2px;font-size:12px;background:#f5f6f7"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Temperature:</label><input id="cfg-temp" type="number" step="0.1" min="0" max="2" value="${cfg.temperature || 0.7}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:2px;font-size:12px;background:#f5f6f7"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Max Tokens:</label><input id="cfg-tokens" type="number" value="${cfg.max_tokens || 1024}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:2px;font-size:12px;background:#f5f6f7"></div>
         </div></div>
         <div class="card"><div class="card-title">检索配置</div><div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Top-K:</label><input id="cfg-topk" type="number" value="${cfg.top_k || 5}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">欢迎语:</label><input id="cfg-welcome" value="${cfg.welcome_message || ''}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Top-K:</label><input id="cfg-topk" type="number" value="${cfg.top_k || 5}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:2px;font-size:12px;background:#f5f6f7"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">欢迎语:</label><input id="cfg-welcome" value="${cfg.welcome_message || ''}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:2px;font-size:12px;background:#f5f6f7"></div>
         </div></div>
       </div>`;
   } catch (e) { const el = document.getElementById('bot-config-area'); if (el) el.innerHTML = `<div style="color:var(--red);padding:20px">加载失败: ${e.message}</div>`; }
@@ -1318,27 +1318,27 @@ async function showProductForm(editId) {
   }
   const catOptions = _prodCategories.map(c => `<option value="${c.name}" ${c.name === prod.category ? 'selected' : ''}>${c.name}</option>`).join('');
   const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center" id="prod-modal" onclick="if(event.target===this)this.remove()">
-    <div style="background:#fff;border-radius:12px;padding:24px;width:520px;max-width:90vw;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
+    <div style="background:#fff;border-radius:2px;padding:24px;width:520px;max-width:90vw;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
       <h3 style="margin:0 0 16px">${editId ? '编辑商品' : '新增商品'}</h3>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <input id="pf-name" value="${prod.name}" placeholder="商品名称 *" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+        <input id="pf-name" value="${prod.name}" placeholder="商品名称 *" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
         <div style="display:flex;gap:8px">
-          <input id="pf-sku" value="${prod.sku || ''}" placeholder="SKU" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-          <select id="pf-cat" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7"><option value="">选择分类</option>${catOptions}</select>
+          <input id="pf-sku" value="${prod.sku || ''}" placeholder="SKU" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
+          <select id="pf-cat" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7"><option value="">选择分类</option>${catOptions}</select>
         </div>
         <div style="display:flex;gap:8px">
-          <input id="pf-price" type="number" value="${prod.price || ''}" placeholder="售价" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-          <input id="pf-oprice" type="number" value="${prod.original_price || ''}" placeholder="原价" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+          <input id="pf-price" type="number" value="${prod.price || ''}" placeholder="售价" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
+          <input id="pf-oprice" type="number" value="${prod.original_price || ''}" placeholder="原价" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
         </div>
         <div style="display:flex;gap:8px">
-          <input id="pf-stock" type="number" value="${prod.stock || 0}" placeholder="库存" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-          <select id="pf-status" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+          <input id="pf-stock" type="number" value="${prod.stock || 0}" placeholder="库存" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
+          <select id="pf-status" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
             <option value="draft" ${prod.status==='draft'?'selected':''}>草稿</option>
             <option value="active" ${prod.status==='active'?'selected':''}>在售</option>
             <option value="offline" ${prod.status==='offline'?'selected':''}>已下架</option>
           </select>
         </div>
-        <textarea id="pf-desc" placeholder="商品描述" rows="3" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7;resize:vertical">${prod.description || ''}</textarea>
+        <textarea id="pf-desc" placeholder="商品描述" rows="3" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7;resize:vertical">${prod.description || ''}</textarea>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
           <button class="btn btn-sm" onclick="document.getElementById('prod-modal').remove()">取消</button>
           <button class="btn btn-sm btn-primary" onclick="submitProduct(${editId || 'null'})">保存</button>
@@ -1466,21 +1466,21 @@ async function loadMarketingTasks() {
 
 function showMarketingForm(editId) {
   const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center" id="mkt-modal" onclick="if(event.target===this)this.remove()">
-    <div style="background:#fff;border-radius:12px;padding:24px;width:500px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
+    <div style="background:#fff;border-radius:2px;padding:24px;width:500px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
       <h3 style="margin:0 0 16px">${editId ? '编辑任务' : '创建营销任务'}</h3>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <input id="mkt-name" placeholder="任务名称 *" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+        <input id="mkt-name" placeholder="任务名称 *" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
         <div style="display:flex;gap:8px">
-          <select id="mkt-type" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+          <select id="mkt-type" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
             <option value="push">推送通知</option><option value="email">邮件</option><option value="sms">短信</option><option value="precision">精准营销</option><option value="recall">召回</option>
           </select>
-          <select id="mkt-status" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+          <select id="mkt-status" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
             <option value="draft">草稿</option><option value="scheduled">待执行</option>
           </select>
         </div>
-        <input id="mkt-audience" placeholder="目标客群（如：活跃用户、30天未活跃）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <textarea id="mkt-content" placeholder="推送内容/文案" rows="3" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7;resize:vertical"></textarea>
-        <input id="mkt-schedule" type="datetime-local" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+        <input id="mkt-audience" placeholder="目标客群（如：活跃用户、30天未活跃）" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
+        <textarea id="mkt-content" placeholder="推送内容/文案" rows="3" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7;resize:vertical"></textarea>
+        <input id="mkt-schedule" type="datetime-local" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
           <button class="btn btn-sm" onclick="document.getElementById('mkt-modal').remove()">取消</button>
           <button class="btn btn-sm btn-primary" onclick="submitMarketingTask(${editId || 'null'})">保存</button>
@@ -1639,14 +1639,14 @@ async function updateExpStatus(id, status) {
 
 function showCreateExperiment() {
   const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center" id="exp-modal" onclick="if(event.target===this)this.remove()">
-    <div style="background:#fff;border-radius:12px;padding:24px;width:480px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
+    <div style="background:#fff;border-radius:2px;padding:24px;width:480px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
       <h3 style="margin:0 0 16px">创建 AB 实验</h3>
       <div style="display:flex;flex-direction:column;gap:12px">
-        <input id="exp-name" placeholder="实验名称" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <input id="exp-desc" placeholder="描述（可选）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <input id="exp-va" placeholder="变体 A（对照组）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <input id="exp-vb" placeholder="变体 B（实验组）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <div style="display:flex;align-items:center;gap:8px"><label style="font-size:13px">流量分配:</label><input id="exp-split" type="number" value="50" min="1" max="99" style="width:60px;padding:8px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7"><span style="font-size:13px">% 给 B 组</span></div>
+        <input id="exp-name" placeholder="实验名称" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
+        <input id="exp-desc" placeholder="描述（可选）" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
+        <input id="exp-va" placeholder="变体 A（对照组）" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
+        <input id="exp-vb" placeholder="变体 B（实验组）" style="padding:8px 12px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7">
+        <div style="display:flex;align-items:center;gap:8px"><label style="font-size:13px">流量分配:</label><input id="exp-split" type="number" value="50" min="1" max="99" style="width:60px;padding:8px;border:1px solid var(--border);border-radius:2px;background:#f5f6f7"><span style="font-size:13px">% 给 B 组</span></div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
           <button class="btn btn-sm" onclick="document.getElementById('exp-modal').remove()">取消</button>
           <button class="btn btn-sm btn-primary" onclick="submitExperiment()">创建</button>
@@ -1972,7 +1972,7 @@ async function loadLenovoBigscreen() {
         <div class="card-header"><div class="card-title">城市付款金额 Top20</div></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
           ${cities.slice(0,20).map((c,i)=>`
-            <div style="border:1px solid var(--border-light);border-radius:6px;padding:10px;background:linear-gradient(135deg,#fff,#fafafa)">
+            <div style="border:1px solid var(--border-light);border-radius:2px;padding:10px;background:linear-gradient(135deg,#fff,#fafafa)">
               <div style="display:flex;justify-content:space-between;align-items:center">
                 <span style="font-size:11px;color:var(--text-tertiary)">#${i+1}</span>
                 <span style="font-size:12px;color:var(--red);font-weight:600">¥${(c.metricSum/10000).toFixed(1)}万</span>
@@ -2118,7 +2118,7 @@ async function loadLenovoTouch() {
       <div class="card-header"><div class="card-title">事件埋点定义</div></div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
         ${stats.events.map(ev=>`
-          <div style="border:1px solid var(--border-light);border-radius:6px;padding:10px">
+          <div style="border:1px solid var(--border-light);border-radius:2px;padding:10px">
             <div style="font-weight:600">${ev.eventName||''}</div>
             <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">eventId: ${ev.eventId||''}</div>
             ${ev.description?`<div style="font-size:12px;color:var(--text-secondary);margin-top:4px">${ev.description}</div>`:''}

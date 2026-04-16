@@ -254,9 +254,9 @@ async function geoLoadSourcePage(page) {
     const pager = document.getElementById('geo-source-pager');
     if (pager && pg.total_pages > 1) {
       let ph = '';
-      if (pg.has_prev) ph += `<button onclick="geoLoadSourcePage(${pg.prev_page})" style="margin:0 4px;padding:4px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:12px">上一页</button>`;
+      if (pg.has_prev) ph += `<button onclick="geoLoadSourcePage(${pg.prev_page})" style="margin:0 4px;padding:4px 12px;border:1px solid #d1d5db;border-radius:2px;background:#fff;cursor:pointer;font-size:12px">上一页</button>`;
       ph += `<span style="font-size:12px;color:#6b7280;margin:0 8px">第 ${pg.current_page} / ${pg.total_pages} 页</span>`;
-      if (pg.has_next) ph += `<button onclick="geoLoadSourcePage(${pg.next_page})" style="margin:0 4px;padding:4px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:12px">下一页</button>`;
+      if (pg.has_next) ph += `<button onclick="geoLoadSourcePage(${pg.next_page})" style="margin:0 4px;padding:4px 12px;border:1px solid #d1d5db;border-radius:2px;background:#fff;cursor:pointer;font-size:12px">下一页</button>`;
       pager.innerHTML = ph;
     } else if (pager) { pager.innerHTML = ''; }
   } catch(e) { if (st) st.textContent = '加载失败：' + e.message; console.error('geoLoadSourcePage', e); }
