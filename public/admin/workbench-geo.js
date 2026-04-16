@@ -62,26 +62,34 @@ async function geoLoadData() {
   geoSetStatus('加载中...');
   const selectedModels = geoState.platform === 'all' ? [] : geoState.platform.split(',');
   try {
+    // 第一步：拉总体 overview，先渲染 KPI（最快，~0.2s）
     const data = await geoFetch(selectedModels);
     if (data.code !== 200) throw new Error(data.message || '请求失败');
     geoState.apiData = data;
     geoRenderKpis(data);
     geoRenderEcology(data);
 
-    // 并发拉 7 个平台的分布
-    const results = await Promise.allSettled(GEO_PLATFORMS.map(p => geoFetch([p])));
-    geoState.platData = {};
-    GEO_PLATFORMS.forEach((p, i) => {
-      if (results[i].status === 'fulfilled' && results[i].value.code === 200) {
-        geoState.platData[p] = results[i].value;
-      }
-    });
-    geoRenderPlatDist();
-    geoLoadSites();
-    geoLoadQuestions();
-
     const scopeLbl = { all:'整体', leai:'联想乐享', official:'联想官网' }[geoState.scope] || '整体';
     geoSetStatus('更新于 ' + new Date().toLocaleTimeString() + ' · 点亮AI · ' + scopeLbl + ' · ' + geoState.period);
+
+    // 第二步：剩余请求全部并发，互不阻塞
+    // 平台分布 + sites + questions 同时发出
+    const platPromise = Promise.allSettled(GEO_PLATFORMS.map(p => geoFetch([p])));
+    const sitesPromise = geoLoadSites();
+    const questionsPromise = geoLoadQuestions();
+
+    // 平台分布完成后立即渲染
+    platPromise.then(results => {
+      geoState.platData = {};
+      GEO_PLATFORMS.forEach((p, i) => {
+        if (results[i].status === 'fulfilled' && results[i].value.code === 200) {
+          geoState.platData[p] = results[i].value;
+        }
+      });
+      geoRenderPlatDist();
+    });
+
+    // sites 和 questions 各自内部已有渲染逻辑，无需额外处理
   } catch (e) {
     geoSetStatus('加载失败：' + e.message, true);
     console.error('GEO API error', e);
