@@ -135,13 +135,13 @@ const PAGE_RENDERERS = {
       </div>
       <div class="geo-filter-row">
         <span class="geo-label">时间范围</span>
-        <select id="geo-period" onchange="geoSetPeriod(this.value)" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#f9fafb;color:#374151;border:1px solid #d1d5db;cursor:pointer;">
+        <select id="geo-period" onchange="geoSetPeriod(this.value)" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#FCFCFC;color:#454545;border:1px solid #DBDBDB;cursor:pointer;">
           <option value="7d">最近 7 天</option>
           <option value="30d" selected>最近 30 天</option>
           <option value="year">本年度</option>
         </select>
         <span class="geo-label" style="margin-left:16px;">问题筛选</span>
-        <input id="geo-questions" type="text" placeholder="多个问题用逗号分隔，回车筛选" onkeydown="if(event.key==='Enter'){geoSetQuestions(this.value)}" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#f9fafb;color:#374151;border:1px solid #d1d5db;min-width:260px;outline:none;">
+        <input id="geo-questions" type="text" placeholder="多个问题用逗号分隔，回车筛选" onkeydown="if(event.key==='Enter'){geoSetQuestions(this.value)}" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#FCFCFC;color:#454545;border:1px solid #DBDBDB;min-width:260px;outline:none;">
       </div>
       <div class="geo-status-line" id="geo-status">加载中...</div>
 
@@ -177,12 +177,12 @@ const PAGE_RENDERERS = {
       <div class="geo-row">
         <div class="geo-panel">
           <div class="gpnl-title">信源分布图</div>
-          <div id="geo-sites-treemap" style="min-height:260px"><div style="color:#9ca3af;font-size:12px;padding:12px">加载中...</div></div>
+          <div id="geo-sites-treemap" style="min-height:260px"><div style="color:#BDBDBD;font-size:12px;padding:12px">加载中...</div></div>
         </div>
         <div class="geo-panel">
           <div class="gpnl-title">信源排行榜 Top20</div>
           <div class="geo-scroll-wrap" style="max-height:320px">
-            <div id="geo-sites-rank"><div style="color:#9ca3af;font-size:12px;padding:12px">加载中...</div></div>
+            <div id="geo-sites-rank"><div style="color:#BDBDBD;font-size:12px;padding:12px">加载中...</div></div>
           </div>
         </div>
       </div>
@@ -190,12 +190,12 @@ const PAGE_RENDERERS = {
       <!-- 第三行：各平台引用次数 -->
       <div class="geo-row wide-right">
         <div class="geo-panel">
-          <div class="gpnl-title">各 AI 平台引用次数 <span style="font-size:11px;color:#9ca3af;font-weight:400">· wiki + 官网合计</span></div>
+          <div class="gpnl-title">各 AI 平台引用次数 <span style="font-size:11px;color:#BDBDBD;font-weight:400">· wiki + 官网合计</span></div>
           <div class="geo-kpi-grid cols-2" style="margin-bottom:12px">
             <div class="geo-kpi"><div class="gk-val" id="gv-lenovo-cite">--</div><div class="gk-label">联想官网引用次数</div></div>
             <div class="geo-kpi"><div class="gk-val" id="gv-wiki-cite">--</div><div class="gk-label">乐享/业务 wiki 引用次数</div></div>
           </div>
-          <div class="geo-plat-grid" id="geo-plat-dist"><div style="color:#9ca3af;font-size:12px;padding:12px">加载中...</div></div>
+          <div class="geo-plat-grid" id="geo-plat-dist"><div style="color:#BDBDBD;font-size:12px;padding:12px">加载中...</div></div>
         </div>
         <div class="geo-panel">
           <div class="gpnl-title">信源站点总览</div>
@@ -209,9 +209,9 @@ const PAGE_RENDERERS = {
 
       <!-- 第四行：问题列表 -->
       <div class="geo-panel" style="margin-bottom:12px">
-        <div class="gpnl-title">GEO 问题列表 <span style="font-size:11px;color:#9ca3af;font-weight:400">· 共 <span id="gv-q-count">--</span> 个问题 · 按模型展示可见性</span></div>
+        <div class="gpnl-title">GEO 问题列表 <span style="font-size:11px;color:#BDBDBD;font-weight:400">· 共 <span id="gv-q-count">--</span> 个问题 · 按模型展示可见性</span></div>
         <div class="geo-scroll-wrap" style="max-height:500px">
-          <div id="geo-questions-table"><div style="color:#9ca3af;font-size:12px;padding:12px">加载中...</div></div>
+          <div id="geo-questions-table"><div style="color:#BDBDBD;font-size:12px;padding:12px">加载中...</div></div>
         </div>
       </div>
     </div>
@@ -221,7 +221,7 @@ const PAGE_RENDERERS = {
     <div class="page-header">
       <div><div class="page-title">GEO · 各平台信源分布</div><div class="page-desc">各 AI 模型引用的内容发布平台分布及占比</div></div>
       <div style="display:flex;gap:8px;align-items:center">
-        <select id="geo-source-model" onchange="geoLoadSourcePage()" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#f9fafb;color:#374151;border:1px solid #d1d5db;cursor:pointer;">
+        <select id="geo-source-model" onchange="geoLoadSourcePage()" style="padding:5px 10px;border-radius:14px;font-size:12px;background:#FCFCFC;color:#454545;border:1px solid #DBDBDB;cursor:pointer;">
           <option value="all">全平台</option>
           <option value="doubao">豆包</option>
           <option value="deepseek">DeepSeek</option>
@@ -232,7 +232,7 @@ const PAGE_RENDERERS = {
     </div>
     <div class="geo-dark">
       <div class="geo-status-line" id="geo-source-status">加载中...</div>
-      <div id="geo-source-list"><div style="color:#9ca3af;font-size:12px;padding:20px;text-align:center">加载中...</div></div>
+      <div id="geo-source-list"><div style="color:#BDBDBD;font-size:12px;padding:20px;text-align:center">加载中...</div></div>
       <div id="geo-source-pager" style="text-align:center;margin-top:12px"></div>
     </div>
   `,
@@ -442,7 +442,7 @@ const PAGE_RENDERERS = {
         <div class="card-header"><div class="card-title">会员等级分布</div></div>
         <div class="bar-chart" style="height:140px;">
           <div class="bar-col"><div class="bar-value">58%</div><div class="bar" style="height:87%;background:#8f959e;"></div><div class="bar-label">普通</div></div>
-          <div class="bar-col"><div class="bar-value">22%</div><div class="bar" style="height:66%;background:#c0c0c0;"></div><div class="bar-label">银卡</div></div>
+          <div class="bar-col"><div class="bar-value">22%</div><div class="bar" style="height:66%;background:#BDBDBD;"></div><div class="bar-label">银卡</div></div>
           <div class="bar-col"><div class="bar-value">14%</div><div class="bar" style="height:42%;background:#ffd700;"></div><div class="bar-label">金卡</div></div>
           <div class="bar-col"><div class="bar-value">6%</div><div class="bar" style="height:18%;background:#b8860b;"></div><div class="bar-label">铂金</div></div>
         </div>
@@ -836,10 +836,10 @@ const PAGE_RENDERERS = {
               <div style="padding:20px;">
                 <div style="color:var(--text-secondary); font-size:12px; margin-bottom:12px;">已上传材料：</div>
                 <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-bottom:20px;">
-                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; transition:all 0.2s;" onclick="showMaterialPreview('${cert.method}', '📄')" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='var(--border)'">
+                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; transition:all 0.2s;" onclick="showMaterialPreview('${cert.method}', '📄')" onmouseover="this.style.background='#DBDBDB'" onmouseout="this.style.background='var(--border)'">
                     📄
                   </div>
-                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; transition:all 0.2s;" onclick="showMaterialPreview('在职证明', '📄')" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='var(--border)'">
+                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; transition:all 0.2s;" onclick="showMaterialPreview('在职证明', '📄')" onmouseover="this.style.background='#DBDBDB'" onmouseout="this.style.background='var(--border)'">
                     📄
                   </div>
                 </div>
@@ -1076,10 +1076,10 @@ const PAGE_RENDERERS = {
               <div style="padding:20px;">
                 <div style="color:var(--text-secondary); font-size:12px; margin-bottom:12px;">上传的认证材料</div>
                 <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
-                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='var(--border)'" onclick="showMaterialPreview('劳动合同', '📄')">
+                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#DBDBDB'" onmouseout="this.style.background='var(--border)'" onclick="showMaterialPreview('劳动合同', '📄')">
                     📄 劳动合同
                   </div>
-                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#d1d5db'" onmouseout="this.style.background='var(--border)'" onclick="showMaterialPreview('在职证明', '📄')">
+                  <div style="aspect-ratio:1; background:var(--border); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#DBDBDB'" onmouseout="this.style.background='var(--border)'" onclick="showMaterialPreview('在职证明', '📄')">
                     📄 在职证明
                   </div>
                 </div>

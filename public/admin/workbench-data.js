@@ -327,7 +327,7 @@ async function viewConversation(convId) {
       <div class="card-header"><div class="card-title">对话 #${convId} (${msgs.length}条消息)</div><button class="btn btn-sm" onclick="document.getElementById('conv-detail').style.display='none'">关闭</button></div>
       <div style="max-height:400px;overflow-y:auto;padding:8px">
         ${msgs.map(m => `<div style="margin-bottom:8px;${m.role==='user'?'text-align:right':''}">
-          <span style="display:inline-block;max-width:80%;padding:6px 10px;border-radius:10px;font-size:13px;white-space:pre-wrap;${m.role==='user'?'background:var(--primary);color:#fff':'background:#f0f0f0'}">${escapeHtml((m.content||'').slice(0,500))}</span>
+          <span style="display:inline-block;max-width:80%;padding:6px 10px;border-radius:10px;font-size:13px;white-space:pre-wrap;${m.role==='user'?'background:var(--primary);color:#fff':'background:#F6F6F6'}">${escapeHtml((m.content||'').slice(0,500))}</span>
           <div style="font-size:10px;color:var(--text-tertiary);margin-top:2px">${m.role} · ${(m.created_at||'').slice(11,19)}</div>
         </div>`).join('')}
       </div>
@@ -394,7 +394,7 @@ async function consoleSend() {
   try {
     const res = await fetch('/api/harness/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:msg,currentPage:'ai.console'}) });
     const data = await res.json();
-    msgsEl.innerHTML += `<div style="margin-bottom:8px"><span style="background:#f0f0f0;padding:4px 10px;border-radius:12px;display:inline-block;max-width:80%;white-space:pre-wrap">${escapeHtml(data.reply||'无回复')}</span></div>`;
+    msgsEl.innerHTML += `<div style="margin-bottom:8px"><span style="background:#F6F6F6;padding:4px 10px;border-radius:12px;display:inline-block;max-width:80%;white-space:pre-wrap">${escapeHtml(data.reply||'无回复')}</span></div>`;
     msgsEl.scrollTop = msgsEl.scrollHeight;
     debugEl.textContent += `[${new Date().toLocaleTimeString()}] ← 回复: ${(data.reply||'').slice(0,100)}...\n`;
     if (data.toolsUsed) debugEl.textContent += `[${new Date().toLocaleTimeString()}] 🔧 使用工具: ${data.toolsUsed.join(', ')}\n`;
@@ -684,8 +684,8 @@ const PAGE_COMPONENTS = {
     render: p => `<div style="padding:24px">
       <div style="font-size:18px;font-weight:700;margin-bottom:16px">${p.title}</div>
       <div style="display:grid;grid-template-columns:repeat(${p.columns},1fr);gap:12px">
-        ${(p.products||[]).map(pr => `<div style="border:1px solid #eee;border-radius:8px;padding:12px;text-align:center">
-          <div style="height:100px;background:#f5f5f5;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:24px">${pr.image ? `<img src="${pr.image}" style="max-height:100%;max-width:100%">` : '📦'}</div>
+        ${(p.products||[]).map(pr => `<div style="border:1px solid #DBDBDB;border-radius:8px;padding:12px;text-align:center">
+          <div style="height:100px;background:#F6F6F6;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#BDBDBD;font-size:24px">${pr.image ? `<img src="${pr.image}" style="max-height:100%;max-width:100%">` : '📦'}</div>
           <div style="margin-top:8px;font-size:13px;font-weight:500">${pr.name}</div>
           <div style="color:var(--red);font-weight:700;margin-top:4px">¥${pr.price}</div>
         </div>`).join('')}
@@ -716,7 +716,7 @@ const PAGE_COMPONENTS = {
     render: p => {
       const dir = p.imagePosition === 'right' ? 'row-reverse' : 'row';
       return `<div style="display:flex;flex-direction:${dir};gap:20px;padding:24px;align-items:center">
-        <div style="flex:1;height:160px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:32px">${p.imageUrl ? `<img src="${p.imageUrl}" style="max-height:100%;max-width:100%;border-radius:8px">` : '🖼️'}</div>
+        <div style="flex:1;height:160px;background:#F6F6F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#BDBDBD;font-size:32px">${p.imageUrl ? `<img src="${p.imageUrl}" style="max-height:100%;max-width:100%;border-radius:8px">` : '🖼️'}</div>
         <div style="flex:1"><div style="font-size:18px;font-weight:700">${p.title}</div><div style="margin-top:8px;font-size:13px;color:#666;line-height:1.6">${p.description}</div></div>
       </div>`;
     },
@@ -1068,7 +1068,7 @@ async function pbAiGenerate() {
 可用组件类型: ${COMP_TYPES}
 
 每个组件的props结构：
-- hero-banner: {title, subtitle, buttonText, bgColor, height(默认320)}  bgColor推荐：深蓝#1a1a2e 科技蓝#0052cc 渐变紫#4a0e8f 品牌橙#ff6600 墨绿#1a5c3a
+- hero-banner: {title, subtitle, buttonText, bgColor, height(默认320)}  bgColor推荐：深蓝#1a1a2e 科技蓝#454545 渐变紫#4a0e8f 品牌橙#ff6600 墨绿#1a5c3a
 - product-grid: {title, columns(2-4), products:[{name,price,image}]}
 - text-block: {content, fontSize(默认14), padding(默认24)}
 - cta-button: {text, style(primary/red/green/dark), align(center/left/right)}
@@ -1133,7 +1133,7 @@ function pbAiFallback(prompt) {
   let themeColor = '#1a1a2e';
   if (is618) themeColor = '#ff6600'; else if (is11) themeColor = '#c41a30';
   else if (isTP) themeColor = '#1a1a2e'; else if (isYoga) themeColor = '#4a0e8f';
-  else if (isLegion) themeColor = '#00a650'; else if (isEnterprise) themeColor = '#0052cc';
+  else if (isLegion) themeColor = '#34c724'; else if (isEnterprise) themeColor = '#454545';
   else if (isPromo) themeColor = '#ff6b35'; else if (isNewProduct) themeColor = '#2d3436';
   // 生成创意标题
   let title = '联想智能好物推荐', subtitle = '科技赋能生活，智享品质体验';
@@ -1180,17 +1180,17 @@ async function loadBotConfig() {
     const cfg = _botConfig;
     el.innerHTML = `
       <div class="card"><div class="card-header"><div class="card-title">System Prompt</div></div>
-        <textarea id="cfg-prompt" rows="6" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:monospace;resize:vertical;background:#f5f6f7">${cfg.system_prompt || ''}</textarea>
+        <textarea id="cfg-prompt" rows="6" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:monospace;resize:vertical;background:#FCFCFC">${cfg.system_prompt || ''}</textarea>
       </div>
       <div class="grid-2">
         <div class="card"><div class="card-title">模型配置</div><div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">主模型:</label><input id="cfg-model" value="${cfg.model || 'qwen-plus'}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Temperature:</label><input id="cfg-temp" type="number" step="0.1" min="0" max="2" value="${cfg.temperature || 0.7}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Max Tokens:</label><input id="cfg-tokens" type="number" value="${cfg.max_tokens || 1024}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">主模型:</label><input id="cfg-model" value="${cfg.model || 'qwen-plus'}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#FCFCFC"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Temperature:</label><input id="cfg-temp" type="number" step="0.1" min="0" max="2" value="${cfg.temperature || 0.7}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#FCFCFC"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Max Tokens:</label><input id="cfg-tokens" type="number" value="${cfg.max_tokens || 1024}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#FCFCFC"></div>
         </div></div>
         <div class="card"><div class="card-title">检索配置</div><div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Top-K:</label><input id="cfg-topk" type="number" value="${cfg.top_k || 5}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
-          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">欢迎语:</label><input id="cfg-welcome" value="${cfg.welcome_message || ''}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f6f7"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">Top-K:</label><input id="cfg-topk" type="number" value="${cfg.top_k || 5}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#FCFCFC"></div>
+          <div style="display:flex;align-items:center;gap:8px"><label style="width:100px;font-size:12px">欢迎语:</label><input id="cfg-welcome" value="${cfg.welcome_message || ''}" style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#FCFCFC"></div>
         </div></div>
       </div>`;
   } catch (e) { const el = document.getElementById('bot-config-area'); if (el) el.innerHTML = `<div style="color:var(--red);padding:20px">加载失败: ${e.message}</div>`; }
@@ -1321,24 +1321,24 @@ async function showProductForm(editId) {
     <div style="background:#fff;border-radius:12px;padding:24px;width:520px;max-width:90vw;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
       <h3 style="margin:0 0 16px">${editId ? '编辑商品' : '新增商品'}</h3>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <input id="pf-name" value="${prod.name}" placeholder="商品名称 *" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+        <input id="pf-name" value="${prod.name}" placeholder="商品名称 *" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
         <div style="display:flex;gap:8px">
-          <input id="pf-sku" value="${prod.sku || ''}" placeholder="SKU" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-          <select id="pf-cat" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7"><option value="">选择分类</option>${catOptions}</select>
+          <input id="pf-sku" value="${prod.sku || ''}" placeholder="SKU" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
+          <select id="pf-cat" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC"><option value="">选择分类</option>${catOptions}</select>
         </div>
         <div style="display:flex;gap:8px">
-          <input id="pf-price" type="number" value="${prod.price || ''}" placeholder="售价" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-          <input id="pf-oprice" type="number" value="${prod.original_price || ''}" placeholder="原价" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+          <input id="pf-price" type="number" value="${prod.price || ''}" placeholder="售价" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
+          <input id="pf-oprice" type="number" value="${prod.original_price || ''}" placeholder="原价" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
         </div>
         <div style="display:flex;gap:8px">
-          <input id="pf-stock" type="number" value="${prod.stock || 0}" placeholder="库存" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-          <select id="pf-status" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+          <input id="pf-stock" type="number" value="${prod.stock || 0}" placeholder="库存" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
+          <select id="pf-status" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
             <option value="draft" ${prod.status==='draft'?'selected':''}>草稿</option>
             <option value="active" ${prod.status==='active'?'selected':''}>在售</option>
             <option value="offline" ${prod.status==='offline'?'selected':''}>已下架</option>
           </select>
         </div>
-        <textarea id="pf-desc" placeholder="商品描述" rows="3" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7;resize:vertical">${prod.description || ''}</textarea>
+        <textarea id="pf-desc" placeholder="商品描述" rows="3" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC;resize:vertical">${prod.description || ''}</textarea>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
           <button class="btn btn-sm" onclick="document.getElementById('prod-modal').remove()">取消</button>
           <button class="btn btn-sm btn-primary" onclick="submitProduct(${editId || 'null'})">保存</button>
@@ -1469,18 +1469,18 @@ function showMarketingForm(editId) {
     <div style="background:#fff;border-radius:12px;padding:24px;width:500px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
       <h3 style="margin:0 0 16px">${editId ? '编辑任务' : '创建营销任务'}</h3>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <input id="mkt-name" placeholder="任务名称 *" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+        <input id="mkt-name" placeholder="任务名称 *" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
         <div style="display:flex;gap:8px">
-          <select id="mkt-type" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+          <select id="mkt-type" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
             <option value="push">推送通知</option><option value="email">邮件</option><option value="sms">短信</option><option value="precision">精准营销</option><option value="recall">召回</option>
           </select>
-          <select id="mkt-status" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+          <select id="mkt-status" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
             <option value="draft">草稿</option><option value="scheduled">待执行</option>
           </select>
         </div>
-        <input id="mkt-audience" placeholder="目标客群（如：活跃用户、30天未活跃）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <textarea id="mkt-content" placeholder="推送内容/文案" rows="3" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7;resize:vertical"></textarea>
-        <input id="mkt-schedule" type="datetime-local" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
+        <input id="mkt-audience" placeholder="目标客群（如：活跃用户、30天未活跃）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
+        <textarea id="mkt-content" placeholder="推送内容/文案" rows="3" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC;resize:vertical"></textarea>
+        <input id="mkt-schedule" type="datetime-local" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
           <button class="btn btn-sm" onclick="document.getElementById('mkt-modal').remove()">取消</button>
           <button class="btn btn-sm btn-primary" onclick="submitMarketingTask(${editId || 'null'})">保存</button>
@@ -1642,11 +1642,11 @@ function showCreateExperiment() {
     <div style="background:#fff;border-radius:12px;padding:24px;width:480px;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,0.2)">
       <h3 style="margin:0 0 16px">创建 AB 实验</h3>
       <div style="display:flex;flex-direction:column;gap:12px">
-        <input id="exp-name" placeholder="实验名称" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <input id="exp-desc" placeholder="描述（可选）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <input id="exp-va" placeholder="变体 A（对照组）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <input id="exp-vb" placeholder="变体 B（实验组）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7">
-        <div style="display:flex;align-items:center;gap:8px"><label style="font-size:13px">流量分配:</label><input id="exp-split" type="number" value="50" min="1" max="99" style="width:60px;padding:8px;border:1px solid var(--border);border-radius:6px;background:#f5f6f7"><span style="font-size:13px">% 给 B 组</span></div>
+        <input id="exp-name" placeholder="实验名称" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
+        <input id="exp-desc" placeholder="描述（可选）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
+        <input id="exp-va" placeholder="变体 A（对照组）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
+        <input id="exp-vb" placeholder="变体 B（实验组）" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC">
+        <div style="display:flex;align-items:center;gap:8px"><label style="font-size:13px">流量分配:</label><input id="exp-split" type="number" value="50" min="1" max="99" style="width:60px;padding:8px;border:1px solid var(--border);border-radius:6px;background:#FCFCFC"><span style="font-size:13px">% 给 B 组</span></div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
           <button class="btn btn-sm" onclick="document.getElementById('exp-modal').remove()">取消</button>
           <button class="btn btn-sm btn-primary" onclick="submitExperiment()">创建</button>
@@ -1938,9 +1938,9 @@ async function loadLenovoBigscreen() {
     el.innerHTML = `
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px">
         <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">昨日付款金额</div><div style="font-size:28px;font-weight:700;color:var(--red)">${(yesTotal/10000).toFixed(1)}<span style="font-size:14px;color:var(--text-tertiary);font-weight:normal"> 万元</span></div><div style="font-size:12px;color:var(--text-tertiary)">昨日数据</div></div>
-        <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">今日至今</div><div style="font-size:28px;font-weight:700;color:#1890ff">${(todayTotal/10000).toFixed(1)}<span style="font-size:14px;color:var(--text-tertiary);font-weight:normal"> 万元</span></div><div style="font-size:12px;color:var(--text-tertiary)">占昨日 ${yesTotal?((todayTotal/yesTotal*100).toFixed(1)):'-'}%</div></div>
+        <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">今日至今</div><div style="font-size:28px;font-weight:700;color:#FF2F2F">${(todayTotal/10000).toFixed(1)}<span style="font-size:14px;color:var(--text-tertiary);font-weight:normal"> 万元</span></div><div style="font-size:12px;color:var(--text-tertiary)">占昨日 ${yesTotal?((todayTotal/yesTotal*100).toFixed(1)):'-'}%</div></div>
         <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">覆盖省份</div><div style="font-size:28px;font-weight:700;color:#722ed1">${provinces.length}</div><div style="font-size:12px;color:var(--text-tertiary)">最高: ${provinces[0]?provinces[0].name+' ¥'+(provinces[0].metricSum/10000).toFixed(1)+'万':'-'}</div></div>
-        <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">覆盖城市</div><div style="font-size:28px;font-weight:700;color:#13c2c2">${cities.length}</div><div style="font-size:12px;color:var(--text-tertiary)">最高: ${cities[0]?cities[0].city+' ¥'+(cities[0].metricSum/10000).toFixed(1)+'万':'-'}</div></div>
+        <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">覆盖城市</div><div style="font-size:28px;font-weight:700;color:#454545">${cities.length}</div><div style="font-size:12px;color:var(--text-tertiary)">最高: ${cities[0]?cities[0].city+' ¥'+(cities[0].metricSum/10000).toFixed(1)+'万':'-'}</div></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
         <div class="card"><div class="card-header"><div class="card-title">昨日各渠道付款金额</div></div>
@@ -1950,8 +1950,8 @@ async function loadLenovoBigscreen() {
                 <span style="font-weight:500">${c.channelName}</span>
                 <span style="color:var(--red);font-weight:600">¥${(c.total/10000).toFixed(1)}万</span>
               </div>
-              <div style="height:10px;background:#f0f0f0;border-radius:5px;overflow:hidden">
-                <div style="width:${yesTotal?(c.total/yesTotal*100):0}%;height:100%;background:linear-gradient(90deg,#ff4d4f,#ff7a45)"></div>
+              <div style="height:10px;background:#F6F6F6;border-radius:5px;overflow:hidden">
+                <div style="width:${yesTotal?(c.total/yesTotal*100):0}%;height:100%;background:linear-gradient(90deg,#FF2F2F,#ff7a45)"></div>
               </div>
             </div>`).join('')}
         </div>
@@ -1960,7 +1960,7 @@ async function loadLenovoBigscreen() {
             <thead><tr style="border-bottom:1px solid var(--border-light)"><th style="text-align:left;padding:8px">排名</th><th style="text-align:left;padding:8px">省份</th><th style="text-align:left;padding:8px">金额</th><th style="text-align:left;padding:8px">占比</th></tr></thead>
             <tbody>${provinces.slice(0,10).map((p,i)=>`
               <tr style="border-bottom:1px solid var(--border-light)">
-                <td style="padding:8px;font-weight:600;color:#faad14">#${i+1}</td>
+                <td style="padding:8px;font-weight:600;color:#ff7d00">#${i+1}</td>
                 <td style="padding:8px">${p.name}</td>
                 <td style="padding:8px;font-weight:600;color:var(--red)">¥${(p.metricSum/10000).toFixed(1)}万</td>
                 <td style="padding:8px">${(p.metricSum/provinceTotal*100).toFixed(1)}%</td>
@@ -1972,7 +1972,7 @@ async function loadLenovoBigscreen() {
         <div class="card-header"><div class="card-title">城市付款金额 Top20</div></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">
           ${cities.slice(0,20).map((c,i)=>`
-            <div style="border:1px solid var(--border-light);border-radius:6px;padding:10px;background:linear-gradient(135deg,#fff,#fafafa)">
+            <div style="border:1px solid var(--border-light);border-radius:6px;padding:10px;background:linear-gradient(135deg,#fff,#FCFCFC)">
               <div style="display:flex;justify-content:space-between;align-items:center">
                 <span style="font-size:11px;color:var(--text-tertiary)">#${i+1}</span>
                 <span style="font-size:12px;color:var(--red);font-weight:600">¥${(c.metricSum/10000).toFixed(1)}万</span>
@@ -1988,15 +1988,15 @@ async function loadLenovoBigscreen() {
             ${Array.from({length:24},(_,h)=>`
               <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%">
                 <div style="display:flex;align-items:flex-end;gap:1px;height:150px;width:100%;justify-content:center">
-                  <div style="height:${yesHourly[h]/hourMax*150}px;width:45%;background:#8c8c8c;min-height:1px" title="昨日 ${h}点: ¥${(yesHourly[h]/10000).toFixed(1)}万"></div>
-                  <div style="height:${todayHourly[h]/hourMax*150}px;width:45%;background:#ff4d4f;min-height:1px" title="今日 ${h}点: ¥${(todayHourly[h]/10000).toFixed(1)}万"></div>
+                  <div style="height:${yesHourly[h]/hourMax*150}px;width:45%;background:#979797;min-height:1px" title="昨日 ${h}点: ¥${(yesHourly[h]/10000).toFixed(1)}万"></div>
+                  <div style="height:${todayHourly[h]/hourMax*150}px;width:45%;background:#FF2F2F;min-height:1px" title="今日 ${h}点: ¥${(todayHourly[h]/10000).toFixed(1)}万"></div>
                 </div>
                 <div style="font-size:9px;color:var(--text-tertiary)">${h}</div>
               </div>`).join('')}
           </div>
           <div style="display:flex;justify-content:center;gap:20px;margin-top:12px;font-size:12px">
-            <div><span style="display:inline-block;width:12px;height:12px;background:#8c8c8c;vertical-align:middle;margin-right:4px"></span>昨日 ¥${(yesTotal/10000).toFixed(1)}万</div>
-            <div><span style="display:inline-block;width:12px;height:12px;background:#ff4d4f;vertical-align:middle;margin-right:4px"></span>今日 ¥${(todayTotal/10000).toFixed(1)}万</div>
+            <div><span style="display:inline-block;width:12px;height:12px;background:#979797;vertical-align:middle;margin-right:4px"></span>昨日 ¥${(yesTotal/10000).toFixed(1)}万</div>
+            <div><span style="display:inline-block;width:12px;height:12px;background:#FF2F2F;vertical-align:middle;margin-right:4px"></span>今日 ¥${(todayTotal/10000).toFixed(1)}万</div>
           </div>
         </div>
       </div>`;
@@ -2032,7 +2032,7 @@ async function loadLenovoTouch() {
         const c = p.creator || '未知';
         creatorMap[c] = (creatorMap[c] || 0) + 1;
       });
-      const statusColors = { '启用':'#52c41a','启用中':'#52c41a','停用':'#ff4d4f','编辑中':'#faad14','待审核':'#1890ff','审核通过':'#13c2c2','审核驳回':'#eb2f96' };
+      const statusColors = { '启用':'#34c724','启用中':'#34c724','停用':'#FF2F2F','编辑中':'#ff7d00','待审核':'#FF2F2F','审核通过':'#454545','审核驳回':'#FF2F2F' };
       stats.statusDist = Object.entries(statusMap).sort((a,b)=>b[1]-a[1]).map(([name,count])=>({name,count,color:statusColors[name]||'#999'}));
       stats.topCreators = Object.entries(creatorMap).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([name,count])=>({name,count}));
       stats.activePlans = (statusMap['启用']||0) + (statusMap['启用中']||0);
@@ -2071,7 +2071,7 @@ async function loadLenovoTouch() {
   el.innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px">
       <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">触达计划总数</div><div style="font-size:28px;font-weight:700">${stats.totalPlans}</div><div style="font-size:12px;color:var(--text-tertiary)">全量计划</div></div>
-      <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">启用中</div><div style="font-size:28px;font-weight:700;color:#52c41a">${stats.activePlans}</div><div style="font-size:12px;color:var(--text-tertiary)">含"启用"+"启用中"</div></div>
+      <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">启用中</div><div style="font-size:28px;font-weight:700;color:#34c724">${stats.activePlans}</div><div style="font-size:12px;color:var(--text-tertiary)">含"启用"+"启用中"</div></div>
       <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">用户标签群组</div><div style="font-size:28px;font-weight:700;color:var(--red)">${stats.tagGroups}</div><div style="font-size:12px;color:var(--text-tertiary)">覆盖 ${stats.totalUsers.toLocaleString()} 人</div></div>
       <div class="card"><div style="font-size:13px;color:var(--text-tertiary)">画像标签 / 事件</div><div style="font-size:28px;font-weight:700">${stats.profileTags} / ${stats.events.length}</div><div style="font-size:12px;color:var(--text-tertiary)">tag / event</div></div>
     </div>
@@ -2080,7 +2080,7 @@ async function loadLenovoTouch() {
         ${stats.statusDist.map(s => `
           <div style="margin-bottom:10px">
             <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>${s.name}</span><span style="color:var(--text-tertiary)">${s.count}</span></div>
-            <div style="height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden"><div style="width:${stats.sampleTotal?(s.count/stats.sampleTotal*100):0}%;height:100%;background:${s.color}"></div></div>
+            <div style="height:8px;background:#F6F6F6;border-radius:4px;overflow:hidden"><div style="width:${stats.sampleTotal?(s.count/stats.sampleTotal*100):0}%;height:100%;background:${s.color}"></div></div>
           </div>`).join('')}
       </div>
       <div class="card"><div class="card-header"><div class="card-title">Top10 创建人</div></div>
@@ -2102,8 +2102,8 @@ async function loadLenovoTouch() {
         <tbody>${stats.recentPlans.map(p=>{
           const isActive = p.enableStatusName==='启用' || p.enableStatusName==='启用中';
           const isPaused = p.enableStatusName==='停用';
-          const bg = isActive?'#f6ffed':isPaused?'#fff1f0':'#f0f0f0';
-          const fg = isActive?'#52c41a':isPaused?'#ff4d4f':'#666';
+          const bg = isActive?'rgba(255,47,47,0.04)':isPaused?'rgba(255,47,47,0.06)':'#F6F6F6';
+          const fg = isActive?'#34c724':isPaused?'#FF2F2F':'#666';
           return `<tr style="border-bottom:1px solid var(--border-light)">
             <td style="padding:8px;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p.planName||''}">${p.planName||'未命名'}</td>
             <td style="padding:8px">${p.taskTypeName||'-'}</td>

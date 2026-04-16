@@ -139,7 +139,7 @@ function geoRenderPlatDist() {
     const color = geoPlatColors[r.p] || '#FF2F2F';
     const pct = Math.min(r.brand, 100).toFixed(0);
     if (r.missing) {
-      return `<div class="geo-plat-card"><div class="gpc-name">${geoPlatNames[r.p] || r.p}</div><div style="color:#6b7390;font-size:11px">无数据</div></div>`;
+      return `<div class="geo-plat-card"><div class="gpc-name">${geoPlatNames[r.p] || r.p}</div><div style="color:#979797;font-size:11px">无数据</div></div>`;
     }
     return `<div class="geo-plat-card">
       <div class="gpc-name">${geoPlatNames[r.p] || r.p}</div>
@@ -173,7 +173,7 @@ function geoRenderTreemap(sites) {
   const c = document.getElementById('geo-sites-treemap'); if(!c) return;
   const top = sites.slice(0, 20);
   const totalPct = top.reduce((s,x) => s + x.percentage, 0);
-  if (!top.length) { c.innerHTML = '<div style="color:#9ca3af;font-size:12px;padding:20px;text-align:center">暂无数据</div>'; return; }
+  if (!top.length) { c.innerHTML = '<div style="color:#BDBDBD;font-size:12px;padding:20px;text-align:center">暂无数据</div>'; return; }
   c.innerHTML = '<div class="geo-treemap">' + top.map((s, i) => {
     const bg = GEO_TREEMAP_COLORS[i % GEO_TREEMAP_COLORS.length];
     const flex = Math.max(s.percentage / totalPct * 100, 3);
@@ -184,7 +184,7 @@ function geoRenderTreemap(sites) {
 function geoRenderSiteRank(sites) {
   const c = document.getElementById('geo-sites-rank'); if(!c) return;
   const top = sites.slice(0, 20);
-  if (!top.length) { c.innerHTML = '<div style="color:#9ca3af;font-size:12px;padding:20px;text-align:center">暂无数据</div>'; return; }
+  if (!top.length) { c.innerHTML = '<div style="color:#BDBDBD;font-size:12px;padding:20px;text-align:center">暂无数据</div>'; return; }
   c.innerHTML = '<ol class="geo-rank-list">' + top.map(s =>
     `<li><span class="grl-idx">${s.rank}</span><span class="grl-name" title="${s.domain}">${s.name}</span><span class="grl-count">${s.count.toLocaleString()} · ${s.percentage}%</span></li>`
   ).join('') + '</ol>';
@@ -208,7 +208,7 @@ async function geoLoadQuestions() {
 
 function geoRenderQuestions(qs) {
   const c = document.getElementById('geo-questions-table'); if(!c) return;
-  if (!qs.length) { c.innerHTML = '<div style="color:#9ca3af;font-size:12px;padding:20px;text-align:center">暂无问题</div>'; return; }
+  if (!qs.length) { c.innerHTML = '<div style="color:#BDBDBD;font-size:12px;padding:20px;text-align:center">暂无问题</div>'; return; }
   const fieldKeys = [];
   if (qs[0].models && qs[0].models[0] && qs[0].models[0].fields) qs[0].models[0].fields.forEach(f => fieldKeys.push(f.field));
   const models = (qs[0].models || []).map(m => m.model);
@@ -250,13 +250,13 @@ async function geoLoadSourcePage(page) {
     if (st) st.textContent = `共 ${(d.total_records||0).toLocaleString()} 个站点 · 第 ${pg.current_page}/${pg.total_pages} 页`;
     if (!c) return;
     c.innerHTML = '<table class="geo-intent-table" style="width:100%"><thead><tr><th style="width:50px">排名</th><th style="text-align:left">站点</th><th style="text-align:left">域名</th><th>引用次数</th><th>占比</th></tr></thead><tbody>' +
-      sites.map(s => `<tr><td>${s.rank}</td><td class="name">${s.name}</td><td class="name" style="font-size:11px;color:#6b7280">${s.domain}</td><td>${s.count.toLocaleString()}</td><td>${s.percentage}%</td></tr>`).join('') + '</tbody></table>';
+      sites.map(s => `<tr><td>${s.rank}</td><td class="name">${s.name}</td><td class="name" style="font-size:11px;color:#979797">${s.domain}</td><td>${s.count.toLocaleString()}</td><td>${s.percentage}%</td></tr>`).join('') + '</tbody></table>';
     const pager = document.getElementById('geo-source-pager');
     if (pager && pg.total_pages > 1) {
       let ph = '';
-      if (pg.has_prev) ph += `<button onclick="geoLoadSourcePage(${pg.prev_page})" style="margin:0 4px;padding:4px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:12px">上一页</button>`;
-      ph += `<span style="font-size:12px;color:#6b7280;margin:0 8px">第 ${pg.current_page} / ${pg.total_pages} 页</span>`;
-      if (pg.has_next) ph += `<button onclick="geoLoadSourcePage(${pg.next_page})" style="margin:0 4px;padding:4px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:12px">下一页</button>`;
+      if (pg.has_prev) ph += `<button onclick="geoLoadSourcePage(${pg.prev_page})" style="margin:0 4px;padding:4px 12px;border:1px solid #DBDBDB;border-radius:6px;background:#fff;cursor:pointer;font-size:12px">上一页</button>`;
+      ph += `<span style="font-size:12px;color:#979797;margin:0 8px">第 ${pg.current_page} / ${pg.total_pages} 页</span>`;
+      if (pg.has_next) ph += `<button onclick="geoLoadSourcePage(${pg.next_page})" style="margin:0 4px;padding:4px 12px;border:1px solid #DBDBDB;border-radius:6px;background:#fff;cursor:pointer;font-size:12px">下一页</button>`;
       pager.innerHTML = ph;
     } else if (pager) { pager.innerHTML = ''; }
   } catch(e) { if (st) st.textContent = '加载失败：' + e.message; console.error('geoLoadSourcePage', e); }
