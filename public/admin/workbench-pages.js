@@ -495,31 +495,6 @@ const PAGE_RENDERERS = {
       </div>
     </div>
 
-    <!-- 职员认证状态分布 -->
-    <div class="card" style="margin-bottom:24px;">
-      <div class="card-header">
-        <span class="card-title">职员认证状态分布</span>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; padding:20px;">
-        <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('普通职员')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-normal">1,850</div>
-          <div style="font-size:12px; color:var(--text-secondary);">普通职员</div>
-        </div>
-        <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('法律')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-legal">186</div>
-          <div style="font-size:12px; color:var(--text-secondary);">法律</div>
-        </div>
-        <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('设计师')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-designer">287</div>
-          <div style="font-size:12px; color:var(--text-secondary);">设计师</div>
-        </div>
-        <div style="padding:20px; background:var(--bg); border-radius:6px; text-align:center; cursor:pointer;" onclick="filterByDept('编程开发')">
-          <div style="font-size:24px; color:#10b981; font-weight:700; margin-bottom:4px;" id="dept-dev">38</div>
-          <div style="font-size:12px; color:var(--text-secondary);">编程开发</div>
-        </div>
-      </div>
-    </div>
-
     <!-- 认证方式分布 -->
     <div class="card" style="margin-bottom:24px;">
       <div class="card-header">
@@ -558,9 +533,8 @@ const PAGE_RENDERERS = {
           <input type="text" id="emp-search-id" placeholder="身份证号..." style="width:140px; padding:6px 8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text);"/>
           <select id="emp-search-status" style="width:120px; padding:6px 8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text);">
             <option value="">全部状态</option>
-            <option value="pending">待审核</option>
-            <option value="approved">已通过</option>
-            <option value="rejected">已驳回</option>
+            <option value="approved">认证成功</option>
+            <option value="rejected">认证失败</option>
           </select>
           <button class="btn btn-sm btn-secondary" onclick="loadEmployeeOverviewTable()">搜索</button>
         </div>
@@ -614,9 +588,8 @@ const PAGE_RENDERERS = {
           <input type="text" id="emp-search-id" placeholder="身份证号..." style="width:140px; padding:6px 8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text);"/>
           <select id="emp-search-status" style="width:120px; padding:6px 8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text);">
             <option value="">全部状态</option>
-            <option value="pending">待审核</option>
-            <option value="approved">已通过</option>
-            <option value="rejected">已驳回</option>
+            <option value="approved">认证成功</option>
+            <option value="rejected">认证失败</option>
           </select>
           <button class="btn btn-sm btn-secondary" onclick="loadEmployeeList(1)">搜索</button>
         </div>
@@ -658,20 +631,20 @@ const PAGE_RENDERERS = {
     <div class="page-header">
       <div>
         <div class="page-title">✓ 认证审核管理</div>
-        <div class="page-desc">重待审批的在职人员认证申请</div>
+        <div class="page-desc">查看认证记录，对认证失败的用户可修改认证结果</div>
       </div>
     </div>
 
     <!-- 标签页 -->
     <div style="display:flex; gap:0; margin-bottom:0; border-bottom:2px solid var(--border);">
-      <button class="tab-btn" data-status="pending" onclick="switchCertTab('pending', this)" style="padding:12px 24px; border:none; background:none; color:var(--text-secondary); cursor:pointer; border-bottom:3px solid transparent; font-size:14px;" id="tab-pending">
-        <span style="color:#10b981;">待审核/期待奖活动</span> <span style="color:var(--text-secondary);">(51)</span>
+      <button class="tab-btn" data-status="rejected" onclick="switchCertTab('rejected', this)" style="padding:12px 24px; border:none; background:none; cursor:pointer; border-bottom:3px solid #ef4444; color:var(--text); font-size:14px;" id="tab-rejected">
+        <span>认证失败</span> <span style="color:var(--red);">(156)</span>
       </button>
       <button class="tab-btn" data-status="approved" onclick="switchCertTab('approved', this)" style="padding:12px 24px; border:none; background:none; color:var(--text-secondary); cursor:pointer; border-bottom:3px solid transparent; font-size:14px;">
-        <span>已通过</span> <span style="color:var(--green);">(2,341)</span>
+        <span>认证成功</span> <span style="color:var(--green);">(2,341)</span>
       </button>
-      <button class="tab-btn" data-status="rejected" onclick="switchCertTab('rejected', this)" style="padding:12px 24px; border:none; background:none; color:var(--text-secondary); cursor:pointer; border-bottom:3px solid transparent; font-size:14px;">
-        <span>已拒绝</span> <span style="color:var(--red);">(156)</span>
+      <button class="tab-btn" data-status="expired" onclick="switchCertTab('expired', this)" style="padding:12px 24px; border:none; background:none; color:var(--text-secondary); cursor:pointer; border-bottom:3px solid transparent; font-size:14px;">
+        <span>已失效</span> <span style="color:var(--text-tertiary);">(45)</span>
       </button>
     </div>
 
@@ -687,12 +660,6 @@ const PAGE_RENDERERS = {
             <option value="tax">个人所得税</option>
             <option value="other">其他材料</option>
           </select>
-          <select id="cert-search-review-method" style="padding:8px 12px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text); font-size:13px;">
-            <option value="">审核方式 - 全部</option>
-            <option value="email">邮件审核</option>
-            <option value="phone">电话审核</option>
-            <option value="visit">现场审核</option>
-          </select>
           <button class="btn btn-primary" onclick="loadCertificationTable()" style="padding:8px 24px; font-size:13px;">🔍 搜索</button>
         </div>
       </div>
@@ -705,12 +672,11 @@ const PAGE_RENDERERS = {
               <input type="checkbox" style="cursor:pointer;"/>
             </th>
             <th style="text-align:left; padding:12px; font-size:12px;">申请编号</th>
-            <th style="text-align:left; padding:12px; font-size:12px;">申请人</th>
+            <th style="text-align:left; padding:12px; font-size:12px;">用户</th>
             <th style="text-align:left; padding:12px; font-size:12px;">认证方式</th>
-            <th style="text-align:left; padding:12px; font-size:12px;">认证身份</th>
-            <th style="text-align:left; padding:12px; font-size:12px;">审核方式</th>
-            <th style="text-align:left; padding:12px; font-size:12px;">申请时间</th>
-            <th style="text-align:left; padding:12px; font-size:12px;">审核人</th>
+            <th style="text-align:left; padding:12px; font-size:12px;">企业名称</th>
+            <th style="text-align:left; padding:12px; font-size:12px;">认证时间</th>
+            <th style="text-align:left; padding:12px; font-size:12px;">状态</th>
             <th style="text-align:left; padding:12px; font-size:12px;">操作</th>
           </tr>
         </thead>
@@ -775,7 +741,7 @@ const PAGE_RENDERERS = {
               <div style="margin-bottom:8px;">申请类型：${cert.cert_type || '首次申请'}</div>
               <div style="margin-top:8px;">
                 <span style="display:inline-block; padding:4px 8px; background:#3370ff08; color:#3370ff; border-radius:3px; font-size:11px;">
-                  ${cert.status === 'pending' ? '⏳ 待审核' : cert.status === 'approved' ? '✓ 已通过' : '✗ 已驳回'}
+                  ${cert.status === 'approved' ? '✓ 认证成功' : cert.status === 'rejected' ? '✗ 认证失败' : '已失效'}
                 </span>
               </div>
             </div>
@@ -801,10 +767,6 @@ const PAGE_RENDERERS = {
                   <div>
                     <div style="color:var(--text-secondary); margin-bottom:4px;">认证方式</div>
                     <div>${methodLabel}</div>
-                  </div>
-                  <div>
-                    <div style="color:var(--text-secondary); margin-bottom:4px;">认证身份</div>
-                    <div>${cert.identity}</div>
                   </div>
                 </div>
               </div>
@@ -866,31 +828,24 @@ const PAGE_RENDERERS = {
               </div>
             </div>
 
-            <!-- 审核操作 -->
+            <!-- 状态修改操作 -->
             <div class="card">
               <div class="card-header">
-                <span class="card-title">审核操作</span>
+                <span class="card-title">修改认证结果</span>
+                <span style="font-size:11px; color:var(--text-tertiary);">仅用于客服人工介入，将认证失败的用户改为认证成功</span>
               </div>
               <div style="padding:20px;">
-                <div style="margin-bottom:20px;">
-                  <div style="color:var(--text-secondary); font-size:12px; margin-bottom:12px;">审核结论</div>
-                  <label style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                    <input type="radio" name="review-conclusion" id="cert-review-approve" value="approve" checked/>
-                    <span>✓ 通过</span>
-                  </label>
-                  <label style="display:flex; align-items:center; gap:8px;">
-                    <input type="radio" name="review-conclusion" id="cert-review-reject" value="reject"/>
-                    <span>✗ 拒绝</span>
-                  </label>
+                <div style="padding:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:6px; margin-bottom:20px; font-size:12px; color:#b91c1c;">
+                  ⚠️ 此操作将直接变更用户认证状态为"认证成功"，请确认已核实用户身份信息。
                 </div>
 
                 <div style="margin-bottom:20px;">
-                  <label style="display:block; color:var(--text-secondary); font-size:12px; margin-bottom:8px;">审核意见（可选）</label>
-                  <textarea id="cert-review-remark" style="width:100%; height:80px; padding:8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text); font-size:12px;" placeholder="请输入审核意见"></textarea>
+                  <label style="display:block; color:var(--text-secondary); font-size:12px; margin-bottom:8px;">操作备注（必填）</label>
+                  <textarea id="cert-review-remark" style="width:100%; height:80px; padding:8px; border:1px solid var(--border); border-radius:4px; background:var(--card-bg); color:var(--text); font-size:12px;" placeholder="请说明修改原因，如：用户重新提交了清晰的合同照片"></textarea>
                 </div>
 
                 <div style="display:flex; gap:8px;">
-                  <button class="btn btn-primary" onclick="submitCertReview('${cert.id}')" style="flex:1; background:#34c724; border:none;">✓ 提交审核</button>
+                  <button class="btn btn-primary" onclick="submitCertReview('${cert.id}')" style="flex:1; background:#10b981; border:none;">✓ 变更为认证成功</button>
                   <button class="btn btn-secondary" onclick="switchPage('employee.certification')" style="flex:1;">取消</button>
                 </div>
               </div>
@@ -951,20 +906,8 @@ const PAGE_RENDERERS = {
                     <div style="font-size:14px;">${emp.position || '-'}</div>
                   </div>
                   <div>
-                    <div style="color:var(--text-secondary); font-size:12px; margin-bottom:8px;">性别</div>
-                    <div style="font-size:14px;">${emp.gender || '-'}</div>
-                  </div>
-                  <div>
-                    <div style="color:var(--text-secondary); font-size:12px; margin-bottom:8px;">生日</div>
-                    <div style="font-size:14px;">${emp.birthday || '-'}</div>
-                  </div>
-                  <div>
                     <div style="color:var(--text-secondary); font-size:12px; margin-bottom:8px;">关联手机号</div>
                     <div style="font-size:14px;">${emp.phone || '-'}</div>
-                  </div>
-                  <div>
-                    <div style="color:var(--text-secondary); font-size:12px; margin-bottom:8px;">居住地</div>
-                    <div style="font-size:14px;">${emp.address || '-'}</div>
                   </div>
                   <div>
                     <div style="color:var(--text-secondary); font-size:12px; margin-bottom:8px;">注册时间</div>
