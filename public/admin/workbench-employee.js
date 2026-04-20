@@ -24,7 +24,7 @@ async function loadCertOverview() {
       </tr>
       <tr style="border-bottom:1px solid var(--border-light);">
         <td style="padding:12px 0;">李四</td>
-        <td style="padding:12px 0;">专业认证</td>
+        <td style="padding:12px 0;">基础认证</td>
         <td style="padding:12px 0;">联想集团</td>
         <td style="padding:12px 0;">2026-04-13</td>
         <td style="padding:12px 0;">
@@ -64,7 +64,7 @@ async function loadCertUsers(page = 1) {
         <td style="padding:12px 0; font-family:monospace; font-size:12px;">*****0002</td>
         <td style="padding:12px 0;">联想集团</td>
         <td style="padding:12px 0;">
-          <span style="padding:4px 8px; border-radius:3px; font-size:11px; background:var(--green-light); color:var(--green);">专业</span>
+          <span style="padding:4px 8px; border-radius:3px; font-size:11px; background:var(--green-light); color:var(--green);">基础</span>
         </td>
         <td style="padding:12px 0;">1</td>
         <td style="padding:12px 0;">2026-04-10</td>
@@ -107,7 +107,7 @@ async function loadCertReview(uid) {
       },
       2: {
         real_name: '李四',
-        status: 'specialist-certified',
+        status: 'basic-certified',
         email: 'lisi@lenovo.com',
         phone: '138****0002',
         first_cert_date: '2026-02-10',
@@ -129,8 +129,7 @@ async function loadCertReview(uid) {
     const data = users[uid] || users[1];
 
     document.getElementById('review-user-name').textContent = data.real_name;
-    document.getElementById('review-user-status').textContent =
-      data.status === 'basic-certified' ? '基础认证' : '专业认证';
+    document.getElementById('review-user-status').textContent = '基础认证';
     document.getElementById('review-user-id').textContent = (data.realname_auth?.id_no || '').slice(-6).padStart(18, '*');
     document.getElementById('review-user-email').textContent = data.email;
     document.getElementById('review-user-phone').textContent = data.phone;
@@ -312,7 +311,7 @@ function showEmployeeDetail(account) {
 }
 
 // ===== 认证审核页面函数 =====
-let currentCertTab = 'pending';
+let currentCertTab = 'rejected';
 let currentCertPage = 1;
 
 function switchCertTab(status, btn) {
@@ -335,22 +334,22 @@ function loadCertificationTable(page = 1) {
   currentCertPage = page || 1;
   const searchNo = document.getElementById('cert-search-no')?.value || '';
   const searchMethod = document.getElementById('cert-search-method')?.value || '';
-  const searchReviewMethod = document.getElementById('cert-search-review-method')?.value || '';
 
   try {
     // 演示数据：完整的认证申请列表
     const allCertifications = [
-      // 待审核
-      { id: 'APP20240415001', applicant: '王五 (user005)', method: 'contract', identity: '普通职员', review_method: '待入工审核', created_at: '2024-04-15 14:30', reviewer: '-', status: 'pending', company: '联想中国', position: '销售经理' },
-      { id: 'APP20240414008', applicant: '赵六 (user006)', method: 'tax', identity: '专业-工业设计', review_method: '待入工审核', created_at: '2024-04-14 09:15', reviewer: '-', status: 'pending', company: '联想集团', position: '运营专员' },
-      { id: 'APP20240413005', applicant: '郑十 (user008)', method: 'email', identity: '普通职员', review_method: '待入工审核', created_at: '2024-04-13 10:20', reviewer: '-', status: 'pending', company: '联想集团', position: '市场专员' },
+      // 认证失败（可由客服修改状态）
+      { id: 'APP20260415001', applicant: '王五 (user005)', method: 'contract', created_at: '2026-04-15 14:30', status: 'rejected', company: '联想中国', position: '销售经理', fail_reason: 'OCR识别失败，合同信息模糊' },
+      { id: 'APP20260414008', applicant: '赵六 (user006)', method: 'tax', created_at: '2026-04-14 09:15', status: 'rejected', company: '联想集团', position: '运营专员', fail_reason: '个税截图信息不完整' },
+      { id: 'APP20260410001', applicant: '周八 (user007)', method: 'contract', created_at: '2026-04-10 11:00', status: 'rejected', company: '联想集团', position: '人力资源', fail_reason: '合同照片不清晰' },
 
-      // 已通过
-      { id: 'APP20240412001', applicant: '张三 (user001)', method: 'email', identity: '普通职员', review_method: '邮件审核', created_at: '2024-04-12 08:00', reviewer: '李经理', status: 'approved', company: '联想集团', position: '产品经理' },
-      { id: 'APP20240411002', applicant: '李四 (user002)', method: 'contract', identity: '普通职员', review_method: '电话审核', created_at: '2024-04-11 14:30', reviewer: '王经理', status: 'approved', company: '联想集团', position: '技术总监' },
+      // 认证成功
+      { id: 'APP20260412001', applicant: '张三 (user001)', method: 'email', created_at: '2026-04-12 08:00', status: 'approved', company: '联想集团', position: '产品经理' },
+      { id: 'APP20260411002', applicant: '李四 (user002)', method: 'email', created_at: '2026-04-11 14:30', status: 'approved', company: '联想集团', position: '技术总监' },
+      { id: 'APP20260409003', applicant: '孙七 (user003)', method: 'contract', created_at: '2026-04-09 10:00', status: 'approved', company: '联想研究院', position: '工程师' },
 
-      // 已拒绝
-      { id: 'APP20240410001', applicant: '周八 (user006)', method: 'other', identity: '普通职员', review_method: '现场审核', created_at: '2024-04-10 11:00', reviewer: '张主任', status: 'rejected', company: '联想集团', position: '人力资源' }
+      // 已失效
+      { id: 'APP20250301001', applicant: '郑十 (user008)', method: 'email', created_at: '2025-03-01 10:20', status: 'expired', company: '联想集团', position: '市场专员' }
     ];
 
     // 筛选
@@ -362,11 +361,6 @@ function loadCertificationTable(page = 1) {
     if (searchMethod) {
       filtered = filtered.filter(c => c.method === searchMethod);
     }
-    if (searchReviewMethod) {
-      const methodMap = { 'email': '邮件审核', 'phone': '电话审核', 'visit': '现场审核' };
-      filtered = filtered.filter(c => c.review_method.includes(methodMap[searchReviewMethod] || searchReviewMethod));
-    }
-
     // 分页
     const pageSize = 10;
     const totalPages = Math.ceil(filtered.length / pageSize);
@@ -377,15 +371,18 @@ function loadCertificationTable(page = 1) {
     // 渲染表格
     const tbody = document.getElementById('cert-list-tbody');
     if (!paginatedData || paginatedData.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--text-tertiary);">暂无数据</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-tertiary);">暂无数据</td></tr>';
       document.getElementById('cert-total-count').textContent = '0';
       document.getElementById('cert-current-page').textContent = '1';
       document.getElementById('cert-total-pages').textContent = '1';
       return;
     }
 
+    const statusLabels = { approved: '✓ 认证成功', rejected: '✗ 认证失败', expired: '已失效' };
+    const statusColors = { approved: '#10b981', rejected: '#ef4444', expired: '#9ca3af' };
+
     tbody.innerHTML = paginatedData.map(cert => `
-      <tr style="border-bottom:1px solid var(--border-light); height:44px; cursor:pointer; hover-bg:var(--bg);" onclick="showCertDetail('${cert.id}')">
+      <tr style="border-bottom:1px solid var(--border-light); height:44px; cursor:pointer;" onclick="showCertDetail('${cert.id}')">
         <td style="text-align:center; padding:12px;"><input type="checkbox" style="cursor:pointer;"/></td>
         <td style="padding:12px; font-family:monospace; font-size:12px;">${cert.id}</td>
         <td style="padding:12px;">${cert.applicant}</td>
@@ -394,17 +391,16 @@ function loadCertificationTable(page = 1) {
             ${cert.method === 'email' ? '企业邮箱' : cert.method === 'contract' ? '劳动合同' : cert.method === 'tax' ? '个人所得税' : '其他'}
           </span>
         </td>
-        <td style="padding:12px;">${cert.identity}</td>
+        <td style="padding:12px; font-size:12px;">${cert.company || '-'}</td>
+        <td style="padding:12px; font-size:12px;">${cert.created_at}</td>
         <td style="padding:12px;">
-          <span style="display:inline-block; padding:3px 8px; border-radius:3px; background:rgba(251,191,36,0.1); color:#f59e0b; font-size:11px;">
-            ${cert.review_method}
+          <span style="display:inline-block; padding:3px 8px; border-radius:3px; font-size:11px; color:${statusColors[cert.status]};">
+            ${statusLabels[cert.status] || '-'}
           </span>
         </td>
-        <td style="padding:12px; font-size:12px;">${cert.created_at}</td>
-        <td style="padding:12px;">${cert.reviewer}</td>
         <td style="padding:12px;">
-          ${cert.status === 'pending'
-            ? `<button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); showCertDetailPage(this, '${cert.id}')" style="padding:4px 8px; font-size:12px; background:#10b981; border:none;">审核</button>`
+          ${cert.status === 'rejected'
+            ? `<button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); showCertDetailPage(this, '${cert.id}')" style="padding:4px 8px; font-size:12px; background:#10b981; border:none;">修改状态</button>`
             : `<button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); viewCertFromList(this, '${cert.applicant}')" style="padding:4px 8px; font-size:12px;">查看</button>`
           }
         </td>
@@ -442,13 +438,11 @@ function showCertDetailPage(btn, certId) {
       applicant_name: tds[2]?.textContent?.split('(')[0]?.trim() || '-',
       nickname: tds[2]?.textContent?.match(/\((.*?)\)/)?.[1] || '-',
       method: certId.includes('contract') ? 'contract' : certId.includes('tax') ? 'tax' : 'email',
-      method_label: tds[3]?.textContent || '企业邮箱',
-      identity: tds[4]?.textContent || '-',
-      review_method: tds[5]?.textContent || '-',
-      created_at: tds[6]?.textContent || '-',
-      reviewer: tds[7]?.textContent || '-',
-      status: 'pending',
-      cert_type: '首次申请',
+      method_label: tds[3]?.textContent?.trim() || '企业邮箱',
+      company: tds[4]?.textContent?.trim() || '-',
+      created_at: tds[5]?.textContent?.trim() || '-',
+      status: 'rejected',
+      cert_type: '认证失败',
       real_name: tds[2]?.textContent?.split('(')[0]?.trim() || '-',
       company: '联想（北京）有限公司',
       position: '产品经理',
@@ -487,7 +481,7 @@ function viewCertFromList(btn, applicant) {
         real_name: applicant.split('(')[0].trim(),
         lenovo_id: 'L' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0'),
         is_realname: '✓ 已认证',
-        dept_status: '普通职员',
+        dept_status: '职员',
         company_name: '联想（北京）有限公司',
         position: '产品经理',
         email: applicant.split('(')[0].toLowerCase() + '@lenovo.com',
@@ -517,22 +511,20 @@ function viewCertFromList(btn, applicant) {
 }
 
 function submitCertReview(certId) {
-  // 提交审核决策
   try {
-    const conclusion = document.querySelector('input[name="review-conclusion"]:checked')?.value || 'approve';
     const remark = document.getElementById('cert-review-remark')?.value || '';
+    if (!remark.trim()) {
+      alert('请填写操作备注');
+      return;
+    }
 
-    const conclusionText = conclusion === 'approve' ? '已批准' : '已拒绝';
-    alert(`✓ 认证已${conclusionText}\n申请编号: ${certId}\n审核备注: ${remark || '（无）'}`);
+    alert(`✓ 认证状态已变更为"认证成功"\n申请编号: ${certId}\n操作备注: ${remark}`);
 
-    // 返回列表
     switchPage('employee.certification');
-
-    // 重新加载认证列表
     setTimeout(() => loadCertificationTable(1), 100);
   } catch (e) {
-    console.error('提交审核失败:', e);
-    alert('提交审核失败：' + e.message);
+    console.error('提交失败:', e);
+    alert('操作失败：' + e.message);
   }
 }
 
@@ -557,10 +549,6 @@ function showCertDetail(certId) {
         <div>
           <div style="color:var(--text-secondary); font-size:12px; margin-bottom:4px;">认证方式</div>
           <div>劳动合同</div>
-        </div>
-        <div>
-          <div style="color:var(--text-secondary); font-size:12px; margin-bottom:4px;">认证身份</div>
-          <div>普通职员</div>
         </div>
       </div>
       <div style="border-top:1px solid var(--border); padding-top:16px; margin-bottom:20px;">
@@ -602,12 +590,6 @@ function loadEmployeeOverview() {
     approved: 2341,
     rejected: 45,
     pending: 187,
-    depts: {
-      normal: 1850,
-      legal: 186,
-      designer: 287,  // 工业设计(198) + 媒体设计(89) = 287
-      dev: 38
-    },
     methods: {
       email: 1051,
       contract: 703,
@@ -621,12 +603,6 @@ function loadEmployeeOverview() {
   document.getElementById('kpi-approved').textContent = stats.approved.toLocaleString();
   document.getElementById('kpi-rejected').textContent = stats.rejected.toLocaleString();
   document.getElementById('kpi-pending').textContent = stats.pending.toLocaleString();
-
-  // 更新部门统计
-  document.getElementById('dept-normal').textContent = stats.depts.normal.toLocaleString();
-  document.getElementById('dept-legal').textContent = stats.depts.legal.toLocaleString();
-  document.getElementById('dept-designer').textContent = stats.depts.designer.toLocaleString();
-  document.getElementById('dept-dev').textContent = stats.depts.dev.toLocaleString();
 
   // 更新认证方式统计
   document.getElementById('method-email').textContent = stats.methods.email.toLocaleString();
@@ -714,8 +690,7 @@ function loadEmployeeOverviewTable(page = 1) {
 // 看板统计数据全局状态
 const DASHBOARD_STATE = {
   currentFilter: null,
-  currentMethod: null,
-  currentDept: null
+  currentMethod: null
 };
 
 function filterAndNavigate(status) {
@@ -741,112 +716,60 @@ function generateEmployeeData() {
   const methods = ['企业邮箱', '劳动合同', '个人所得税', '其他材料'];
   const methodEnums = ['email', 'contract', 'tax', 'other'];
 
+  const positions = ['产品经理', '软件工程师', '市场专员', '销售经理', '运营专员', '人力资源', '财务分析师', '项目经理'];
+  const companies = ['联想（北京）有限公司', '联想集团', '联想中国', '联想研究院'];
   let employees = [];
   let accountNo = 1701000000;
-  const deptNames = ['普通职员', '法律', '设计师', '编程开发'];
-  const deptCounts = [1850, 186, 287, 38];
-  const companyMap = {
-    '普通职员': '联想（北京）有限公司',
-    '法律': '联想法律部',
-    '设计师': '联想设计中心',
-    '编程开发': '联想研究院'
-  };
+  const totalCount = 2361;
 
-  deptNames.forEach((dept, deptIdx) => {
-    for (let i = 0; i < deptCounts[deptIdx]; i++) {
-      const fname = firstNames[Math.floor(Math.random() * firstNames.length)];
-      const lname = lastNames[Math.floor(Math.random() * lastNames.length)];
-      const status = statuses[Math.floor(Math.random() * statuses.length)];
-      const methodIdx = Math.floor(Math.random() * methods.length);
-      const phone = String(13000000000 + Math.floor(Math.random() * 1000000000)).slice(0, 11);
-      const certDate = new Date(2023 + Math.floor(Math.random() * 2), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
+  for (let i = 0; i < totalCount; i++) {
+    const fname = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lname = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const status = statuses[Math.floor(Math.random() * statuses.length)];
+    const methodIdx = Math.floor(Math.random() * methods.length);
+    const phone = String(13000000000 + Math.floor(Math.random() * 1000000000)).slice(0, 11);
+    const certDate = new Date(2023 + Math.floor(Math.random() * 2), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
 
-      const idNo = '110101199' + String(Math.floor(Math.random() * 1000000000)).padStart(9, '0');
-      const registerDate = new Date(2022, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
-      const birthday = new Date(1990 + Math.floor(Math.random() * 15), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
+    const idNo = '110101199' + String(Math.floor(Math.random() * 1000000000)).padStart(9, '0');
+    const registerDate = new Date(2022, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
+    const birthday = new Date(1990 + Math.floor(Math.random() * 15), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
+    const company = companies[Math.floor(Math.random() * companies.length)];
 
-      employees.push({
-        account: String(accountNo++),
-        real_name: fname + lname,
-        id_no: idNo,
-        lenovo_id: 'L' + String(Math.floor(Math.random() * 100000000)).padStart(8, '0'),
-        phone: phone,
-        email: fname + lname.toLowerCase() + '@lenovo.com',
-        is_realname: status === 'approved' ? '✓ 已认证' : '-',
-        company: companyMap[dept],
-        company_name: dept === '普通职员' ? '联想（北京）有限公司' : dept === '法律' ? '联想法律部' : dept === '设计师' ? '联想设计中心' : '联想研究院',
-        company_code: '911101015MA000000' + String(Math.floor(Math.random() * 100)).padStart(2, '0'),
-        dept_status: dept,
-        position: dept === '普通职员' ? '产品经理' : dept === '法律' ? '法务' : dept === '设计师' ? '设计师' : '工程师',
-        material_method: methods[methodIdx],
-        material_method_enum: methodEnums[methodIdx],
-        cert_time: certDate.toISOString().replace('T', ' ').substring(0, 16),
-        current_status: status === 'approved' ? '✓ 已认证' : status === 'pending' ? '⏳ 待审核' : '✗ 已驳回',
-        status: status,
-        dept: dept,
-        gender: Math.random() > 0.5 ? '男' : '女',
-        birthday: birthday.toISOString().split('T')[0],
-        address: '北京市' + ['朝阳区', '海淀区', '丰台区', '东城区', '西城区'][Math.floor(Math.random() * 5)],
-        register_time: registerDate.toISOString().replace('T', ' ').substring(0, 19),
-        user_type: '企业用户',
-        member_level: ['白银会员', '黄金会员', '钻石会员'][Math.floor(Math.random() * 3)],
-        activation_status: Math.random() > 0.2 ? '已激活' : '未激活',
-        vip_status: Math.random() > 0.7 ? '是' : '否',
-        cert_method: '企业邮箱',
-        cert_start_date: certDate.toISOString().split('T')[0],
-        cert_end_date: new Date(certDate.getTime() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        cert_materials: ['劳动合同', '在职证明'],
-        cert_verified: status === 'approved' ? '已验证' : '未验证'
-      });
-    }
-  });
+    employees.push({
+      account: String(accountNo++),
+      real_name: fname + lname,
+      id_no: idNo,
+      lenovo_id: 'L' + String(Math.floor(Math.random() * 100000000)).padStart(8, '0'),
+      phone: phone,
+      email: fname + lname.toLowerCase() + '@lenovo.com',
+      is_realname: status === 'approved' ? '✓ 已认证' : '-',
+      company: company,
+      company_name: company,
+      company_code: '911101015MA000000' + String(Math.floor(Math.random() * 100)).padStart(2, '0'),
+      dept_status: '职员',
+      position: positions[Math.floor(Math.random() * positions.length)],
+      material_method: methods[methodIdx],
+      material_method_enum: methodEnums[methodIdx],
+      cert_time: certDate.toISOString().replace('T', ' ').substring(0, 16),
+      current_status: status === 'approved' ? '✓ 已认证' : status === 'pending' ? '⏳ 待审核' : '✗ 已驳回',
+      status: status,
+      gender: Math.random() > 0.5 ? '男' : '女',
+      birthday: birthday.toISOString().split('T')[0],
+      address: '北京市' + ['朝阳区', '海淀区', '丰台区', '东城区', '西城区'][Math.floor(Math.random() * 5)],
+      register_time: registerDate.toISOString().replace('T', ' ').substring(0, 19),
+      user_type: '企业用户',
+      member_level: ['白银会员', '黄金会员', '钻石会员'][Math.floor(Math.random() * 3)],
+      activation_status: Math.random() > 0.2 ? '已激活' : '未激活',
+      vip_status: Math.random() > 0.7 ? '是' : '否',
+      cert_method: '企业邮箱',
+      cert_start_date: certDate.toISOString().split('T')[0],
+      cert_end_date: new Date(certDate.getTime() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      cert_materials: ['劳动合同', '在职证明'],
+      cert_verified: status === 'approved' ? '已验证' : '未验证'
+    });
+  }
 
   return employees;
-}
-
-function filterByDept(dept) {
-  // 按部门筛选（在看板页面内过滤）
-  try {
-    const allEmployees = generateEmployeeData();
-    const deptMap = {
-      '普通职员': '普通职员',
-      '法律': '法律',
-      '设计师': '设计师',
-      '编程开发': '编程开发'
-    };
-
-    const targetDept = deptMap[dept];
-    let filtered = allEmployees.filter(e => e.dept === targetDept);
-
-    // 分页
-    const pageSize = 20;
-    const totalPages = Math.ceil(filtered.length / pageSize) || 1;
-    const page = 1;
-    const startIdx = 0;
-    const paginatedData = filtered.slice(startIdx, startIdx + pageSize);
-
-    const tbody = document.getElementById('emp-overview-tbody');
-    if (!filtered || filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; padding:20px;">暂无员工数据</td></tr>';
-      document.getElementById('emp-overview-count').textContent = '0';
-      document.getElementById('emp-overview-page').textContent = '1';
-      document.getElementById('emp-overview-total-pages').textContent = '1';
-      return;
-    }
-
-    tbody.innerHTML = paginatedData.map(emp => renderEmployeeRow(emp)).join('');
-    document.getElementById('emp-overview-count').textContent = filtered.length;
-    document.getElementById('emp-overview-page').textContent = page;
-    document.getElementById('emp-overview-total-pages').textContent = totalPages;
-
-    // 更新分页按钮状态
-    const prevBtn = document.getElementById('emp-overview-prev-btn');
-    const nextBtn = document.getElementById('emp-overview-next-btn');
-    if (prevBtn) prevBtn.disabled = true;
-    if (nextBtn) nextBtn.disabled = totalPages <= 1;
-  } catch (e) {
-    console.error('✗ 按部门筛选失败:', e);
-  }
 }
 
 function filterByMethod(method) {
