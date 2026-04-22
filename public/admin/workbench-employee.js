@@ -202,8 +202,11 @@ async function exportCertHistory() {
 
 async function loadEmployeeList(page = 1) {
   const nameFilter = document.getElementById('emp-search-name')?.value || '';
-  const idFilter = document.getElementById('emp-search-id')?.value || '';
+  const positionFilter = (document.getElementById('emp-search-position')?.value || '').toLowerCase();
+  const companyFilter = (document.getElementById('emp-search-company')?.value || '').toLowerCase();
   const statusFilter = document.getElementById('emp-search-status')?.value || '';
+  const dateStart = document.getElementById('emp-date-start')?.value || '';
+  const dateEnd = document.getElementById('emp-date-end')?.value || '';
 
   try {
     // 使用完整演示数据
@@ -215,11 +218,20 @@ async function loadEmployeeList(page = 1) {
     if (nameFilter) {
       filtered = filtered.filter(e => e.real_name.includes(nameFilter));
     }
-    if (idFilter) {
-      filtered = filtered.filter(e => String(e.account).includes(idFilter) || e.lenovo_id.includes(idFilter));
+    if (positionFilter) {
+      filtered = filtered.filter(e => (e.position || '').toLowerCase().includes(positionFilter));
+    }
+    if (companyFilter) {
+      filtered = filtered.filter(e => (e.company || '').toLowerCase().includes(companyFilter));
     }
     if (statusFilter && statusFilter !== '') {
       filtered = filtered.filter(e => e.status === statusFilter);
+    }
+    if (dateStart) {
+      filtered = filtered.filter(e => (e.cert_time || '').substring(0, 10) >= dateStart);
+    }
+    if (dateEnd) {
+      filtered = filtered.filter(e => (e.cert_time || '').substring(0, 10) <= dateEnd);
     }
 
     // 分页
@@ -616,9 +628,12 @@ function loadEmployeeOverview() {
 
 function loadEmployeeOverviewTable(page = 1) {
   try {
-    const nameFilter = document.getElementById('emp-search-name')?.value || '';
-    const idFilter = document.getElementById('emp-search-id')?.value || '';
-    const statusFilter = document.getElementById('emp-search-status')?.value || '';
+    const nameFilter = document.getElementById('emp-ov-search-name')?.value || '';
+    const positionFilter = (document.getElementById('emp-ov-search-position')?.value || '').toLowerCase();
+    const companyFilter = (document.getElementById('emp-ov-search-company')?.value || '').toLowerCase();
+    const statusFilter = document.getElementById('emp-ov-search-status')?.value || '';
+    const dateStart = document.getElementById('emp-ov-date-start')?.value || '';
+    const dateEnd = document.getElementById('emp-ov-date-end')?.value || '';
 
     // 使用完整演示数据
     const allEmployees = generateEmployeeData();
@@ -630,11 +645,20 @@ function loadEmployeeOverviewTable(page = 1) {
     if (nameFilter) {
       filtered = filtered.filter(e => e.real_name.includes(nameFilter));
     }
-    if (idFilter) {
-      filtered = filtered.filter(e => String(e.account).includes(idFilter) || e.lenovo_id.includes(idFilter));
+    if (positionFilter) {
+      filtered = filtered.filter(e => (e.position || '').toLowerCase().includes(positionFilter));
+    }
+    if (companyFilter) {
+      filtered = filtered.filter(e => (e.company || '').toLowerCase().includes(companyFilter));
     }
     if (statusFilter && statusFilter !== '') {
       filtered = filtered.filter(e => e.status === statusFilter);
+    }
+    if (dateStart) {
+      filtered = filtered.filter(e => (e.cert_time || '').substring(0, 10) >= dateStart);
+    }
+    if (dateEnd) {
+      filtered = filtered.filter(e => (e.cert_time || '').substring(0, 10) <= dateEnd);
     }
 
     console.log('✓ 过滤后的员工数据条数:', filtered.length);
